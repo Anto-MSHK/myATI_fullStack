@@ -3,12 +3,19 @@ import React, { FC, useState } from "react";
 import { Header } from "@rneui/themed";
 import { styles } from "./styles";
 import { Button } from "@rneui/base";
+import { c_style } from "./../../../stylesConst";
 
-interface HeaderMainI {}
+interface HeaderMainI {
+  title?: string;
+  isNotActiveButton?: boolean;
+}
 
-export const HeaderMain: FC<HeaderMainI> = ({}) => {
+export const HeaderMain: FC<HeaderMainI> = ({
+  title = "My ATI",
+  isNotActiveButton = false,
+}) => {
   const [icon, setIcon] = useState<"menufold" | "menuunfold">("menuunfold");
-  const openLeftPanel = () => {
+  const managePanelActivity = () => {
     if (icon === "menuunfold") {
       setIcon("menufold");
     } else {
@@ -17,29 +24,28 @@ export const HeaderMain: FC<HeaderMainI> = ({}) => {
   };
   return (
     <Header
-      backgroundColor="#222E3A"
+      backgroundColor={c_style.darkT.primary}
       backgroundImageStyle={{}}
-      barStyle="dark-content"
       centerComponent={{
-        text: "Мой ATI",
+        text: title,
         style: styles.text,
       }}
-      centerContainerStyle={{
-        justifyContent: "center",
-      }}
+      centerContainerStyle={styles.textContainer}
       containerStyle={styles.header}
-      leftComponent={{
-        icon: icon,
-        type: "antdesign",
-        color: "#fff",
-        size: 35,
-        onPress: openLeftPanel,
-        style: styles.button,
-      }}
-      leftContainerStyle={{}}
-      linearGradientProps={{}}
+      leftComponent={
+        !isNotActiveButton
+          ? {
+              icon: icon,
+              type: "antdesign",
+              color: "#fff",
+              size: 25,
+              onPress: managePanelActivity,
+              style: styles.button,
+            }
+          : undefined
+      }
+      leftContainerStyle={styles.buttonContainer}
       placement="left"
-      statusBarProps={{}}
     />
   );
 };
