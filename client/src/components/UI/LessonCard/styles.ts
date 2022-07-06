@@ -30,14 +30,16 @@ export const styles = StyleSheet.create({
 
     width: "50%",
     height: 2,
-  },
 
+  },
   //* ~~> card
   cardContainer: {
     backgroundColor: c_style.darkT.primary,
   },
 
   cardContainer_all: {
+    overflow: "hidden",
+
     backgroundColor: c_style.darkT.primary,
 
     borderRadius: 15,
@@ -101,7 +103,7 @@ export const styles = StyleSheet.create({
   secondaryContainer: {
     flexDirection: "row",
     justifyContent: "flex-start",
-
+    alignItems: "center",
     backgroundColor: c_style.darkT.secondary,
 
     paddingTop: 5,

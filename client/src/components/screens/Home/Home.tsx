@@ -9,6 +9,7 @@ export const Home = () => {
       <HeaderMain />
       <LessonCard
         title="Разработка професиональных приложений"
+        type="Лек."
         teacher={{ name: "Чумак И.В.", degree: "к.м.н." }}
         cabinet="324"
       />
