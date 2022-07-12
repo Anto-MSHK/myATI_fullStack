@@ -2,43 +2,23 @@ import { StyleSheet } from "react-native";
 import { c_style } from "./../../../stylesConst";
 
 export const styles = StyleSheet.create({
-  //* ~~> text
-  mainText: {
-    fontFamily: c_style.bold,
-    fontSize: c_style.h3,
-    color: c_style.darkT.color_p,
 
-    width: 240,
-    lineHeight: 18,
-  },
-
-  secondaryText_b: {
-    fontFamily: c_style.bold,
-    fontSize: c_style.h4,
-    color: c_style.darkT.color_p,
-  },
-
-  secondaryText: {
-    color: c_style.darkT.color_p,
-
-    lineHeight: 18,
-    marginLeft: 15,
-  },
 
   stripe: {
     backgroundColor: c_style.darkT.color_p,
 
     width: "50%",
     height: 2,
-
   },
   //* ~~> card
   cardContainer: {
     backgroundColor: c_style.darkT.primary,
+    marginVertical: 0,
   },
 
   cardContainer_all: {
     overflow: "hidden",
+    marginVertical: 0,
 
     backgroundColor: c_style.darkT.primary,
 
@@ -46,6 +26,9 @@ export const styles = StyleSheet.create({
   },
 
   cardContainer_top: {
+    overflow: "hidden",
+    marginVertical: 0,
+
     backgroundColor: c_style.darkT.primary,
 
     borderTopRightRadius: 15,
@@ -54,6 +37,7 @@ export const styles = StyleSheet.create({
 
   cardContainer_bottom: {
     backgroundColor: c_style.darkT.primary,
+    marginVertical: 0,
 
     borderBottomRightRadius: 15,
     borderBottomLeftRadius: 15,

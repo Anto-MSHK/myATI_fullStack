@@ -2,12 +2,20 @@ import { ListItemButtonGroup } from "@rneui/base/dist/ListItem/ListItem.ButtonGr
 import React, { FC, useState } from "react";
 import { c_style } from "./../../../stylesConst";
 import { View } from "react-native";
+import { Icon, Text } from "@rneui/base";
+import { UIstyles } from "../UIstyles";
+import { styles } from "./styles";
 
+type buttonT = {
+  text: string;
+  icon: string;
+  typeIcon: string;
+};
 interface ButtonGroupI {
-  children: any;
+  buttons: buttonT[];
 }
 
-export const ButtonSwitch: FC<ButtonGroupI> = ({ children }) => {
+export const ButtonSwitch: FC<ButtonGroupI> = ({ buttons, children }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const updateIndex = (selectedIndex: number) => {
@@ -15,22 +23,23 @@ export const ButtonSwitch: FC<ButtonGroupI> = ({ children }) => {
   };
 
   return (
-    <View style={{ marginHorizontal: -15 }}>
+    <View style={styles.wrapper}>
       <ListItemButtonGroup
         onPress={updateIndex}
         selectedIndex={selectedIndex}
-        buttons={children}
-        containerStyle={{
-          backgroundColor: c_style.darkT.secondary,
-          borderWidth: 0,
-          borderRadius: 0,
-          top: -15,
-          //   marginHorizontal: -15,
-          justifyContent: "center",
-          height: 35,
-          borderBottomWidth: 1,
-          width: "100%",
-        }}
+        buttons={buttons.map((button) => (
+          <View style={styles.containerContent}>
+            <Text style={styles.text}>{button.text}</Text>
+            <Icon
+              name={button.icon} //"caretup"
+              type={button.typeIcon} //"antdesign"
+              size={15}
+              color="white"
+              style={{ marginRight: 8 }}
+            />
+          </View>
+        ))}
+        containerStyle={styles.container}
         selectedButtonStyle={{ backgroundColor: c_style.darkT.dominant }}
         innerBorderStyle={{ width: 0 }}
       />
