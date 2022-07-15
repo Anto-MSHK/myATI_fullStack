@@ -7,12 +7,11 @@ import { UIstyles } from "../UIstyles";
 import { styles } from "./styles";
 
 type buttonT = {
-  text: string;
-  icon: string;
-  typeIcon: string;
+  items: { text: string; icon: string; typeIcon: string }[];
+  customOnPress: (selectedIndex?: number) => void;
 };
 interface ButtonGroupI {
-  buttons: buttonT[];
+  buttons: buttonT;
 }
 
 export const ButtonSwitch: FC<ButtonGroupI> = ({ buttons, children }) => {
@@ -20,6 +19,7 @@ export const ButtonSwitch: FC<ButtonGroupI> = ({ buttons, children }) => {
 
   const updateIndex = (selectedIndex: number) => {
     setSelectedIndex(selectedIndex);
+    buttons.customOnPress(selectedIndex);
   };
 
   return (
@@ -27,7 +27,7 @@ export const ButtonSwitch: FC<ButtonGroupI> = ({ buttons, children }) => {
       <ListItemButtonGroup
         onPress={updateIndex}
         selectedIndex={selectedIndex}
-        buttons={buttons.map((button) => (
+        buttons={buttons.items.map((button) => (
           <View style={styles.containerContent}>
             <Text style={styles.text}>{button.text}</Text>
             <Icon

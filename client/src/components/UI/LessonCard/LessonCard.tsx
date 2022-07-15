@@ -1,34 +1,35 @@
 import { View } from "react-native";
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import { Badge, Card, Icon, Text } from "@rneui/base";
 import { styles } from "./styles";
 import { c_style } from "./../../../stylesConst";
 import { ButtonSwitch } from "./../ButtonSwitch/ButtonSwitch";
 import { UIstyles } from "./../UIstyles";
+import { dataLessonT, dataT, LessonT } from "../../../state/schedule/types";
 
 export interface LessonCardI {
   roundingСorns?: "none" | "top" | "bottom" | "all";
   withSwitch?: boolean;
   isNotTeacher?: boolean;
-  title: string;
-  type: string;
-  teacher: {
-    name: string;
-    degree?: string;
-  };
-  cabinet?: string;
+  count: 1 | 2 | 3 | 4 | 5;
+  time: { from: string; to: string };
+  data: dataT;
 }
 
 export const LessonCard: FC<LessonCardI> = ({
-  title,
-  type,
-  teacher,
-  cabinet,
+  data,
+  count,
+  time,
   roundingСorns = "all",
-  withSwitch = false,
   isNotTeacher = false,
 }) => {
-  let curRoundedStyle = {};
+  var [curData, setCurData] = useState<"topWeek" | "lowerWeek">("topWeek");
+  const toggleData = (selectedIndex?: number) => {
+    if (selectedIndex === 0) setCurData("topWeek");
+    else if (selectedIndex === 1) setCurData("lowerWeek");
+  };
+
+  var curRoundedStyle = {};
   switch (roundingСorns) {
     case "all":
       curRoundedStyle = styles.cardContainer_all;
@@ -46,49 +47,58 @@ export const LessonCard: FC<LessonCardI> = ({
 
   return (
     <Card containerStyle={curRoundedStyle} wrapperStyle={styles.cardWrapper}>
-      {withSwitch && (
+      {data.lowerWeek && (
         <ButtonSwitch
-          buttons={[
-            { text: "нижняя", icon: "caretdown", typeIcon: "antdesign" },
-            { text: "верхняя", icon: "caretup", typeIcon: "antdesign" },
-          ]}
+          buttons={{
+            items: [
+              {
+                text: "верхняя",
+                icon: "caretup",
+                typeIcon: "antdesign",
+              },
+              {
+                text: "нижняя",
+                icon: "caretdown",
+                typeIcon: "antdesign",
+              },
+            ],
+            customOnPress: toggleData,
+          }}
         />
       )}
       <View>
         <View style={styles.mainContainer}>
           <Badge
-            value={3}
+            value={count}
             containerStyle={styles.budgeContainer}
             badgeStyle={styles.budge}
             textStyle={styles.budgeText}
           />
-          <Text style={UIstyles.mainText}>{title}</Text>
+          <Text style={UIstyles.mainText}>{data[curData]?.subject.title}</Text>
         </View>
         <View style={styles.secondaryContainer}>
           <View style={styles.timeContainer}>
-            <Text style={UIstyles.secondaryText_b}>12:30</Text>
+            <Text style={UIstyles.secondaryText_b}>{time.from}</Text>
             <View style={styles.stripe} />
-            <Text style={UIstyles.secondaryText_b}>14:05</Text>
+            <Text style={UIstyles.secondaryText_b}>{time.to}</Text>
           </View>
-          <View
-            style={{
-              flex: 1,
-              marginRight: 15,
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
+          <View style={styles.secondaryInfo}>
             <View>
               {!isNotTeacher && (
                 <Text style={UIstyles.secondaryText}>
-                  {teacher.degree ? teacher.degree + " " : ""}
-                  {teacher.name}
+                  {data[curData]?.teacher.degree
+                    ? data[curData]?.teacher.degree + " "
+                    : ""}
+                  {data[curData]?.teacher.name}
                 </Text>
               )}
-              <Text style={UIstyles.secondaryText}>каб: {cabinet}</Text>
+              <Text style={UIstyles.secondaryText}>
+                каб: {data[curData]?.cabinet}
+              </Text>
             </View>
-            <Text style={UIstyles.secondaryText_b}>{type}</Text>
+            <Text style={UIstyles.secondaryText_b}>
+              {data[curData]?.subject.type}
+            </Text>
           </View>
         </View>
       </View>

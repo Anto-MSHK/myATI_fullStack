@@ -2,8 +2,6 @@ import { StyleSheet } from "react-native";
 import { c_style } from "./../../../stylesConst";
 
 export const styles = StyleSheet.create({
-
-
   stripe: {
     backgroundColor: c_style.darkT.color_p,
 
@@ -93,6 +91,14 @@ export const styles = StyleSheet.create({
     paddingTop: 5,
     paddingBottom: 5,
     marginHorizontal: -15,
+  },
+
+  secondaryInfo: {
+    flex: 1,
+    marginRight: 15,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
 
   //? --> time

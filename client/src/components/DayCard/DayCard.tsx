@@ -1,6 +1,7 @@
 import { View, Text } from "react-native";
 import React, { FC } from "react";
 import { LessonCard, LessonCardI } from "../UI/LessonCard/LessonCard";
+import { LessonT } from "../../state/schedule/types";
 
 export type lessonT = {
   title: string;
@@ -13,17 +14,16 @@ export type lessonT = {
 };
 
 interface DayCardI {
-  lessons: lessonT[];
+  lessons: LessonT[];
 }
 export const DayCard: FC<DayCardI> = ({ lessons }) => {
   return (
     <View>
       {lessons.map((lesson, i) => (
         <LessonCard
-          title={lesson.title}
-          type={lesson.type}
-          teacher={{ name: lesson.teacher.name, degree: lesson.teacher.degree }}
-          cabinet={lesson.cabinet}
+          count={lesson.count}
+          time={lesson.time}
+          data={lesson.data}
           roundingСorns={
             lessons.length === 1
               ? "all"
@@ -33,7 +33,9 @@ export const DayCard: FC<DayCardI> = ({ lessons }) => {
               ? "bottom"
               : "none"
           }
-          //  withSwitch
+          //  withSwitch={
+          //  lesson.data.lowerWeek ? true
+          // 	}
         />
       ))}
     </View>

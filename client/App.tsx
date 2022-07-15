@@ -9,6 +9,8 @@ import {
   useFonts,
 } from "@expo-google-fonts/noto-sans";
 import AppLoading from "expo-app-loading";
+import { Provider } from "react-redux";
+import store from "./src/state/state";
 
 export default function App() {
   let [fontsLoaded] = useFonts({
@@ -19,5 +21,10 @@ export default function App() {
   });
 
   if (!fontsLoaded) return <AppLoading />;
-  else return <Navigation />;
+  else
+    return (
+      <Provider store={store}>
+        <Navigation />
+      </Provider>
+    );
 }
