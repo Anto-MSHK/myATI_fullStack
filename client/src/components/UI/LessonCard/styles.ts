@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
 import { c_style } from "./../../../stylesConst";
+import { UIstyles } from "./../UIstyles";
 
 export const styles = StyleSheet.create({
   stripe: {
@@ -10,22 +11,38 @@ export const styles = StyleSheet.create({
   },
   //* ~~> card
   cardContainer: {
+    position: "relative",
     backgroundColor: c_style.darkT.primary,
+    //  borderWidth: 0,
     marginVertical: 0,
+    ...UIstyles.shadow,
+
+    borderTopWidth: 0,
+    borderBottomWidth: 0,
+
+    borderTopRightRadius: 0.1,
+    borderTopLeftRadius: 0.1,
   },
 
   cardContainer_all: {
     overflow: "hidden",
     marginVertical: 0,
+    //  borderWidth: 0,
+    ...UIstyles.shadow,
 
     backgroundColor: c_style.darkT.primary,
 
     borderRadius: 15,
+    borderBottomWidth: 5,
   },
 
   cardContainer_top: {
     overflow: "hidden",
     marginVertical: 0,
+    //  borderWidth: 0,
+    borderBottomWidth: 0,
+
+    ...UIstyles.shadow,
 
     backgroundColor: c_style.darkT.primary,
 
@@ -36,6 +53,9 @@ export const styles = StyleSheet.create({
   cardContainer_bottom: {
     backgroundColor: c_style.darkT.primary,
     marginVertical: 0,
+    borderTopWidth: 0,
+    ...UIstyles.shadow,
+    borderBottomWidth: 5,
 
     borderBottomRightRadius: 15,
     borderBottomLeftRadius: 15,
@@ -76,7 +96,7 @@ export const styles = StyleSheet.create({
   budgeText: {
     fontFamily: c_style.bold,
     fontSize: c_style.h3,
-    color: c_style.darkT.color_s,
+    color: c_style.darkT.color_p,
 
     marginRight: 5,
   },
@@ -87,7 +107,6 @@ export const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     backgroundColor: c_style.darkT.secondary,
-
     paddingTop: 5,
     paddingBottom: 5,
     marginHorizontal: -15,
@@ -109,4 +128,7 @@ export const styles = StyleSheet.create({
 
     width: 65,
   },
+
+  //? --> bottom line
+  gradientLine: { height: 2, bottom: -15, left: -15, marginRight: -30 },
 });

@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
 import { c_style } from "./../../../stylesConst";
+import { UIstyles } from "./../UIstyles";
 
 export const styles = StyleSheet.create({
   header: {

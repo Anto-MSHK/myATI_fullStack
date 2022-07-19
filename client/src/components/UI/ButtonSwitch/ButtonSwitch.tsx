@@ -1,7 +1,7 @@
 import { ListItemButtonGroup } from "@rneui/base/dist/ListItem/ListItem.ButtonGroup";
 import React, { FC, useState } from "react";
 import { c_style } from "./../../../stylesConst";
-import { View } from "react-native";
+import { StyleProp, View, ViewStyle } from "react-native";
 import { Icon, Text } from "@rneui/base";
 import { UIstyles } from "../UIstyles";
 import { styles } from "./styles";
@@ -12,9 +12,14 @@ type buttonT = {
 };
 interface ButtonGroupI {
   buttons: buttonT;
+  style: StyleProp<ViewStyle>;
 }
 
-export const ButtonSwitch: FC<ButtonGroupI> = ({ buttons, children }) => {
+export const ButtonSwitch: FC<ButtonGroupI> = ({
+  buttons,
+  style,
+  children,
+}) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const updateIndex = (selectedIndex: number) => {
@@ -23,7 +28,7 @@ export const ButtonSwitch: FC<ButtonGroupI> = ({ buttons, children }) => {
   };
 
   return (
-    <View style={styles.wrapper}>
+    <View style={{ ...styles.wrapper, ...(style as StyleSheet) }}>
       <ListItemButtonGroup
         onPress={updateIndex}
         selectedIndex={selectedIndex}
@@ -40,7 +45,7 @@ export const ButtonSwitch: FC<ButtonGroupI> = ({ buttons, children }) => {
           </View>
         ))}
         containerStyle={styles.container}
-        selectedButtonStyle={{ backgroundColor: c_style.darkT.dominant }}
+        selectedButtonStyle={{ backgroundColor: c_style.darkT.highlight }}
         innerBorderStyle={{ width: 0 }}
       />
     </View>

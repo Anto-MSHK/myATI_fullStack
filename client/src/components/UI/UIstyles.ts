@@ -23,4 +23,14 @@ export const UIstyles = {
     lineHeight: 18,
     marginLeft: 15,
   },
+
+  shadow: {
+    borderWidth: 2,
+    //  borderRadius: 10,
+    borderColor: "rgba(0, 0, 0, 0.2)",
+    shadowColor: "rgba(0, 0, 0, 0.2)",
+    //  shadowOffset: { width: 0, height: 4 },
+    //  shadowOpacity: 0.8,
+    //  shadowRadius: 10,
+  },
 };

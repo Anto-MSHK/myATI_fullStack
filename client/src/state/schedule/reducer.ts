@@ -39,6 +39,17 @@ export const initialState: ScheduleGroupsStateT = [
               },
             },
           },
+          {
+            count: 3,
+            time: { from: "12:30", to: "14:05" },
+            data: {
+              topWeek: {
+                subject: { title: "Геометрия", type: "лб." },
+                teacher: { name: "Чумак", degree: "к.м.н" },
+                cabinet: "202",
+              },
+            },
+          },
         ],
       },
     ],

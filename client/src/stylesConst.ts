@@ -16,9 +16,10 @@ export const c_style = {
   //* => colors
   //? >> dark theme
   darkT: {
-    primary: "#222E3A",
-    secondary: "#191F23",
-    dominant: "#E08E2D",
+    primary: "rgba(34, 46, 58, 0.6)",
+    secondary: "rgba(25, 31, 35, 0.2)",
+    dominant: "rgba(224, 142, 45, 0.9)",
+    highlight: "rgba(119, 119, 119, 0.2)",
     color_p: "white",
     color_s: "black",
   },

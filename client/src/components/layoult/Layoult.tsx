@@ -1,4 +1,4 @@
-import { View, Text, ScrollView } from "react-native";
+import { View, Text, ScrollView, ImageBackground, Image } from "react-native";
 import React, { FC } from "react";
 
 interface ILayoult {
@@ -7,7 +7,12 @@ interface ILayoult {
 
 export const Layoult: FC<ILayoult> = ({ children, isScrollView = true }) => {
   return (
-    <View>{isScrollView ? <ScrollView>{children}</ScrollView> : children}</View>
+    <ImageBackground
+      source={require("../../../assets/back_dark.jpg")}
+      style={{ flex: 1 }}
+    >
+      {isScrollView ? <ScrollView>{children}</ScrollView> : children}
+    </ImageBackground>
   );
 };
 

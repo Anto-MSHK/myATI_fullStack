@@ -13,6 +13,7 @@ export const styles = StyleSheet.create({
     height: 35,
     borderBottomWidth: 1,
     width: "100%",
+    borderBottomColor: "rgba(0, 0, 0, 0.6)",
   },
   containerContent: {
     flexDirection: "row",

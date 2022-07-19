@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { StyleProp, View, ViewProps, ViewStyle } from "react-native";
 import React, { FC, useState } from "react";
 import { Badge, Card, Icon, Text } from "@rneui/base";
 import { styles } from "./styles";
@@ -6,6 +6,7 @@ import { c_style } from "./../../../stylesConst";
 import { ButtonSwitch } from "./../ButtonSwitch/ButtonSwitch";
 import { UIstyles } from "./../UIstyles";
 import { dataLessonT, dataT, LessonT } from "../../../state/schedule/types";
+import { LinearGradient } from "expo-linear-gradient";
 
 export interface LessonCardI {
   roundingСorns?: "none" | "top" | "bottom" | "all";
@@ -23,7 +24,9 @@ export const LessonCard: FC<LessonCardI> = ({
   roundingСorns = "all",
   isNotTeacher = false,
 }) => {
+  var styleForLine: StyleProp<ViewStyle> = {};
   var [curData, setCurData] = useState<"topWeek" | "lowerWeek">("topWeek");
+
   const toggleData = (selectedIndex?: number) => {
     if (selectedIndex === 0) setCurData("topWeek");
     else if (selectedIndex === 1) setCurData("lowerWeek");
@@ -49,6 +52,7 @@ export const LessonCard: FC<LessonCardI> = ({
     <Card containerStyle={curRoundedStyle} wrapperStyle={styles.cardWrapper}>
       {data.lowerWeek && (
         <ButtonSwitch
+          style={styleForLine}
           buttons={{
             items: [
               {
@@ -102,6 +106,16 @@ export const LessonCard: FC<LessonCardI> = ({
           </View>
         </View>
       </View>
+      {roundingСorns !== "bottom" && roundingСorns !== "all" && (
+        <LinearGradient
+          // Background Linear Gradient
+          colors={["rgba(255,255,255,0.7)", "transparent"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={styles.gradientLine}
+          //   style={styles.background}
+        />
+      )}
     </Card>
   );
 };
