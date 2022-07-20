@@ -13,7 +13,7 @@ export const UIstyles = {
 
   secondaryText_b: {
     fontFamily: c_style.bold,
-    fontSize: c_style.h4,
+    //  fontSize: c_style.h4,
     color: c_style.darkT.color_p,
   },
 
@@ -21,7 +21,7 @@ export const UIstyles = {
     color: c_style.darkT.color_p,
 
     lineHeight: 18,
-    marginLeft: 15,
+    //  marginLeft: 15,
   },
 
   shadow: {

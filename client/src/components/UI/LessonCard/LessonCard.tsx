@@ -81,7 +81,7 @@ export const LessonCard: FC<LessonCardI> = ({
           <Text style={UIstyles.mainText}>{data[curData]?.subject.title}</Text>
         </View>
         <View style={styles.secondaryContainer}>
-          <View style={styles.timeContainer}>
+          <View style={{ marginRight: 15, ...styles.timeContainer }}>
             <Text style={UIstyles.secondaryText_b}>{time.from}</Text>
             <View style={styles.stripe} />
             <Text style={UIstyles.secondaryText_b}>{time.to}</Text>

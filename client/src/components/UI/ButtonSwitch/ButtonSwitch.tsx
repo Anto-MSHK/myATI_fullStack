@@ -40,7 +40,7 @@ export const ButtonSwitch: FC<ButtonGroupI> = ({
               type={button.typeIcon} //"antdesign"
               size={15}
               color="white"
-              style={{ marginRight: 8 }}
+              //   style={{ marginRight: 8 }}
             />
           </View>
         ))}

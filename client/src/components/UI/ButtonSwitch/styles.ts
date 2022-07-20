@@ -11,18 +11,20 @@ export const styles = StyleSheet.create({
     top: -15,
     justifyContent: "center",
     height: 35,
-    borderBottomWidth: 1,
+    borderBottomWidth: 2,
     width: "100%",
-    borderBottomColor: "rgba(0, 0, 0, 0.6)",
+    borderBottomColor: "rgba(0, 0, 0, 0.2)",
   },
   containerContent: {
     flexDirection: "row",
     width: "100%",
     justifyContent: "center",
     alignItems: "flex-end",
+    margin: 10,
   },
   text: {
-    left: -5,
+    left: 3,
+    marginRight: 5,
     ...UIstyles.secondaryText,
   },
 });
