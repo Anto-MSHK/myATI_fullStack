@@ -8,7 +8,7 @@ interface ILayoult {
 export const Layoult: FC<ILayoult> = ({ children, isScrollView = true }) => {
   return (
     <ImageBackground
-      source={require("../../../assets/back_dark.jpg")}
+      source={require("../../../../assets/back_dark.jpg")}
       style={{ flex: 1 }}
     >
       {isScrollView ? <ScrollView>{children}</ScrollView> : children}

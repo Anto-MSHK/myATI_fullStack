@@ -1,11 +1,11 @@
 import { StyleSheet, Text, View } from "react-native";
-import { Layoult } from "../../Layoult/Layoult";
+import { Layoult } from "../../UI/Layoult/Layoult";
 import React from "react";
 import { HeaderMain } from "../../UI/Header/Header";
-import { LessonCard } from "./../../UI/LessonCard/LessonCard";
-import { DayCard } from "./../../DayCard/DayCard";
+import { DayCard } from "./../../UI/DayCard/DayCard";
 import { useAppSelector } from "../../../hooks/redux";
-import { Calendar } from "../../Calendar/Calendar";
+import { Calendar } from "../../UI/Calendar/Calendar";
+import { styles } from "./styles";
 
 // const lessons: lessonT[] = [
 //   {
@@ -39,7 +39,9 @@ export const Home = () => {
     <Layoult>
       <HeaderMain />
       <Calendar />
-      <DayCard lessons={lessons} />
+      <View style={styles.contentContainer}>
+        <DayCard lessons={lessons} />
+      </View>
     </Layoult>
   );
 };

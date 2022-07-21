@@ -35,21 +35,21 @@ export const LessonCard: FC<LessonCardI> = ({
   var curRoundedStyle = {};
   switch (roundingСorns) {
     case "all":
-      curRoundedStyle = styles.cardContainer_all;
+      curRoundedStyle = styles().cardContainer_all;
       break;
     case "top":
-      curRoundedStyle = styles.cardContainer_top;
+      curRoundedStyle = styles().cardContainer_top;
       break;
     case "bottom":
-      curRoundedStyle = styles.cardContainer_bottom;
+      curRoundedStyle = styles().cardContainer_bottom;
       break;
     case "none":
-      curRoundedStyle = styles.cardContainer;
+      curRoundedStyle = styles().cardContainer_none;
       break;
   }
 
   return (
-    <Card containerStyle={curRoundedStyle} wrapperStyle={styles.cardWrapper}>
+    <Card containerStyle={curRoundedStyle} wrapperStyle={styles().cardWrapper}>
       {data.lowerWeek && (
         <ButtonSwitch
           style={styleForLine}
@@ -71,38 +71,36 @@ export const LessonCard: FC<LessonCardI> = ({
         />
       )}
       <View>
-        <View style={styles.mainContainer}>
+        <View style={styles().mainContainer}>
           <Badge
             value={count}
-            containerStyle={styles.budgeContainer}
-            badgeStyle={styles.budge}
-            textStyle={styles.budgeText}
+            containerStyle={styles().budgeContainer}
+            badgeStyle={styles().budge}
+            textStyle={styles().budgeText}
           />
-          <Text style={UIstyles.mainText}>{data[curData]?.subject.title}</Text>
+          <Text style={{ width: 240, lineHeight: 18, ...UIstyles().h2 }}>
+            {data[curData]?.subject.title}
+          </Text>
         </View>
-        <View style={styles.secondaryContainer}>
-          <View style={{ marginRight: 15, ...styles.timeContainer }}>
-            <Text style={UIstyles.secondaryText_b}>{time.from}</Text>
-            <View style={styles.stripe} />
-            <Text style={UIstyles.secondaryText_b}>{time.to}</Text>
+        <View style={styles().secondaryContainer}>
+          <View style={{ marginRight: 15, ...styles().timeContainer }}>
+            <Text style={UIstyles().h3}>{time.from}</Text>
+            <View style={styles().stripe} />
+            <Text style={UIstyles().h3}>{time.to}</Text>
           </View>
-          <View style={styles.secondaryInfo}>
+          <View style={styles().secondaryInfo}>
             <View>
               {!isNotTeacher && (
-                <Text style={UIstyles.secondaryText}>
+                <Text style={UIstyles().h3_b}>
                   {data[curData]?.teacher.degree
                     ? data[curData]?.teacher.degree + " "
                     : ""}
                   {data[curData]?.teacher.name}
                 </Text>
               )}
-              <Text style={UIstyles.secondaryText}>
-                каб: {data[curData]?.cabinet}
-              </Text>
+              <Text style={UIstyles().h3_b}>каб: {data[curData]?.cabinet}</Text>
             </View>
-            <Text style={UIstyles.secondaryText_b}>
-              {data[curData]?.subject.type}
-            </Text>
+            <Text style={UIstyles().h3}>{data[curData]?.subject.type}</Text>
           </View>
         </View>
       </View>
@@ -112,7 +110,7 @@ export const LessonCard: FC<LessonCardI> = ({
           colors={["rgba(255,255,255,0.7)", "transparent"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
-          style={styles.gradientLine}
+          style={styles().gradientLine}
           //   style={styles.background}
         />
       )}

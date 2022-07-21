@@ -1,8 +1,10 @@
-import { View, Text } from "react-native";
+import { View } from "react-native";
 import React, { FC } from "react";
-import { LessonCard, LessonCardI } from "../UI/LessonCard/LessonCard";
-import { LessonT } from "../../state/schedule/types";
-import { c_style } from "./../../stylesConst";
+import { LessonCard, LessonCardI } from "../../UI/LessonCard/LessonCard";
+import { LessonT } from "../../../state/schedule/types";
+import { c_style } from "./../../../stylesConst";
+import { Text } from "@rneui/base";
+import { UIstyles } from "./../UIstyles";
 
 interface DayCardI {
   lessons: LessonT[];
@@ -11,6 +13,16 @@ interface DayCardI {
 export const DayCard: FC<DayCardI> = ({ lessons }) => {
   return (
     <View>
+      <Text
+        style={{
+          bottom: -5,
+          marginLeft: 10,
+          marginTop: 10,
+          ...UIstyles().h1_p,
+        }}
+      >
+        Сегодня,<Text style={UIstyles().h1}> понедельник</Text>
+      </Text>
       <View style={{ marginTop: 10, marginHorizontal: -5 }}>
         {lessons.map((lesson, i) => (
           <LessonCard

@@ -1,134 +1,133 @@
+import { useTheme } from "@rneui/themed";
 import { StyleSheet } from "react-native";
 import { c_style } from "./../../../stylesConst";
 import { UIstyles } from "./../UIstyles";
 
-export const styles = StyleSheet.create({
-  stripe: {
-    backgroundColor: c_style.darkT.color_p,
+export const styles = () => {
+  const { theme } = useTheme();
 
-    width: "50%",
-    height: 2,
-  },
-  //* ~~> card
-  cardContainer: {
-    position: "relative",
-    backgroundColor: c_style.darkT.primary,
-    //  borderWidth: 0,
+  const cardContainer = {
+    ...UIstyles().shadow,
+    backgroundColor: theme.colors.background,
     marginVertical: 0,
-    ...UIstyles.shadow,
+    margin: 0,
+  };
 
-    borderTopWidth: 0,
-    borderBottomWidth: 0,
+  return StyleSheet.create({
+    stripe: {
+      backgroundColor: theme.colors.black,
 
-    borderTopRightRadius: 0.1,
-    borderTopLeftRadius: 0.1,
-  },
+      width: "50%",
+      height: 1,
+    },
+    //* ~~> card
 
-  cardContainer_all: {
-    overflow: "hidden",
-    marginVertical: 0,
-    //  borderWidth: 0,
-    ...UIstyles.shadow,
+    cardContainer_none: {
+      ...cardContainer,
 
-    backgroundColor: c_style.darkT.primary,
+      borderTopWidth: 0,
+      borderBottomWidth: 0,
+      borderTopRightRadius: 0.1,
+      borderTopLeftRadius: 0.1,
+    },
 
-    borderRadius: 15,
-    borderBottomWidth: 5,
-  },
+    cardContainer_all: {
+      ...cardContainer,
 
-  cardContainer_top: {
-    overflow: "hidden",
-    marginVertical: 0,
-    //  borderWidth: 0,
-    borderBottomWidth: 0,
+      overflow: "hidden",
+      borderRadius: 15,
+      borderBottomWidth: 5,
+    },
 
-    ...UIstyles.shadow,
+    cardContainer_top: {
+      ...cardContainer,
 
-    backgroundColor: c_style.darkT.primary,
+      overflow: "hidden",
+      borderBottomWidth: 0,
 
-    borderTopRightRadius: 15,
-    borderTopLeftRadius: 15,
-  },
+      borderTopRightRadius: 15,
+      borderTopLeftRadius: 15,
+    },
 
-  cardContainer_bottom: {
-    backgroundColor: c_style.darkT.primary,
-    marginVertical: 0,
-    borderTopWidth: 0,
-    ...UIstyles.shadow,
-    borderBottomWidth: 5,
+    cardContainer_bottom: {
+      ...cardContainer,
 
-    borderBottomRightRadius: 15,
-    borderBottomLeftRadius: 15,
-  },
+      borderTopWidth: 0,
+      borderBottomWidth: 5,
 
-  cardWrapper: {},
+      borderBottomRightRadius: 15,
+      borderBottomLeftRadius: 15,
+    },
 
-  //* ~~> main
-  mainContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    cardWrapper: {},
 
-    marginBottom: 10,
-  },
+    //* ~~> main
+    mainContainer: {
+      flexDirection: "row",
+      alignItems: "center",
 
-  //? -> budge
-  budgeContainer: {
-    alignSelf: "flex-start",
-    left: -15,
-    marginRight: 15,
-  },
+      marginBottom: 10,
+    },
 
-  budge: {
-    marginRight: -15,
-    borderWidth: 0,
-    borderBottomLeftRadius: 0,
-    borderTopLeftRadius: 0,
+    //? -> budge
+    budgeContainer: {
+      alignSelf: "flex-start",
+      left: -15,
+      marginRight: 15,
+    },
 
-    width: 65,
-    height: 25,
+    budge: {
+      marginRight: -15,
+      borderWidth: 0,
+      borderBottomLeftRadius: 0,
+      borderTopLeftRadius: 0,
 
-    backgroundColor: c_style.darkT.dominant,
+      width: 65,
+      height: 25,
 
-    alignItems: "flex-end",
-    justifyContent: "center",
-  },
+      backgroundColor: theme.colors.primary,
 
-  budgeText: {
-    fontFamily: c_style.bold,
-    fontSize: c_style.h3,
-    color: c_style.darkT.color_p,
+      alignItems: "flex-end",
+      justifyContent: "center",
+    },
 
-    marginRight: 5,
-  },
+    budgeText: {
+      fontFamily: c_style.bold,
+      fontSize: c_style.h3,
+      color: theme.colors.black,
 
-  //* ~~> secondary
-  secondaryContainer: {
-    flexDirection: "row",
-    justifyContent: "flex-start",
-    alignItems: "center",
-    backgroundColor: c_style.darkT.secondary,
-    paddingTop: 5,
-    paddingBottom: 5,
-    marginHorizontal: -15,
-  },
+      marginRight: 5,
+    },
 
-  secondaryInfo: {
-    flex: 1,
-    marginRight: 15,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
+    //* ~~> secondary
+    secondaryContainer: {
+      flexDirection: "row",
+      justifyContent: "flex-start",
+      alignItems: "center",
+      backgroundColor: theme.colors.grey0,
+      paddingTop: 5,
+      paddingBottom: 5,
+      marginHorizontal: -15,
+    },
 
-  //? --> time
-  timeContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-    flexDirection: "column",
+    secondaryInfo: {
+      flex: 1,
+      marginRight: 15,
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+    },
 
-    width: 65,
-  },
+    //? --> time
+    timeContainer: {
+      justifyContent: "center",
+      alignItems: "center",
+      flexDirection: "column",
 
-  //? --> bottom line
-  gradientLine: { height: 2, bottom: -15, left: -15, marginRight: -30 },
-});
+      width: 65,
+    },
+
+    //? --> bottom line
+    gradientLine: { height: 2, bottom: -15, left: -15, marginRight: -30 },
+  });
+};

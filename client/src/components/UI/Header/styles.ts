@@ -1,30 +1,30 @@
 import { StyleSheet } from "react-native";
 import { c_style } from "./../../../stylesConst";
 import { UIstyles } from "./../UIstyles";
+import { useTheme } from "@rneui/themed";
 
-export const styles = StyleSheet.create({
-  header: {
-    height: 90,
-  },
-  textContainer: {
-    justifyContent: "center",
-  },
-  text: {
-    fontFamily: c_style.bold,
-    fontSize: c_style.h2,
+export const styles = () => {
+  const { theme } = useTheme();
 
-    color: c_style.darkT.color_p,
-  },
-  buttonContainer: {
-    justifyContent: "center",
-    overflow: "hidden",
+  return StyleSheet.create({
+    header: {
+      height: 90,
+    },
+    textContainer: {
+      justifyContent: "center",
+      overflow: "visible",
+    },
+    buttonContainer: {
+      justifyContent: "center",
+      overflow: "hidden",
 
-    borderRadius: 50,
-  },
-  button: {
-    justifyContent: "center",
+      borderRadius: 50,
+    },
+    button: {
+      justifyContent: "center",
 
-    width: 40,
-    height: 40,
-  },
-});
+      width: 40,
+      height: 40,
+    },
+  });
+};

@@ -28,13 +28,13 @@ export const ButtonSwitch: FC<ButtonGroupI> = ({
   };
 
   return (
-    <View style={{ ...styles.wrapper, ...(style as StyleSheet) }}>
+    <View style={{ ...styles().wrapper, ...(style as StyleSheet) }}>
       <ListItemButtonGroup
         onPress={updateIndex}
         selectedIndex={selectedIndex}
         buttons={buttons.items.map((button) => (
-          <View style={styles.containerContent}>
-            <Text style={styles.text}>{button.text}</Text>
+          <View style={styles().containerContent}>
+            <Text style={styles().text}>{button.text}</Text>
             <Icon
               name={button.icon} //"caretup"
               type={button.typeIcon} //"antdesign"
@@ -44,8 +44,8 @@ export const ButtonSwitch: FC<ButtonGroupI> = ({
             />
           </View>
         ))}
-        containerStyle={styles.container}
-        selectedButtonStyle={{ backgroundColor: c_style.darkT.highlight }}
+        containerStyle={styles().container}
+        selectedButtonStyle={styles().selectedButton}
         innerBorderStyle={{ width: 0 }}
       />
     </View>
