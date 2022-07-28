@@ -7,6 +7,7 @@ import { ButtonSwitch } from "./../ButtonSwitch/ButtonSwitch";
 import { UIstyles } from "./../UIstyles";
 import { dataLessonT, dataT, LessonT } from "../../../state/schedule/types";
 import { LinearGradient } from "expo-linear-gradient";
+import { useStyles } from "./../../../hooks/useStyles";
 
 export interface LessonCardI {
   roundingСorns?: "none" | "top" | "bottom" | "all";
@@ -32,27 +33,30 @@ export const LessonCard: FC<LessonCardI> = ({
     else if (selectedIndex === 1) setCurData("lowerWeek");
   };
 
+  const styleUI = useStyles(UIstyles);
+  const style = useStyles(styles);
+
   var curRoundedStyle = {};
   switch (roundingСorns) {
     case "all":
-      curRoundedStyle = styles().cardContainer_all;
+      curRoundedStyle = style.cardContainer_all;
       break;
     case "top":
-      curRoundedStyle = styles().cardContainer_top;
+      curRoundedStyle = style.cardContainer_top;
       break;
     case "bottom":
-      curRoundedStyle = styles().cardContainer_bottom;
+      curRoundedStyle = style.cardContainer_bottom;
       break;
     case "none":
-      curRoundedStyle = styles().cardContainer_none;
+      curRoundedStyle = style.cardContainer_none;
       break;
   }
 
   return (
-    <Card containerStyle={curRoundedStyle} wrapperStyle={styles().cardWrapper}>
+    <Card containerStyle={curRoundedStyle} wrapperStyle={style.cardWrapper}>
       {data.lowerWeek && (
         <ButtonSwitch
-          style={styleForLine}
+          customStyle={styleForLine}
           buttons={{
             items: [
               {
@@ -71,36 +75,36 @@ export const LessonCard: FC<LessonCardI> = ({
         />
       )}
       <View>
-        <View style={styles().mainContainer}>
+        <View style={style.mainContainer}>
           <Badge
             value={count}
-            containerStyle={styles().budgeContainer}
-            badgeStyle={styles().budge}
-            textStyle={styles().budgeText}
+            containerStyle={style.budgeContainer}
+            badgeStyle={style.budge}
+            textStyle={style.budgeText}
           />
-          <Text style={{ width: 240, lineHeight: 18, ...UIstyles().h2 }}>
+          <Text style={{ width: 240, lineHeight: 18, ...styleUI.h2 }}>
             {data[curData]?.subject.title}
           </Text>
         </View>
-        <View style={styles().secondaryContainer}>
-          <View style={{ marginRight: 15, ...styles().timeContainer }}>
-            <Text style={UIstyles().h3}>{time.from}</Text>
-            <View style={styles().stripe} />
-            <Text style={UIstyles().h3}>{time.to}</Text>
+        <View style={style.secondaryContainer}>
+          <View style={{ marginRight: 15, ...style.timeContainer }}>
+            <Text style={styleUI.h3}>{time.from}</Text>
+            <View style={style.stripe} />
+            <Text style={styleUI.h3}>{time.to}</Text>
           </View>
-          <View style={styles().secondaryInfo}>
+          <View style={style.secondaryInfo}>
             <View>
               {!isNotTeacher && (
-                <Text style={UIstyles().h3_b}>
+                <Text style={styleUI.h3_b}>
                   {data[curData]?.teacher.degree
                     ? data[curData]?.teacher.degree + " "
                     : ""}
                   {data[curData]?.teacher.name}
                 </Text>
               )}
-              <Text style={UIstyles().h3_b}>каб: {data[curData]?.cabinet}</Text>
+              <Text style={styleUI.h3_b}>каб: {data[curData]?.cabinet}</Text>
             </View>
-            <Text style={UIstyles().h3}>{data[curData]?.subject.type}</Text>
+            <Text style={styleUI.h3}>{data[curData]?.subject.type}</Text>
           </View>
         </View>
       </View>
@@ -110,7 +114,7 @@ export const LessonCard: FC<LessonCardI> = ({
           colors={["rgba(255,255,255,0.7)", "transparent"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
-          style={styles().gradientLine}
+          style={style.gradientLine}
           //   style={styles.background}
         />
       )}

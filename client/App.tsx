@@ -24,6 +24,7 @@ export default function App() {
   const theme = createTheme({
     lightColors: {
       // primary: "#fff",
+      grey5: "../../../../assets/lightBG.jpg",
     },
     darkColors: {
       background: "rgba(35, 48, 64, 0.8)",
@@ -31,6 +32,7 @@ export default function App() {
       primary: "rgba(224, 142, 45, 0.9)",
       secondary: "rgba(119, 119, 119, 0.2)",
       searchBg: "rgba(255, 255, 255)",
+      grey5: "../../../../assets/darkBG.jpg",
     },
   });
 

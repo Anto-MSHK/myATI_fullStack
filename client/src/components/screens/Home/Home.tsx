@@ -6,6 +6,7 @@ import { DayCard } from "./../../UI/DayCard/DayCard";
 import { useAppSelector } from "../../../hooks/redux";
 import { Calendar } from "../../UI/Calendar/Calendar";
 import { styles } from "./styles";
+import { ScheduleContainer } from "./../../UI/ScheduleContainer/ScheduleContainer";
 
 // const lessons: lessonT[] = [
 //   {
@@ -34,13 +35,13 @@ import { styles } from "./styles";
 //   },
 // ];
 export const Home = () => {
-  const lessons = useAppSelector((state) => state.schedule[0].days[0].lessons);
   return (
     <Layoult>
       <HeaderMain />
       <Calendar />
       <View style={styles.contentContainer}>
-        <DayCard lessons={lessons} />
+        {/* <DayCard lessons={lessons} /> */}
+        <ScheduleContainer />
       </View>
     </Layoult>
   );

@@ -1,10 +1,12 @@
 import { View, Text } from "react-native";
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { Header, useThemeMode, useTheme } from "@rneui/themed";
 import { styles } from "./styles";
-import { Button } from "@rneui/base";
-import { c_style } from "./../../../stylesConst";
 import { UIstyles } from "./../UIstyles";
+import { useStyles } from "./../../../hooks/useStyles";
+import { useDispatch } from "react-redux";
+import { setAppSettingsA } from "../../../state/appSettings/actions";
+import { useAppSelector } from "../../../hooks/redux";
 
 interface HeaderMainI {
   title?: string;
@@ -15,29 +17,41 @@ export const HeaderMain: FC<HeaderMainI> = ({
   title = "My ATI",
   isNotActiveButton = false,
 }) => {
-  const { theme } = useTheme();
+  const dispatch = useDispatch();
+  var themeMode = useAppSelector((state) => state.appSettings.theme);
 
   const { mode, setMode } = useThemeMode();
+  const { theme } = useTheme();
+
   const [icon, setIcon] = useState<"menufold" | "menuunfold">("menuunfold");
+
+  useEffect(() => {
+    dispatch(setAppSettingsA());
+    setMode(themeMode);
+  }, []);
+
   const managePanelActivity = () => {
+    dispatch(setAppSettingsA());
+    setMode(themeMode);
     if (icon === "menuunfold") {
       setIcon("menufold");
-      setMode("dark");
     } else {
       setIcon("menuunfold");
-      setMode("light");
     }
   };
+
+  const style = useStyles(styles);
+  const styleUI = useStyles(UIstyles);
   return (
     <Header
       backgroundColor={theme.colors.background}
       backgroundImageStyle={{}}
       centerComponent={{
         text: title,
-        style: UIstyles().h0,
+        style: styleUI.h0,
       }}
-      centerContainerStyle={styles().textContainer}
-      containerStyle={styles().header}
+      centerContainerStyle={style.textContainer}
+      containerStyle={style.header}
       leftComponent={
         !isNotActiveButton
           ? {
@@ -46,11 +60,11 @@ export const HeaderMain: FC<HeaderMainI> = ({
               color: theme.colors.black,
               size: 25,
               onPress: managePanelActivity,
-              style: styles().button,
+              style: style.button,
             }
           : undefined
       }
-      leftContainerStyle={styles().buttonContainer}
+      leftContainerStyle={style.buttonContainer}
       placement="left"
     />
   );

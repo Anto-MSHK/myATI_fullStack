@@ -1,10 +1,9 @@
 import { ListItemButtonGroup } from "@rneui/base/dist/ListItem/ListItem.ButtonGroup";
 import React, { FC, useState } from "react";
-import { c_style } from "./../../../stylesConst";
 import { StyleProp, View, ViewStyle } from "react-native";
 import { Icon, Text } from "@rneui/base";
-import { UIstyles } from "../UIstyles";
 import { styles } from "./styles";
+import { useStyles } from "./../../../hooks/useStyles";
 
 type buttonT = {
   items: { text: string; icon: string; typeIcon: string }[];
@@ -12,29 +11,26 @@ type buttonT = {
 };
 interface ButtonGroupI {
   buttons: buttonT;
-  style: StyleProp<ViewStyle>;
+  customStyle: StyleProp<ViewStyle>;
 }
 
-export const ButtonSwitch: FC<ButtonGroupI> = ({
-  buttons,
-  style,
-  children,
-}) => {
+export const ButtonSwitch: FC<ButtonGroupI> = ({ buttons, customStyle }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const updateIndex = (selectedIndex: number) => {
     setSelectedIndex(selectedIndex);
     buttons.customOnPress(selectedIndex);
   };
+  const style = useStyles(styles);
 
   return (
-    <View style={{ ...styles().wrapper, ...(style as StyleSheet) }}>
+    <View style={{ ...style.wrapper, ...(customStyle as StyleSheet) }}>
       <ListItemButtonGroup
         onPress={updateIndex}
         selectedIndex={selectedIndex}
         buttons={buttons.items.map((button) => (
-          <View style={styles().containerContent}>
-            <Text style={styles().text}>{button.text}</Text>
+          <View style={style.containerContent}>
+            <Text style={style.text}>{button.text}</Text>
             <Icon
               name={button.icon} //"caretup"
               type={button.typeIcon} //"antdesign"
@@ -44,8 +40,8 @@ export const ButtonSwitch: FC<ButtonGroupI> = ({
             />
           </View>
         ))}
-        containerStyle={styles().container}
-        selectedButtonStyle={styles().selectedButton}
+        containerStyle={style.container}
+        selectedButtonStyle={style.selectedButton}
         innerBorderStyle={{ width: 0 }}
       />
     </View>

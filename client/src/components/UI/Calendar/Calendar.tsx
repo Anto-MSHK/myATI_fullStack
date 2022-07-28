@@ -4,6 +4,7 @@ import { Button, ButtonGroup, Card, Text } from "@rneui/base";
 import { c_style } from "./../../../stylesConst";
 import { UIstyles } from "./../../UI/UIstyles";
 import { styles } from "./styles";
+import { useStyles } from "./../../../hooks/useStyles";
 
 const BtnCalendar =
   (value: number, weekDay: string): FC =>
@@ -40,23 +41,27 @@ export const Calendar = () => {
       element: BtnCalendar(16, "вс"),
     },
   ];
+  const style = useStyles(styles);
+  const styleUI = useStyles(UIstyles);
+  useState
+
   const [selectedIndex, setSelectedIndex] = useState(0);
   return (
-    <Card containerStyle={styles().calendarContainer}>
+    <Card containerStyle={style.calendarContainer}>
       <ButtonGroup
         buttons={buttons}
         selectedIndex={selectedIndex}
         onPress={(value) => {
           setSelectedIndex(value);
         }}
-        containerStyle={styles().buttonsContainer}
-        selectedButtonStyle={styles().selectedButton}
-        buttonContainerStyle={styles().buttonContainer}
+        containerStyle={style.buttonsContainer}
+        selectedButtonStyle={style.selectedButton}
+        buttonContainerStyle={style.buttonContainer}
       />
-      <View style={styles().infoContainer}>
+      <View style={style.infoContainer}>
         <Text style={{ textAlign: "center", ...UIstyles().h3_p }}>
           Июль,
-          <Text style={UIstyles().h3}>{" нижняя неделя"}</Text>
+          <Text style={styleUI.h3}>{" нижняя неделя"}</Text>
         </Text>
       </View>
     </Card>
