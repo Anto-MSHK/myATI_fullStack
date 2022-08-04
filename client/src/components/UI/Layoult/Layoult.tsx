@@ -8,7 +8,7 @@ interface ILayoult {
   isScrollView?: boolean;
 }
 
-export const Layoult: FC<ILayoult> = ({ children, isScrollView = true }) => {
+export const Layoult: FC<ILayoult> = ({ children, isScrollView = false }) => {
   const theme = useAppSelector((state) => state.appSettings.theme);
 
   const lightBG = require(`../../../../assets/lightBG.jpg`);
@@ -19,9 +19,7 @@ export const Layoult: FC<ILayoult> = ({ children, isScrollView = true }) => {
       source={theme === "dark" ? lightBG : darkBG}
       style={{ flex: 1 }}
     >
-      <View>
-        {isScrollView ? <ScrollView>{children}</ScrollView> : children}
-      </View>
+      {isScrollView ? <ScrollView>{children}</ScrollView> : children}
     </ImageBackground>
   );
 };

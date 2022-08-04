@@ -39,28 +39,25 @@ export const DayCard: FC<DayCardI> = ({ lessons, dayOfWeek }) => {
         <Text style={styleUI.h1}> {days[`${dayOfWeek}`]}</Text>
       </Text>
       <View style={{ marginTop: 10, marginHorizontal: -5 }}>
-        <FlatList
-          data={lessons}
-          renderItem={({ item, index }) => (
-            <LessonCard
-              count={item.count}
-              time={item.time}
-              data={item.data}
-              roundingСorns={
-                lessons.length === 1
-                  ? "all"
-                  : index === 0
-                  ? "top"
-                  : index === lessons.length - 1
-                  ? "bottom"
-                  : "none"
-              }
-              //  withSwitch={
-              //  lesson.data.lowerWeek ? true
-              // 	}
-            />
-          )}
-        />
+        {lessons.map((lesson, i) => (
+          <LessonCard
+            count={lesson.count}
+            time={lesson.time}
+            data={lesson.data}
+            roundingСorns={
+              lessons.length === 1
+                ? "all"
+                : i === 0
+                ? "top"
+                : i === lessons.length - 1
+                ? "bottom"
+                : "none"
+            }
+            //  withSwitch={
+            //  lesson.data.lowerWeek ? true
+            // 	}
+          />
+        ))}
       </View>
     </View>
   );

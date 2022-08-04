@@ -7,6 +7,7 @@ import { useAppSelector } from "../../../hooks/redux";
 import { Calendar } from "../../UI/Calendar/Calendar";
 import { styles } from "./styles";
 import { ScheduleContainer } from "./../../UI/ScheduleContainer/ScheduleContainer";
+import { TestScroll } from "./../../UI/ScheduleContainer/TestScroll";
 
 // const lessons: lessonT[] = [
 //   {
@@ -37,11 +38,14 @@ import { ScheduleContainer } from "./../../UI/ScheduleContainer/ScheduleContaine
 export const Home = () => {
   return (
     <Layoult>
-      <HeaderMain />
-      <Calendar />
+      <View>
+        <HeaderMain />
+        <Calendar />
+      </View>
       <View style={styles.contentContainer}>
         {/* <DayCard lessons={lessons} /> */}
-        <ScheduleContainer />
+        {/* <ScheduleContainer /> */}
+        <TestScroll />
       </View>
     </Layoult>
   );

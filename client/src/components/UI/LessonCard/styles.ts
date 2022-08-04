@@ -24,7 +24,6 @@ export const styles = () => {
 
     cardContainer_none: {
       ...cardContainer,
-
       borderTopWidth: 0,
       borderBottomWidth: 0,
       borderTopRightRadius: 0.1,
