@@ -6,17 +6,15 @@ import Animated, { useAnimatedStyle } from "react-native-reanimated";
 
 interface DayPage {
   day: DayT;
-  index: number;
+  index?: number;
   translateY: Animated.SharedValue<number>;
 }
 export const DayPage: FC<DayPage> = ({ day, index, translateY }) => {
-  const rStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ translateY: translateY.value }],
-    };
-  });
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: translateY.value }],
+  }));
   return (
-    <Animated.View style={[rStyle]}>
+    <Animated.View style={[animatedStyle]}>
       <DayCard dayOfWeek={day.dayOfWeek} lessons={day.lessons} />
     </Animated.View>
   );
