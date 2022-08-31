@@ -8,33 +8,27 @@ import { Calendar } from "../../UI/Calendar/Calendar";
 import { styles } from "./styles";
 import { ScheduleContainer } from "./../../UI/ScheduleContainer/ScheduleContainer";
 import { TestScroll } from "./../../UI/ScheduleContainer/TestScroll";
+import { LessonT } from "../../../state/schedule/types";
+import { LessonCard } from "../../UI/LessonCard/LessonCard";
 
-// const lessons: lessonT[] = [
-//   {
-//     title: "SDS",
-//     teacher: { name: "dsds", degree: "fdsfsdg" },
-//     type: "dssd",
-//     cabinet: "53",
-//   },
-//   {
-//     title: "SDS",
-//     teacher: { name: "dsds", degree: "fdsfsdg" },
-//     type: "dssd",
-//     cabinet: "53",
-//   },
-//   {
-//     title: "SDS",
-//     teacher: { name: "dsds", degree: "fdsfsdg" },
-//     type: "dssd",
-//     cabinet: "53",
-//   },
-//   {
-//     title: "SDS",
-//     teacher: { name: "dsds", degree: "fdsfsdg" },
-//     type: "dssd",
-//     cabinet: "53",
-//   },
-// ];
+const lessons: LessonT[] = [
+  {
+    count: 1,
+    time: { from: "10", to: "11" },
+    data: {
+      topWeek: {
+        subject: { title: "SDS", type: "dssd" },
+        teacher: { name: "dsds", degree: "fdsfsdg" },
+        cabinet: "53",
+      },
+      lowerWeek: {
+        subject: { title: "SsdadasdDS", type: "dssd" },
+        teacher: { name: "dsds", degree: "fdsfsdg" },
+        cabinet: "53",
+      },
+    },
+  },
+];
 export const Home = () => {
   return (
     <Layoult>
@@ -43,7 +37,6 @@ export const Home = () => {
         <Calendar />
       </View>
       <View style={styles.contentContainer}>
-        {/* <DayCard lessons={lessons} /> */}
         {/* <ScheduleContainer /> */}
         <TestScroll />
       </View>

@@ -1,7 +1,7 @@
 import { ListItemButtonGroup } from "@rneui/base/dist/ListItem/ListItem.ButtonGroup";
 import React, { FC, useState } from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
-import { Icon, Text } from "@rneui/base";
+import { ButtonGroup, Icon, Text } from "@rneui/base";
 import { styles } from "./styles";
 import { useStyles } from "./../../../hooks/useStyles";
 
@@ -25,7 +25,7 @@ export const ButtonSwitch: FC<ButtonGroupI> = ({ buttons, customStyle }) => {
 
   return (
     <View style={{ ...style.wrapper, ...(customStyle as StyleSheet) }}>
-      <ListItemButtonGroup
+      <ButtonGroup
         onPress={updateIndex}
         selectedIndex={selectedIndex}
         buttons={buttons.items.map((button) => (

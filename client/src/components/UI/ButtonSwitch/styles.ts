@@ -7,16 +7,16 @@ export const styles = () => {
   const { theme } = useTheme();
 
   return StyleSheet.create({
-    wrapper: { marginHorizontal: -15 },
+    wrapper: { marginHorizontal: -25, marginTop: -10 },
     container: {
       backgroundColor: theme.colors.grey0,
       borderWidth: 0,
       borderRadius: 0,
-      top: -15,
-      justifyContent: "center",
-      height: 35,
+      top: -10,
+      // justifyContent: "center",
+      // height: 35,
       borderBottomWidth: 2,
-      width: "100%",
+      height: 35,
       borderBottomColor: "rgba(0, 0, 0, 0.2)",
     },
     containerContent: {
@@ -24,7 +24,7 @@ export const styles = () => {
       width: "100%",
       justifyContent: "center",
       alignItems: "flex-end",
-      margin: 10,
+      // margin: 10,
     },
     text: {
       left: 3,
