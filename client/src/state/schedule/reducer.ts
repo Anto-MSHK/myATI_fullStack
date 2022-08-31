@@ -29,33 +29,43 @@ export const initialState: ScheduleGroupsStateT = [
             },
           },
           {
-            count: 2,
-            time: { from: "10:15", to: "11:50" },
+            count: 1,
+            time: { from: "8:30", to: "10:10" },
             data: {
               topWeek: {
                 subject: { title: "Мат. анализ", type: "лб." },
                 teacher: { name: "Чумак", degree: "к.м.н" },
                 cabinet: "202",
               },
-            },
-          },
-          {
-            count: 3,
-            time: { from: "12:30", to: "14:05" },
-            data: {
-              topWeek: {
-                subject: { title: "Геометрия", type: "лб." },
+              lowerWeek: {
+                subject: {
+                  title: "Разработка профессиональных приложений",
+                  type: "пр.",
+                },
                 teacher: { name: "Чумак", degree: "к.м.н" },
-                cabinet: "202",
+                cabinet: "236",
               },
             },
           },
-        ],
-      },
-      {
-        dayOfWeek: 2,
-        isWeekend: false,
-        lessons: [
+          {
+            count: 1,
+            time: { from: "8:30", to: "10:10" },
+            data: {
+              topWeek: {
+                subject: { title: "Мат. анализ", type: "лб." },
+                teacher: { name: "Чумак", degree: "к.м.н" },
+                cabinet: "202",
+              },
+              lowerWeek: {
+                subject: {
+                  title: "Разработка профессиональных приложений",
+                  type: "пр.",
+                },
+                teacher: { name: "Чумак", degree: "к.м.н" },
+                cabinet: "236",
+              },
+            },
+          },
           {
             count: 1,
             time: { from: "8:30", to: "10:10" },
@@ -86,17 +96,12 @@ export const initialState: ScheduleGroupsStateT = [
               },
             },
           },
-          {
-            count: 3,
-            time: { from: "12:30", to: "14:05" },
-            data: {
-              topWeek: {
-                subject: { title: "Геометрия", type: "лб." },
-                teacher: { name: "Чумак", degree: "к.м.н" },
-                cabinet: "202",
-              },
-            },
-          },
+        ],
+      },
+      {
+        dayOfWeek: 2,
+        isWeekend: false,
+        lessons: [
           {
             count: 1,
             time: { from: "8:30", to: "10:10" },

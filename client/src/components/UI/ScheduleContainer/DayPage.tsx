@@ -8,8 +8,9 @@ interface DayPage {
   day: DayT;
   index?: number;
   translateY: Animated.SharedValue<number>;
+  size: number;
 }
-export const DayPage: FC<DayPage> = ({ day, index, translateY }) => {
+export const DayPage: FC<DayPage> = ({ day, index, translateY, size }) => {
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: translateY.value }],
   }));
