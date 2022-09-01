@@ -14,6 +14,7 @@ import {
   GestureHandlerRootView,
 } from "react-native-gesture-handler";
 import Animated, {
+  useAnimatedStyle,
   useSharedValue,
   withDecay,
   withSpring,
@@ -33,8 +34,10 @@ export const TestScroll = () => {
   Logs.enableExpoCliLogging();
 
   const position = useSharedValue(0);
+  const opacity = [1, 0, 0, 0, 0, 0].map((el) => useSharedValue(el));
   const contextY = useSharedValue(0);
   const contextAdvanced = useSharedValue(0);
+  const contextOpacity = useSharedValue(0);
 
   const count = useSharedValue(1);
 
@@ -106,9 +109,17 @@ export const TestScroll = () => {
       return newArr;
     });
   };
-
+  const configSpring = {
+    damping: 8,
+    mass: 0.45,
+    stiffness: 60,
+    restDisplacementThreshold: 0.1,
+  };
   const panGesture = Gesture.Pan()
     .onStart(() => {
+      contextOpacity.value =
+        heightCards[count.value - 1].size - marginCards[count.value - 1];
+      console.log(contextOpacity.value);
       if (heightCards[count.value - 1].size >= HEIGHT_CONTENT) {
         if (posCards[count.value - 1] === 0)
           contextAdvanced.value =
@@ -126,6 +137,18 @@ export const TestScroll = () => {
     .onUpdate((e) => {
       // if (position.value > -contextAdvanced.value)
       position.value = contextY.value + e.translationY;
+      var procent = (Math.abs(e.translationY) * 100) / contextOpacity.value;
+      console.log(position.value);
+
+      if (
+        contextAdvanced.value === 0 ||
+        position.value <= -contextAdvanced.value ||
+        position.value > -posCards[count.value - 1]
+      ) {
+        if (count.value !== 6) opacity[count.value].value = procent / 100;
+        opacity[count.value - 1].value = 1 - procent / 100;
+        if (count.value !== 1) opacity[count.value - 2].value = procent / 100;
+      }
       // }
       // console.log(position.value);
       // console.log(contextAdvanced.value);
@@ -156,6 +179,8 @@ export const TestScroll = () => {
         else {
           count.value = count.value + 1;
         }
+
+        //   opacity.value[count.value - 2] = 0;
       }
 
       if (pushDown || pullingDown) {
@@ -173,38 +198,42 @@ export const TestScroll = () => {
           restDisplacementThreshold: 0.1,
         });
       } else if (position.value <= -contextAdvanced.value) {
-        position.value = withSpring(-contextAdvanced.value, {
-          damping: 8,
-          mass: 0.45,
-          stiffness: 60,
-          restDisplacementThreshold: 0.1,
-        });
+        position.value = withSpring(-contextAdvanced.value, configSpring);
       } else if (position.value > -posCards[count.value - 1]) {
-        position.value = withSpring(-posCards[count.value - 1], {
-          damping: 8,
-          mass: 0.45,
-          stiffness: 60,
-          restDisplacementThreshold: 0.1,
-        });
+        position.value = withSpring(-posCards[count.value - 1], configSpring);
       } else
         position.value = withDecay({
           velocity: e.velocityY,
           deceleration: 0.998,
           clamp: [-contextAdvanced.value, -posCards[count.value - 1]],
         });
-    });
 
+      // if (position.value <= -posCards[count.value - 1]) {
+      if (count.value !== 6)
+        opacity[count.value].value = withSpring(0, configSpring);
+      opacity[count.value - 1].value = withSpring(1, configSpring);
+      if (count.value !== 1)
+        opacity[count.value - 2].value = withSpring(0, configSpring);
+    });
+  const animatedStyle = (index: number) => {
+    return useAnimatedStyle(() => {
+      return {
+        opacity: opacity[index].value,
+      };
+    });
+  };
   return (
     <GestureHandlerRootView>
       <GestureDetector gesture={panGesture}>
         <Animated.View>
           {days.map((day, index) => {
             return (
-              <View
+              <Animated.View
                 onLayout={(event) => measureHeight(event, day.dayOfWeek)}
-                style={{
-                  marginBottom: marginCards[index],
-                }}
+                style={[
+                  animatedStyle(index),
+                  { marginBottom: marginCards[index] },
+                ]}
                 key={index + "ds"}
               >
                 <DayPage
@@ -213,7 +242,7 @@ export const TestScroll = () => {
                   translateY={position}
                   size={heightCards[index] ? heightCards[index].size : 0}
                 />
-              </View>
+              </Animated.View>
             );
           })}
         </Animated.View>

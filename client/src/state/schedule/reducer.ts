@@ -48,44 +48,6 @@ export const initialState: ScheduleGroupsStateT = [
             },
           },
           {
-            count: 1,
-            time: { from: "8:30", to: "10:10" },
-            data: {
-              topWeek: {
-                subject: { title: "Мат. анализ", type: "лб." },
-                teacher: { name: "Чумак", degree: "к.м.н" },
-                cabinet: "202",
-              },
-              lowerWeek: {
-                subject: {
-                  title: "Разработка профессиональных приложений",
-                  type: "пр.",
-                },
-                teacher: { name: "Чумак", degree: "к.м.н" },
-                cabinet: "236",
-              },
-            },
-          },
-          {
-            count: 1,
-            time: { from: "8:30", to: "10:10" },
-            data: {
-              topWeek: {
-                subject: { title: "Мат. анализ", type: "лб." },
-                teacher: { name: "Чумак", degree: "к.м.н" },
-                cabinet: "202",
-              },
-              lowerWeek: {
-                subject: {
-                  title: "Разработка профессиональных приложений",
-                  type: "пр.",
-                },
-                teacher: { name: "Чумак", degree: "к.м.н" },
-                cabinet: "236",
-              },
-            },
-          },
-          {
             count: 2,
             time: { from: "10:15", to: "11:50" },
             data: {
