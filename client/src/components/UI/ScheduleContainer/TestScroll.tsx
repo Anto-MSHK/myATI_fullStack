@@ -14,7 +14,10 @@ import {
   GestureHandlerRootView,
 } from "react-native-gesture-handler";
 import Animated, {
+  runOnJS,
+  runOnUI,
   useAnimatedStyle,
+  useDerivedValue,
   useSharedValue,
   withDecay,
   withSpring,
@@ -22,6 +25,9 @@ import Animated, {
 } from "react-native-reanimated";
 import { Logs } from "expo";
 import { DayT } from "../../../state/schedule/types";
+import { useAppDispatch } from "./../../../hooks/redux";
+import { setCurDayA } from "../../../state/appSettings/actions";
+import { useDispatch } from "react-redux";
 
 type day = DayT & { height: number };
 
@@ -34,17 +40,22 @@ export const TestScroll = () => {
   Logs.enableExpoCliLogging();
 
   const position = useSharedValue(0);
+  const positionType = useSharedValue("relative");
   const opacity = [1, 0, 0, 0, 0, 0].map((el) => useSharedValue(el));
+  const marginHorz = [0, 15, 15, 15, 15, 15].map((el) => useSharedValue(el));
+  var sizeHeight = [0, 0, 0, 0, 0, 0].map((el) => useSharedValue(el));
   const contextY = useSharedValue(0);
   const contextAdvanced = useSharedValue(0);
   const contextOpacity = useSharedValue(0);
+  const test = useSharedValue(0);
 
   const count = useSharedValue(1);
 
   const days = useAppSelector((state) => state.schedule[0].days);
-  const [heightCards, setHeightCards] = useState<
-    { size: number; day: number }[]
-  >([]);
+  const dispath = useDispatch();
+  var [heightCards, setHeightCards] = useState<{ size: number; day: number }[]>(
+    []
+  );
   const [posCards, setPosCards] = useState<number[]>([]);
   const [marginCards, setMarginCards] = useState<number[]>([]);
 
@@ -64,6 +75,8 @@ export const TestScroll = () => {
           prev.sort(function (a, b) {
             return a.day - b.day;
           });
+          sizeHeight[dayOfWeek - 1].value = event.nativeEvent.layout.height;
+          console.log(sizeHeight[dayOfWeek - 1].value);
           addMargin(prev);
         }
         return prev;
@@ -72,6 +85,7 @@ export const TestScroll = () => {
       if (marginCards.length === 6) {
         setMeasureDone(true);
         posAllCardsCalc(heightCards, marginCards);
+
         //   console.log(posCards);
         //   console.log(marginCards);
         //   console.log(heightCards);
@@ -93,11 +107,17 @@ export const TestScroll = () => {
       }
       for (i = 0; i < 1; i++) prev.unshift(prev.pop() as number);
       prev[0] = 0;
-      console.log(prev);
+      // console.log(prev);
+
       return [...prev];
     });
   };
 
+  function callback(count: number) {
+    //  "worklet";
+    dispath(setCurDayA(count));
+    //  console.log("2323");
+  }
   const addMargin = (arr: { size: number; day: number }[]) => {
     var margin = 0;
     if (HEIGHT_CONTENT - heightCards[arr.length - 1].size <= 0)
@@ -119,7 +139,7 @@ export const TestScroll = () => {
     .onStart(() => {
       contextOpacity.value =
         heightCards[count.value - 1].size - marginCards[count.value - 1];
-      console.log(contextOpacity.value);
+      // console.log(contextOpacity.value);
       if (heightCards[count.value - 1].size >= HEIGHT_CONTENT) {
         if (posCards[count.value - 1] === 0)
           contextAdvanced.value =
@@ -138,16 +158,29 @@ export const TestScroll = () => {
       // if (position.value > -contextAdvanced.value)
       position.value = contextY.value + e.translationY;
       var procent = (Math.abs(e.translationY) * 100) / contextOpacity.value;
-      console.log(position.value);
+      var procent2 = (Math.abs(e.translationY) * 10) / contextOpacity.value;
+      // console.log(position.value);
 
       if (
         contextAdvanced.value === 0 ||
         position.value <= -contextAdvanced.value ||
         position.value > -posCards[count.value - 1]
       ) {
-        if (count.value !== 6) opacity[count.value].value = procent / 100;
+        if (count.value !== 6) {
+          opacity[count.value].value = procent / 100;
+          positionType.value = "absolute";
+          marginHorz[count.value].value = 10 - procent / 5;
+        }
         opacity[count.value - 1].value = 1 - procent / 100;
-        if (count.value !== 1) opacity[count.value - 2].value = procent / 100;
+        positionType.value = "absolute";
+        marginHorz[count.value - 1].value = procent / 5;
+
+        if (count.value !== 1) {
+          opacity[count.value - 2].value = procent / 100;
+          positionType.value = "absolute";
+
+          marginHorz[count.value - 2].value = -procent / 5;
+        }
       }
       // }
       // console.log(position.value);
@@ -182,7 +215,6 @@ export const TestScroll = () => {
 
         //   opacity.value[count.value - 2] = 0;
       }
-
       if (pushDown || pullingDown) {
         contextAdvanced.value = 0;
         if (count.value === 1) count.value = 6;
@@ -209,23 +241,39 @@ export const TestScroll = () => {
         });
 
       // if (position.value <= -posCards[count.value - 1]) {
-      if (count.value !== 6)
+      if (count.value !== 6) {
         opacity[count.value].value = withSpring(0, configSpring);
+        marginHorz[count.value].value = withSpring(10, configSpring);
+      }
       opacity[count.value - 1].value = withSpring(1, configSpring);
-      if (count.value !== 1)
+      marginHorz[count.value - 1].value = withSpring(0, configSpring);
+      if (count.value !== 1) {
         opacity[count.value - 2].value = withSpring(0, configSpring);
+        marginHorz[count.value - 2].value = withSpring(10, configSpring);
+      }
+      runOnJS(callback)(count.value - 1);
     });
+
   const animatedStyle = (index: number) => {
     return useAnimatedStyle(() => {
-      return {
-        opacity: opacity[index].value,
-      };
+      if (sizeHeight[index].value !== 0)
+        return {
+          opacity: opacity[index].value,
+          marginHorizontal: marginHorz[index].value,
+          height: sizeHeight[index].value,
+          //   position: positionType.value as "relative" | "absolute",
+        };
+      else
+        return {
+          opacity: opacity[index].value,
+          marginHorizontal: marginHorz[index].value,
+        };
     });
   };
   return (
     <GestureHandlerRootView>
       <GestureDetector gesture={panGesture}>
-        <Animated.View>
+        <Animated.View style={{ zIndex: 0, elevation: 0 }}>
           {days.map((day, index) => {
             return (
               <Animated.View

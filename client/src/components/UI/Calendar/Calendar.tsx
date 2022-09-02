@@ -5,6 +5,7 @@ import { c_style } from "./../../../stylesConst";
 import { UIstyles } from "./../../UI/UIstyles";
 import { styles } from "./styles";
 import { useStyles } from "./../../../hooks/useStyles";
+import { useAppSelector } from "../../../hooks/redux";
 
 const BtnCalendar =
   (value: number, weekDay: string): FC =>
@@ -17,7 +18,10 @@ const BtnCalendar =
     );
   };
 
-export const Calendar = () => {
+interface CalendarI {}
+
+export const Calendar: FC<CalendarI> = () => {
+  var curDay = useAppSelector((state) => state.appSettings.curDay);
   const buttons = [
     {
       element: BtnCalendar(10, "пн"),
@@ -37,20 +41,17 @@ export const Calendar = () => {
     {
       element: BtnCalendar(15, "сб"),
     },
-    {
-      element: BtnCalendar(16, "вс"),
-    },
   ];
   const style = useStyles(styles);
   const styleUI = useStyles(UIstyles);
-  useState
+  useState;
 
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [selectedIndex, setSelectedIndex] = useState(curDay);
   return (
     <Card containerStyle={style.calendarContainer}>
       <ButtonGroup
         buttons={buttons}
-        selectedIndex={selectedIndex}
+        selectedIndex={curDay}
         onPress={(value) => {
           setSelectedIndex(value);
         }}

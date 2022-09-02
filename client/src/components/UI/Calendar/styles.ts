@@ -7,6 +7,8 @@ export const styles = () => {
 
   return StyleSheet.create({
     calendarContainer: {
+      zIndex: 3,
+      elevation: 3,
       padding: 0,
       margin: 0,
       borderBottomLeftRadius: 25,
@@ -26,7 +28,7 @@ export const styles = () => {
       backgroundColor: theme.colors.secondary,
       borderRadius: 50,
       overflow: "hidden",
-      marginHorizontal: 5,
+      marginHorizontal: 9,
       borderColor: "rgba(0, 0, 0, 0)",
     },
     selectedButton: {
