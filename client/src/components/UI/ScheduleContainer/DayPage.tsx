@@ -9,13 +9,26 @@ interface DayPage {
   index?: number;
   translateY: Animated.SharedValue<number>;
   size: number;
+  onChange: (event: any, dayOfWeek: number) => void;
 }
-export const DayPage: FC<DayPage> = ({ day, index, translateY, size }) => {
+export const DayPage: FC<DayPage> = ({
+  day,
+  index,
+  translateY,
+  size,
+  onChange,
+}) => {
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: translateY.value }],
   }));
+  var count = 0;
   return (
-    <Animated.View style={[animatedStyle]}>
+    <Animated.View
+      style={[animatedStyle]}
+      onLayout={(event) => {
+        onChange(event, day.dayOfWeek);
+      }}
+    >
       <DayCard dayOfWeek={day.dayOfWeek} lessons={day.lessons} />
     </Animated.View>
   );

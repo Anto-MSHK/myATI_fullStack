@@ -5,6 +5,7 @@ import { useThemeMode } from "@rneui/themed";
 export const initialState: AppSettingsStateT = {
   theme: "dark",
   curDay: 1,
+  curWeek: "topWeek",
 };
 
 export const appSettingsReducer = (

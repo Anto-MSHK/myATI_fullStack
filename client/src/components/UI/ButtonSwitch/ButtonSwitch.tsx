@@ -4,6 +4,7 @@ import { StyleProp, View, ViewStyle } from "react-native";
 import { ButtonGroup, Icon, Text } from "@rneui/base";
 import { styles } from "./styles";
 import { useStyles } from "./../../../hooks/useStyles";
+import { useAppSelector } from "../../../hooks/redux";
 
 type buttonT = {
   items: { text: string; icon: string; typeIcon: string }[];
@@ -15,6 +16,11 @@ interface ButtonGroupI {
 }
 
 export const ButtonSwitch: FC<ButtonGroupI> = ({ buttons, customStyle }) => {
+  //   var week = useAppSelector((state) => state.appSettings.curWeek);
+  //   var l = 0;
+  //   if (week === "topWeek") l = 0;
+  //   else l = 1;
+
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const updateIndex = (selectedIndex: number) => {
@@ -22,7 +28,6 @@ export const ButtonSwitch: FC<ButtonGroupI> = ({ buttons, customStyle }) => {
     buttons.customOnPress(selectedIndex);
   };
   const style = useStyles(styles);
-
   return (
     <View style={{ ...style.wrapper, ...(customStyle as StyleSheet) }}>
       <ButtonGroup

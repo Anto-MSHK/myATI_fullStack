@@ -8,6 +8,7 @@ import { UIstyles } from "./../UIstyles";
 import { dataLessonT, dataT, LessonT } from "../../../state/schedule/types";
 import { LinearGradient } from "expo-linear-gradient";
 import { useStyles } from "./../../../hooks/useStyles";
+import { useAppSelector } from "../../../hooks/redux";
 
 export interface LessonCardI {
   roundingСorns?: "none" | "top" | "bottom" | "all";
@@ -27,7 +28,6 @@ export const LessonCard: FC<LessonCardI> = ({
 }) => {
   var styleForLine: StyleProp<ViewStyle> = {};
   var [curData, setCurData] = useState<"topWeek" | "lowerWeek">("topWeek");
-
   const toggleData = (selectedIndex?: number) => {
     if (selectedIndex === 0) setCurData("topWeek");
     else if (selectedIndex === 1) setCurData("lowerWeek");
@@ -55,24 +55,26 @@ export const LessonCard: FC<LessonCardI> = ({
   return (
     <Card containerStyle={curRoundedStyle} wrapperStyle={style.cardWrapper}>
       {data.lowerWeek && (
-        <ButtonSwitch
-          customStyle={styleForLine}
-          buttons={{
-            items: [
-              {
-                text: "верхняя",
-                icon: "caretup",
-                typeIcon: "antdesign",
-              },
-              {
-                text: "нижняя",
-                icon: "caretdown",
-                typeIcon: "antdesign",
-              },
-            ],
-            customOnPress: toggleData,
-          }}
-        />
+        <View>
+          <ButtonSwitch
+            customStyle={styleForLine}
+            buttons={{
+              items: [
+                {
+                  text: "верхняя",
+                  icon: "caretup",
+                  typeIcon: "antdesign",
+                },
+                {
+                  text: "нижняя",
+                  icon: "caretdown",
+                  typeIcon: "antdesign",
+                },
+              ],
+              customOnPress: toggleData,
+            }}
+          />
+        </View>
       )}
       <View>
         <View style={style.mainContainer}>

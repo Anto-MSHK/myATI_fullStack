@@ -62,35 +62,42 @@ export const TestScroll = () => {
   var [measureDone, setMeasureDone] = useState(false);
 
   const measureHeight = (event: LayoutChangeEvent, dayOfWeek: number) => {
-    if (!measureDone) {
-      console.log("bruh");
-
+    if (
+      posCards.length !== 6 ||
+      (event.nativeEvent &&
+        heightCards[dayOfWeek - 1] &&
+        heightCards[dayOfWeek - 1].size !== event.nativeEvent.layout.height)
+    ) {
       setHeightCards((prev) => {
-        var isExist = prev.find((el) => {
-          if (el) return dayOfWeek === el.day;
-          else return undefined;
-        });
-        if (event.nativeEvent && dayOfWeek && !isExist) {
-          prev.push({ size: event.nativeEvent.layout.height, day: dayOfWeek });
+        if (event.nativeEvent && dayOfWeek) {
+          prev[dayOfWeek - 1] = {
+            size: event.nativeEvent.layout.height,
+            day: dayOfWeek - 1,
+          };
           prev.sort(function (a, b) {
             return a.day - b.day;
           });
           sizeHeight[dayOfWeek - 1].value = event.nativeEvent.layout.height;
-          console.log(sizeHeight[dayOfWeek - 1].value);
-          addMargin(prev);
+          addMargin(dayOfWeek);
         }
         return prev;
       });
-
       if (marginCards.length === 6) {
-        setMeasureDone(true);
         posAllCardsCalc(heightCards, marginCards);
-
-        //   console.log(posCards);
-        //   console.log(marginCards);
-        //   console.log(heightCards);
       }
     }
+  };
+
+  const addMargin = (day: number) => {
+    var margin = 0;
+    if (HEIGHT_CONTENT - heightCards[day - 1].size <= 0)
+      margin = HEIGHT_CONTENT / 4;
+    else margin = HEIGHT_CONTENT - heightCards[day - 1].size;
+    setMarginCards((prev) => {
+      prev[day - 1] = margin;
+      var newArr = [...prev];
+      return newArr;
+    });
   };
 
   const posAllCardsCalc = (
@@ -101,14 +108,12 @@ export const TestScroll = () => {
       for (var i = 0; i < size.length; i++) {
         var cardPos = 0;
         for (var j = 0; j <= i; j++) {
-          cardPos += margin[j] + size[j].size;
+          if (size[j]) cardPos += margin[j] + size[j].size;
         }
-        prev.push(cardPos);
+        prev[i] = cardPos;
       }
       for (i = 0; i < 1; i++) prev.unshift(prev.pop() as number);
       prev[0] = 0;
-      // console.log(prev);
-
       return [...prev];
     });
   };
@@ -118,17 +123,6 @@ export const TestScroll = () => {
     dispath(setCurDayA(count));
     //  console.log("2323");
   }
-  const addMargin = (arr: { size: number; day: number }[]) => {
-    var margin = 0;
-    if (HEIGHT_CONTENT - heightCards[arr.length - 1].size <= 0)
-      margin = HEIGHT_CONTENT / 4;
-    else margin = HEIGHT_CONTENT - heightCards[arr.length - 1].size;
-    setMarginCards((prev) => {
-      prev.push(margin);
-      var newArr = [...prev];
-      return newArr;
-    });
-  };
   const configSpring = {
     damping: 8,
     mass: 0.45,
@@ -277,7 +271,10 @@ export const TestScroll = () => {
           {days.map((day, index) => {
             return (
               <Animated.View
-                onLayout={(event) => measureHeight(event, day.dayOfWeek)}
+                onLayout={(event) => {
+                  measureHeight(event, index + 1);
+                  //  setMeasureDone(true);
+                }}
                 style={[
                   animatedStyle(index),
                   { marginBottom: marginCards[index] },
@@ -289,6 +286,10 @@ export const TestScroll = () => {
                   index={index}
                   translateY={position}
                   size={heightCards[index] ? heightCards[index].size : 0}
+                  onChange={(event, dayOfWeek) => {
+                    if (posCards.length !== 6 || count.value === dayOfWeek)
+                      measureHeight(event, dayOfWeek);
+                  }}
                 />
               </Animated.View>
             );
