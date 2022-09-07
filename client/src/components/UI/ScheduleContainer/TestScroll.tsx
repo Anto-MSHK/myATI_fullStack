@@ -47,7 +47,6 @@ export const TestScroll = () => {
   const contextY = useSharedValue(0);
   const contextAdvanced = useSharedValue(0);
   const contextOpacity = useSharedValue(0);
-  const test = useSharedValue(0);
 
   const count = useSharedValue(1);
 
@@ -58,8 +57,6 @@ export const TestScroll = () => {
   );
   const [posCards, setPosCards] = useState<number[]>([]);
   const [marginCards, setMarginCards] = useState<number[]>([]);
-
-  var [measureDone, setMeasureDone] = useState(false);
 
   const measureHeight = (event: LayoutChangeEvent, dayOfWeek: number) => {
     if (
@@ -119,9 +116,7 @@ export const TestScroll = () => {
   };
 
   function callback(count: number) {
-    //  "worklet";
     dispath(setCurDayA(count));
-    //  console.log("2323");
   }
   const configSpring = {
     damping: 8,
@@ -145,6 +140,8 @@ export const TestScroll = () => {
             posCards[count.value - 1] +
             heightCards[count.value - 1].size -
             (HEIGHT_CONTENT - marginCards[count.value - 1]);
+      } else {
+        contextAdvanced.value = 0;
       }
       contextY.value = position.value;
     })
@@ -176,9 +173,6 @@ export const TestScroll = () => {
           marginHorz[count.value - 2].value = -procent / 5;
         }
       }
-      // }
-      // console.log(position.value);
-      // console.log(contextAdvanced.value);
     })
     .onEnd((e) => {
       var minVelocity = 1000;
@@ -299,10 +293,3 @@ export const TestScroll = () => {
     </GestureHandlerRootView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    //  flex: 1,
-    //  justifyContent: "center",
-  },
-});
