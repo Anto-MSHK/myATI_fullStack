@@ -1,5 +1,5 @@
 import { ListItemButtonGroup } from "@rneui/base/dist/ListItem/ListItem.ButtonGroup";
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 import { ButtonGroup, Icon, Text } from "@rneui/base";
 import { styles } from "./styles";
@@ -16,12 +16,16 @@ interface ButtonGroupI {
 }
 
 export const ButtonSwitch: FC<ButtonGroupI> = ({ buttons, customStyle }) => {
-  //   var week = useAppSelector((state) => state.appSettings.curWeek);
-  //   var l = 0;
-  //   if (week === "topWeek") l = 0;
-  //   else l = 1;
+  var week = useAppSelector((state) => state.app.curWeek);
+  var l = 0;
+  if (week === "topWeek") l = 0;
+  else l = 1;
 
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [selectedIndex, setSelectedIndex] = useState(l);
+
+  useEffect(() => {
+    buttons.customOnPress(selectedIndex);
+  }, []);
 
   const updateIndex = (selectedIndex: number) => {
     setSelectedIndex(selectedIndex);

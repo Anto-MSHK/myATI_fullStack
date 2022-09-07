@@ -21,7 +21,7 @@ const BtnCalendar =
 interface CalendarI {}
 
 export const Calendar: FC<CalendarI> = () => {
-  var curDay = useAppSelector((state) => state.appSettings.curDay);
+  var curDay = useAppSelector((state) => state.app.curDay);
   const buttons = [
     {
       element: BtnCalendar(10, "пн"),

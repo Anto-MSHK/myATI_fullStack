@@ -1,13 +1,7 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  LayoutChangeEvent,
-  Dimensions,
-} from "react-native";
-import React, { FC, ReactElement, useEffect, useState } from "react";
+import { LayoutChangeEvent, Dimensions } from "react-native";
+import React, { FC, useEffect, useState } from "react";
 import { useAppSelector } from "../../../hooks/redux";
-import { DayPage } from "./DayPage";
+import { SwipePage } from "./SwipePage";
 import {
   Gesture,
   GestureDetector,
@@ -15,43 +9,44 @@ import {
 } from "react-native-gesture-handler";
 import Animated, {
   runOnJS,
-  runOnUI,
   useAnimatedStyle,
-  useDerivedValue,
   useSharedValue,
   withDecay,
   withSpring,
-  withTiming,
 } from "react-native-reanimated";
 import { Logs } from "expo";
-import { DayT } from "../../../state/schedule/types";
-import { useAppDispatch } from "./../../../hooks/redux";
-import { setCurDayA } from "../../../state/appSettings/actions";
-import { useDispatch } from "react-redux";
-
-type day = DayT & { height: number };
 
 const { height } = Dimensions.get("screen");
 
 const END_POSITION = 200;
 const HEIGHT_CONTENT = height - END_POSITION;
 
-export const TestScroll = () => {
+export function UltraView<dataType = any>(props: {
+  data: dataType[];
+  renderItem: (item: dataType, index: number) => React.ReactNode;
+  defaultCur: number;
+  onSwipe?: (curPage: number) => void;
+}) {
   Logs.enableExpoCliLogging();
 
   const position = useSharedValue(0);
-  const positionType = useSharedValue("relative");
-  const opacity = [1, 0, 0, 0, 0, 0].map((el) => useSharedValue(el));
-  const marginHorz = [0, 15, 15, 15, 15, 15].map((el) => useSharedValue(el));
-  var sizeHeight = [0, 0, 0, 0, 0, 0].map((el) => useSharedValue(el));
+  const opacity = props.data.map((_, index) => {
+    if (props.defaultCur === index) return useSharedValue(1);
+    else return useSharedValue(0);
+  });
+
+  const marginHorz = props.data.map((_, index) => {
+    if (props.defaultCur === index) return useSharedValue(0);
+    else return useSharedValue(15);
+  });
+
+  var sizeHeight = props.data.map(() => useSharedValue(0));
   const contextY = useSharedValue(0);
   const contextAdvanced = useSharedValue(0);
   const contextOpacity = useSharedValue(0);
 
-  const count = useSharedValue(1);
+  const count = useSharedValue(props.defaultCur + 1);
 
-  const days = useAppSelector((state) => state.schedule[0].days);
-  const dispath = useDispatch();
   var [heightCards, setHeightCards] = useState<{ size: number; day: number }[]>(
     []
   );
@@ -65,6 +60,7 @@ export const TestScroll = () => {
         heightCards[dayOfWeek - 1] &&
         heightCards[dayOfWeek - 1].size !== event.nativeEvent.layout.height)
     ) {
+      event.persist();
       setHeightCards((prev) => {
         if (event.nativeEvent && dayOfWeek) {
           prev[dayOfWeek - 1] = {
@@ -113,10 +109,11 @@ export const TestScroll = () => {
       prev[0] = 0;
       return [...prev];
     });
+    if (posCards.length === 6) console.log(posCards[count.value - 1]);
   };
 
   function callback(count: number) {
-    dispath(setCurDayA(count));
+    props.onSwipe && props.onSwipe(count);
   }
   const configSpring = {
     damping: 8,
@@ -124,11 +121,11 @@ export const TestScroll = () => {
     stiffness: 60,
     restDisplacementThreshold: 0.1,
   };
+
   const panGesture = Gesture.Pan()
     .onStart(() => {
       contextOpacity.value =
         heightCards[count.value - 1].size - marginCards[count.value - 1];
-      // console.log(contextOpacity.value);
       if (heightCards[count.value - 1].size >= HEIGHT_CONTENT) {
         if (posCards[count.value - 1] === 0)
           contextAdvanced.value =
@@ -146,11 +143,8 @@ export const TestScroll = () => {
       contextY.value = position.value;
     })
     .onUpdate((e) => {
-      // if (position.value > -contextAdvanced.value)
       position.value = contextY.value + e.translationY;
       var procent = (Math.abs(e.translationY) * 100) / contextOpacity.value;
-      var procent2 = (Math.abs(e.translationY) * 10) / contextOpacity.value;
-      // console.log(position.value);
 
       if (
         contextAdvanced.value === 0 ||
@@ -159,17 +153,13 @@ export const TestScroll = () => {
       ) {
         if (count.value !== 6) {
           opacity[count.value].value = procent / 100;
-          positionType.value = "absolute";
           marginHorz[count.value].value = 10 - procent / 5;
         }
         opacity[count.value - 1].value = 1 - procent / 100;
-        positionType.value = "absolute";
         marginHorz[count.value - 1].value = procent / 5;
 
         if (count.value !== 1) {
           opacity[count.value - 2].value = procent / 100;
-          positionType.value = "absolute";
-
           marginHorz[count.value - 2].value = -procent / 5;
         }
       }
@@ -200,8 +190,6 @@ export const TestScroll = () => {
         else {
           count.value = count.value + 1;
         }
-
-        //   opacity.value[count.value - 2] = 0;
       }
       if (pushDown || pullingDown) {
         contextAdvanced.value = 0;
@@ -211,12 +199,7 @@ export const TestScroll = () => {
         }
       }
       if (contextAdvanced.value === 0) {
-        position.value = withSpring(-posCards[count.value - 1], {
-          damping: 8,
-          mass: 0.45,
-          stiffness: 60,
-          restDisplacementThreshold: 0.1,
-        });
+        position.value = withSpring(-posCards[count.value - 1], configSpring);
       } else if (position.value <= -contextAdvanced.value) {
         position.value = withSpring(-contextAdvanced.value, configSpring);
       } else if (position.value > -posCards[count.value - 1]) {
@@ -228,7 +211,6 @@ export const TestScroll = () => {
           clamp: [-contextAdvanced.value, -posCards[count.value - 1]],
         });
 
-      // if (position.value <= -posCards[count.value - 1]) {
       if (count.value !== 6) {
         opacity[count.value].value = withSpring(0, configSpring);
         marginHorz[count.value].value = withSpring(10, configSpring);
@@ -249,7 +231,6 @@ export const TestScroll = () => {
           opacity: opacity[index].value,
           marginHorizontal: marginHorz[index].value,
           height: sizeHeight[index].value,
-          //   position: positionType.value as "relative" | "absolute",
         };
       else
         return {
@@ -262,29 +243,28 @@ export const TestScroll = () => {
     <GestureHandlerRootView>
       <GestureDetector gesture={panGesture}>
         <Animated.View style={{ zIndex: 0, elevation: 0 }}>
-          {days.map((day, index) => {
+          {props.data.map((day, index) => {
             return (
               <Animated.View
                 onLayout={(event) => {
                   measureHeight(event, index + 1);
-                  //  setMeasureDone(true);
                 }}
                 style={[
                   animatedStyle(index),
                   { marginBottom: marginCards[index] },
                 ]}
-                key={index + "ds"}
+                key={index + "swipe-page"}
               >
-                <DayPage
-                  day={day}
-                  index={index}
+                <SwipePage
+                  index={index + 1}
                   translateY={position}
-                  size={heightCards[index] ? heightCards[index].size : 0}
                   onChange={(event, dayOfWeek) => {
                     if (posCards.length !== 6 || count.value === dayOfWeek)
                       measureHeight(event, dayOfWeek);
                   }}
-                />
+                >
+                  {props.renderItem(day, index)}
+                </SwipePage>
               </Animated.View>
             );
           })}
@@ -292,4 +272,4 @@ export const TestScroll = () => {
       </GestureDetector>
     </GestureHandlerRootView>
   );
-};
+}

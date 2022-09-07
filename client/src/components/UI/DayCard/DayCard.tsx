@@ -1,5 +1,5 @@
 import { View, ScrollView, FlatList } from "react-native";
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 import { LessonCard, LessonCardI } from "../../UI/LessonCard/LessonCard";
 import { LessonT } from "../../../state/schedule/types";
 import { c_style } from "./../../../stylesConst";
@@ -53,6 +53,7 @@ export const DayCard: FC<DayCardI> = ({ lessons, dayOfWeek }) => {
                 ? "bottom"
                 : "none"
             }
+            key={i + "lesson"}
             //  withSwitch={
             //  lesson.data.lowerWeek ? true
             // 	}

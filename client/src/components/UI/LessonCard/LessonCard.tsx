@@ -1,5 +1,5 @@
 import { StyleProp, View, ViewProps, ViewStyle } from "react-native";
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { Badge, Card, Icon, Text } from "@rneui/base";
 import { styles } from "./styles";
 import { c_style } from "./../../../stylesConst";
@@ -28,6 +28,7 @@ export const LessonCard: FC<LessonCardI> = ({
 }) => {
   var styleForLine: StyleProp<ViewStyle> = {};
   var [curData, setCurData] = useState<"topWeek" | "lowerWeek">("topWeek");
+
   const toggleData = (selectedIndex?: number) => {
     if (selectedIndex === 0) setCurData("topWeek");
     else if (selectedIndex === 1) setCurData("lowerWeek");
@@ -112,12 +113,10 @@ export const LessonCard: FC<LessonCardI> = ({
       </View>
       {roundingСorns !== "bottom" && roundingСorns !== "all" && (
         <LinearGradient
-          // Background Linear Gradient
           colors={["rgba(255,255,255,0.7)", "transparent"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={style.gradientLine}
-          //   style={styles.background}
         />
       )}
     </Card>

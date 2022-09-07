@@ -5,31 +5,28 @@ import { DayT } from "../../../state/schedule/types";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
 
 interface DayPage {
-  day: DayT;
-  index?: number;
+  children: any;
+  index: number;
   translateY: Animated.SharedValue<number>;
-  size: number;
   onChange: (event: any, dayOfWeek: number) => void;
 }
-export const DayPage: FC<DayPage> = ({
-  day,
-  index,
+export const SwipePage: FC<DayPage> = ({
   translateY,
-  size,
   onChange,
+  index,
+  children,
 }) => {
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: translateY.value }],
   }));
-  var count = 0;
   return (
     <Animated.View
       style={[animatedStyle]}
       onLayout={(event) => {
-        onChange(event, day.dayOfWeek);
+        onChange(event, index);
       }}
     >
-      <DayCard dayOfWeek={day.dayOfWeek} lessons={day.lessons} />
+      {children}
     </Animated.View>
   );
 };

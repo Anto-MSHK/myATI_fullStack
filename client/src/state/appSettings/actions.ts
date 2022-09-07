@@ -8,18 +8,8 @@ export type getAppSettingsAT = {
   type: string;
 };
 
-export type setCurDayAT = {
-  type: string;
-  count: number;
-};
-
 export const setAppSettingsA = (): getAppSettingsAT => ({
   type: APP_SETTINGS.SET,
 });
 
-export const setCurDayA = (count: number): setCurDayAT => ({
-  type: APP_SETTINGS.SET_CUR_DAY,
-  count: count,
-});
-
-export type AppSettingsAction = getAppSettingsAT & setCurDayAT;
+export type AppSettingsAction = getAppSettingsAT;

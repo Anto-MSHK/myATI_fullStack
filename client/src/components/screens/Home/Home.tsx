@@ -6,30 +6,14 @@ import { DayCard } from "./../../UI/DayCard/DayCard";
 import { useAppSelector } from "../../../hooks/redux";
 import { Calendar } from "../../UI/Calendar/Calendar";
 import { styles } from "./styles";
-import { ScheduleContainer } from "./../../UI/ScheduleContainer/ScheduleContainer";
-import { TestScroll } from "./../../UI/ScheduleContainer/TestScroll";
-import { LessonT } from "../../../state/schedule/types";
-import { LessonCard } from "../../UI/LessonCard/LessonCard";
+import { UltraView } from "../../UI/UltraView/UltraView";
+import { useDispatch } from "react-redux";
+import { setCurDayA } from "../../../state/app/actions";
 
-const lessons: LessonT[] = [
-  {
-    count: 1,
-    time: { from: "10", to: "11" },
-    data: {
-      topWeek: {
-        subject: { title: "SDS", type: "dssd" },
-        teacher: { name: "dsds", degree: "fdsfsdg" },
-        cabinet: "53",
-      },
-      lowerWeek: {
-        subject: { title: "SsdadasdDS", type: "dssd" },
-        teacher: { name: "dsds", degree: "fdsfsdg" },
-        cabinet: "53",
-      },
-    },
-  },
-];
 export const Home = () => {
+  var days = useAppSelector((state) => state.schedule[0].days);
+  var curDay = useAppSelector((state) => state.app.curDay);
+  const dispatch = useDispatch();
   return (
     <Layoult>
       <View>
@@ -37,8 +21,16 @@ export const Home = () => {
         <Calendar />
       </View>
       <View style={styles.contentContainer}>
-        {/* <ScheduleContainer /> */}
-        <TestScroll />
+        <UltraView
+          data={days}
+          renderItem={(item, index) => (
+            <DayCard lessons={item.lessons} dayOfWeek={item.dayOfWeek} />
+          )}
+          defaultCur={curDay}
+          onSwipe={(curPage) => {
+            dispatch(setCurDayA(curPage));
+          }}
+        />
       </View>
     </Layoult>
   );
