@@ -13,6 +13,7 @@ import Animated, {
   useSharedValue,
   withDecay,
   withSpring,
+  withTiming,
 } from "react-native-reanimated";
 import { Logs } from "expo";
 
@@ -52,7 +53,18 @@ export function UltraView<dataType = any>(props: {
   );
   const [posCards, setPosCards] = useState<number[]>([]);
   const [marginCards, setMarginCards] = useState<number[]>([]);
+  const [isStart, setIsStart] = useState(true);
 
+  //   useEffect(() => {
+  //     if (posCards.length === 6 && isStart) {
+  //       console.log(posCards[count.value - 1] + " " + "dsds");
+  //       position.value = withTiming(posCards[count.value - 1], {
+  //         duration: 50900,
+  //       });
+  //       console.log(position.value + " " + "dsdsdssds");
+  //       setIsStart(false);
+  //     }
+  //   }, [posCards]);
   const measureHeight = (event: LayoutChangeEvent, dayOfWeek: number) => {
     if (
       posCards.length !== 6 ||
@@ -78,6 +90,13 @@ export function UltraView<dataType = any>(props: {
       if (marginCards.length === 6) {
         posAllCardsCalc(heightCards, marginCards);
       }
+      console.log(heightCards);
+      console.log(marginCards);
+      console.log(posCards);
+    } else if (posCards.length === 6 && isStart) {
+      position.value = withSpring(-posCards[count.value - 1], configSpring);
+      console.log(position.value);
+      setIsStart(false);
     }
   };
 
@@ -109,7 +128,6 @@ export function UltraView<dataType = any>(props: {
       prev[0] = 0;
       return [...prev];
     });
-    if (posCards.length === 6) console.log(posCards[count.value - 1]);
   };
 
   function callback(count: number) {
@@ -190,6 +208,7 @@ export function UltraView<dataType = any>(props: {
         else {
           count.value = count.value + 1;
         }
+        runOnJS(callback)(count.value - 1);
       }
       if (pushDown || pullingDown) {
         contextAdvanced.value = 0;
@@ -197,6 +216,7 @@ export function UltraView<dataType = any>(props: {
         else {
           count.value = count.value - 1;
         }
+        runOnJS(callback)(count.value - 1);
       }
       if (contextAdvanced.value === 0) {
         position.value = withSpring(-posCards[count.value - 1], configSpring);
@@ -221,7 +241,6 @@ export function UltraView<dataType = any>(props: {
         opacity[count.value - 2].value = withSpring(0, configSpring);
         marginHorz[count.value - 2].value = withSpring(10, configSpring);
       }
-      runOnJS(callback)(count.value - 1);
     });
 
   const animatedStyle = (index: number) => {
@@ -259,8 +278,9 @@ export function UltraView<dataType = any>(props: {
                   index={index + 1}
                   translateY={position}
                   onChange={(event, dayOfWeek) => {
-                    if (posCards.length !== 6 || count.value === dayOfWeek)
+                    if (posCards.length !== 6 || count.value === dayOfWeek) {
                       measureHeight(event, dayOfWeek);
+                    }
                   }}
                 >
                   {props.renderItem(day, index)}
