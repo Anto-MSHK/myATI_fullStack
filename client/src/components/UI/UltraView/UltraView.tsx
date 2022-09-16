@@ -1,5 +1,5 @@
 import { LayoutChangeEvent, Dimensions } from "react-native";
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { useAppSelector } from "../../../hooks/redux";
 import { SwipePage } from "./SwipePage";
 import {
@@ -16,6 +16,8 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { Logs } from "expo";
+import { setCurDayAT } from "../../../state/appSettings/actions";
+import { useDispatch } from "react-redux";
 
 const { height } = Dimensions.get("screen");
 
@@ -29,42 +31,37 @@ export function UltraView<dataType = any>(props: {
   onSwipe?: (curPage: number) => void;
 }) {
   Logs.enableExpoCliLogging();
-
+  const [isStart, setIsStart] = useState(true);
   const position = useSharedValue(0);
-  const opacity = props.data.map((_, index) => {
-    if (props.defaultCur === index) return useSharedValue(1);
-    else return useSharedValue(0);
-  });
 
-  const marginHorz = props.data.map((_, index) => {
-    if (props.defaultCur === index) return useSharedValue(0);
-    else return useSharedValue(15);
-  });
+  var opacity = [0, 0, 0, 0, 0, 0].map((el) => useSharedValue(el));
+  var marginHorz = [0, 0, 0, 0, 0, 0].map((el) => useSharedValue(el));
+  var sizeHeight = [0, 0, 0, 0, 0, 0].map((el) => useSharedValue(el));
+  if (isStart) {
+    opacity = opacity.map((el, index) => {
+      if (props.defaultCur === index) el.value = 1;
+      else el.value = 0;
+      return el;
+    });
+    marginHorz = marginHorz.map((el, index) => {
+      if (props.defaultCur === index) el.value = 0;
+      else el.value = 15;
+      return el;
+    });
+  }
 
-  var sizeHeight = props.data.map(() => useSharedValue(0));
-  const contextY = useSharedValue(0);
-  const contextAdvanced = useSharedValue(0);
-  const contextOpacity = useSharedValue(0);
+  var contextY = useSharedValue(0);
+  var contextAdvanced = useSharedValue(0);
+  var contextOpacity = useSharedValue(0);
 
-  const count = useSharedValue(props.defaultCur + 1);
+  var count = useSharedValue(props.defaultCur + 1);
 
   var [heightCards, setHeightCards] = useState<{ size: number; day: number }[]>(
     []
   );
   const [posCards, setPosCards] = useState<number[]>([]);
   const [marginCards, setMarginCards] = useState<number[]>([]);
-  const [isStart, setIsStart] = useState(true);
 
-  //   useEffect(() => {
-  //     if (posCards.length === 6 && isStart) {
-  //       console.log(posCards[count.value - 1] + " " + "dsds");
-  //       position.value = withTiming(posCards[count.value - 1], {
-  //         duration: 50900,
-  //       });
-  //       console.log(position.value + " " + "dsdsdssds");
-  //       setIsStart(false);
-  //     }
-  //   }, [posCards]);
   const measureHeight = (event: LayoutChangeEvent, dayOfWeek: number) => {
     if (
       posCards.length !== 6 ||
@@ -90,21 +87,18 @@ export function UltraView<dataType = any>(props: {
       if (marginCards.length === 6) {
         posAllCardsCalc(heightCards, marginCards);
       }
-      console.log(heightCards);
-      console.log(marginCards);
-      console.log(posCards);
     } else if (posCards.length === 6 && isStart) {
       position.value = withSpring(-posCards[count.value - 1], configSpring);
-      console.log(position.value);
       setIsStart(false);
     }
   };
 
   const addMargin = (day: number) => {
     var margin = 0;
-    if (HEIGHT_CONTENT - heightCards[day - 1].size <= 0)
+    if (heightCards[day - 1] && HEIGHT_CONTENT - heightCards[day - 1].size <= 0)
       margin = HEIGHT_CONTENT / 4;
-    else margin = HEIGHT_CONTENT - heightCards[day - 1].size;
+    else if (heightCards[day - 1])
+      margin = HEIGHT_CONTENT - heightCards[day - 1].size;
     setMarginCards((prev) => {
       prev[day - 1] = margin;
       var newArr = [...prev];
@@ -130,9 +124,11 @@ export function UltraView<dataType = any>(props: {
     });
   };
 
-  function callback(count: number) {
-    props.onSwipe && props.onSwipe(count);
-  }
+  const callback = (count1: number) => {
+    props.onSwipe && props.onSwipe(count1);
+
+    console.log(count1);
+  };
   const configSpring = {
     damping: 8,
     mass: 0.45,
@@ -206,17 +202,15 @@ export function UltraView<dataType = any>(props: {
         contextAdvanced.value = 0;
         if (count.value === 6) count.value = 1;
         else {
-          count.value = count.value + 1;
+          count.value += 1;
         }
-        runOnJS(callback)(count.value - 1);
       }
       if (pushDown || pullingDown) {
         contextAdvanced.value = 0;
         if (count.value === 1) count.value = 6;
         else {
-          count.value = count.value - 1;
+          count.value -= 1;
         }
-        runOnJS(callback)(count.value - 1);
       }
       if (contextAdvanced.value === 0) {
         position.value = withSpring(-posCards[count.value - 1], configSpring);
@@ -241,6 +235,7 @@ export function UltraView<dataType = any>(props: {
         opacity[count.value - 2].value = withSpring(0, configSpring);
         marginHorz[count.value - 2].value = withSpring(10, configSpring);
       }
+      runOnJS(callback)(count.value - 1);
     });
 
   const animatedStyle = (index: number) => {
@@ -266,7 +261,7 @@ export function UltraView<dataType = any>(props: {
             return (
               <Animated.View
                 onLayout={(event) => {
-                  measureHeight(event, index + 1);
+                  if (isStart) measureHeight(event, index + 1);
                 }}
                 style={[
                   animatedStyle(index),

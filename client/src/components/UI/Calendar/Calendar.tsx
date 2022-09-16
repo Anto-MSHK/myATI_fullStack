@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { Button, ButtonGroup, Card, Text } from "@rneui/base";
 import { c_style } from "./../../../stylesConst";
 import { UIstyles } from "./../../UI/UIstyles";
@@ -18,10 +18,11 @@ const BtnCalendar =
     );
   };
 
-interface CalendarI {}
+interface CalendarI {
+  onChangeDay: (day: number) => void;
+}
 
-export const Calendar: FC<CalendarI> = () => {
-  var curDay = useAppSelector((state) => state.app.curDay);
+export const Calendar: FC<CalendarI> = ({ onChangeDay }) => {
   const buttons = [
     {
       element: BtnCalendar(10, "пн"),
@@ -44,27 +45,35 @@ export const Calendar: FC<CalendarI> = () => {
   ];
   const style = useStyles(styles);
   const styleUI = useStyles(UIstyles);
-  useState;
-
+  const curDay = useAppSelector((state) => state.app.curDay);
   const [selectedIndex, setSelectedIndex] = useState(curDay);
+  useEffect(() => {
+    onChangeDay(curDay);
+  }, [curDay]);
   return (
-    <Card containerStyle={style.calendarContainer}>
-      <ButtonGroup
-        buttons={buttons}
-        selectedIndex={curDay}
-        onPress={(value) => {
-          setSelectedIndex(value);
-        }}
-        containerStyle={style.buttonsContainer}
-        selectedButtonStyle={style.selectedButton}
-        buttonContainerStyle={style.buttonContainer}
-      />
-      <View style={style.infoContainer}>
-        <Text style={{ textAlign: "center", ...UIstyles().h3_p }}>
-          Июль,
-          <Text style={styleUI.h3}>{" нижняя неделя"}</Text>
-        </Text>
-      </View>
-    </Card>
+    <View
+      onLayout={() => {
+        onChangeDay(curDay);
+      }}
+    >
+      <Card containerStyle={style.calendarContainer}>
+        <ButtonGroup
+          buttons={buttons}
+          selectedIndex={curDay}
+          onPress={(value) => {
+            setSelectedIndex(value);
+          }}
+          containerStyle={style.buttonsContainer}
+          selectedButtonStyle={style.selectedButton}
+          buttonContainerStyle={style.buttonContainer}
+        />
+        <View style={style.infoContainer}>
+          <Text style={{ textAlign: "center", ...UIstyles().h3_p }}>
+            Июль,
+            <Text style={styleUI.h3}>{" нижняя неделя"}</Text>
+          </Text>
+        </View>
+      </Card>
+    </View>
   );
 };
