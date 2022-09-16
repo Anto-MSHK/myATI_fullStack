@@ -6,6 +6,8 @@ import { UIstyles } from "./../../UI/UIstyles";
 import { styles } from "./styles";
 import { useStyles } from "./../../../hooks/useStyles";
 import { useAppSelector } from "../../../hooks/redux";
+import { useDispatch } from "react-redux";
+import { setCurDayA } from "../../../state/app/actions";
 
 const BtnCalendar =
   (value: number, weekDay: string): FC =>
@@ -47,9 +49,11 @@ export const Calendar: FC<CalendarI> = ({ onChangeDay }) => {
   const styleUI = useStyles(UIstyles);
   const curDay = useAppSelector((state) => state.app.curDay);
   const [selectedIndex, setSelectedIndex] = useState(curDay);
-  useEffect(() => {
-    onChangeDay(curDay);
-  }, [curDay]);
+  const dispatch = useDispatch();
+
+  //   useEffect(() => {
+  //     onChangeDay(curDay);
+  //   }, [curDay]);
   return (
     <View
       onLayout={() => {
@@ -61,6 +65,8 @@ export const Calendar: FC<CalendarI> = ({ onChangeDay }) => {
           buttons={buttons}
           selectedIndex={curDay}
           onPress={(value) => {
+            dispatch(setCurDayA(value));
+            onChangeDay(value);
             setSelectedIndex(value);
           }}
           containerStyle={style.buttonsContainer}

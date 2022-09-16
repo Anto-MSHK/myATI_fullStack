@@ -18,6 +18,7 @@ export const Home = () => {
   var days = useAppSelector((state) => state.schedule[0].days);
 
   const count = useRef(5);
+  const [cCal, setCCall] = useState(0);
   const [isStart, setIsStart] = useState(true);
   const dispatch = useDispatch();
   return (
@@ -26,13 +27,13 @@ export const Home = () => {
         <HeaderMain />
         <View
           onLayout={() => {
-            setIsStart(false);
+            setIsStart((prev) => !prev);
           }}
         >
           <Calendar
             onChangeDay={(day) => {
-              count.current = day;
-              console.log("dss" + count.current);
+              console.log("65421");
+              setCCall(day);
             }}
           />
         </View>
@@ -44,7 +45,8 @@ export const Home = () => {
             renderItem={(item, index) => (
               <DayCard lessons={item.lessons} dayOfWeek={item.dayOfWeek} />
             )}
-            defaultCur={count.current}
+            cal={cCal}
+            defaultCur={cCal}
             onSwipe={(count2) => {
               dispatch(setCurDayA(count2));
             }}

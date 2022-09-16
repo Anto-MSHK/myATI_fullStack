@@ -7,8 +7,8 @@ export const styles = () => {
 
   return StyleSheet.create({
     calendarContainer: {
-      zIndex: 3,
-      elevation: 3,
+      zIndex: 10,
+      elevation: 10,
       padding: 0,
       margin: 0,
       borderBottomLeftRadius: 25,
