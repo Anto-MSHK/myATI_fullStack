@@ -1,353 +1,10 @@
-import { SCHEDULE, ScheduleAction } from "./actions";
+import { getScheduleA, SCHEDULE, ScheduleAction } from "./actions";
 import { ScheduleGroupsStateT } from "./types";
+import { ThunkAction, ThunkDispatch } from "redux-thunk";
+import { AnyAction } from "redux";
+import { scheduleApi } from "../../api/schedule";
 
-export const initialState: ScheduleGroupsStateT = [
-  {
-    group: "ВИС-11",
-    days: [
-      {
-        dayOfWeek: 1,
-        isWeekend: false,
-        lessons: [
-          {
-            count: 1,
-            time: { from: "8:30", to: "10:10" },
-            data: {
-              topWeek: {
-                subject: { title: "Мат. анализ", type: "лб." },
-                teacher: { name: "Чумак", degree: "к.м.н" },
-                cabinet: "202",
-              },
-              lowerWeek: {
-                subject: {
-                  title:
-                    "Разработка  приложений приложений приложений приложений приложений приложений приложений приложений приложений приложений приложений приложений приложений приложенийприложенийприложенийприложений приложений приложений приложений приложений  приложенийприложенийvприложений приложений приложений приложений приложенийпрофессиональных приложений",
-                  type: "пр.",
-                },
-                teacher: { name: "Чумак", degree: "к.м.н" },
-                cabinet: "236",
-              },
-            },
-          },
-          {
-            count: 1,
-            time: { from: "8:30", to: "10:10" },
-            data: {
-              topWeek: {
-                subject: { title: "Мат. анализ", type: "лб." },
-                teacher: { name: "Чумак", degree: "к.м.н" },
-                cabinet: "202",
-              },
-              lowerWeek: {
-                subject: {
-                  title: "Разработка профессиональных приложений",
-                  type: "пр.",
-                },
-                teacher: { name: "Чумак", degree: "к.м.н" },
-                cabinet: "236",
-              },
-            },
-          },
-          {
-            count: 2,
-            time: { from: "10:15", to: "11:50" },
-            data: {
-              topWeek: {
-                subject: { title: "Мат. анализ ", type: "лб." },
-                teacher: { name: "Чумак", degree: "к.м.н" },
-                cabinet: "202",
-              },
-              lowerWeek: {
-                subject: {
-                  title: "Разработка профессиональных приложений",
-                  type: "лб.",
-                },
-                teacher: { name: "Чумак", degree: "к.м.н" },
-                cabinet: "202",
-              },
-            },
-          },
-        ],
-      },
-      {
-        dayOfWeek: 2,
-        isWeekend: false,
-        lessons: [
-          {
-            count: 1,
-            time: { from: "8:30", to: "10:10" },
-            data: {
-              topWeek: {
-                subject: { title: "Мат. анализ", type: "лб." },
-                teacher: { name: "Чумак", degree: "к.м.н" },
-                cabinet: "202",
-              },
-              lowerWeek: {
-                subject: {
-                  title: "Разработка профессиональных приложений",
-                  type: "пр.",
-                },
-                teacher: { name: "Чумак", degree: "к.м.н" },
-                cabinet: "236",
-              },
-            },
-          },
-          {
-            count: 2,
-            time: { from: "10:15", to: "11:50" },
-            data: {
-              topWeek: {
-                subject: { title: "Мат. анализ", type: "лб." },
-                teacher: { name: "Чумак", degree: "к.м.н" },
-                cabinet: "202",
-              },
-            },
-          },
-          {
-            count: 3,
-            time: { from: "12:30", to: "14:05" },
-            data: {
-              topWeek: {
-                subject: { title: "Геометрия", type: "лб." },
-                teacher: { name: "Чумак", degree: "к.м.н" },
-                cabinet: "202",
-              },
-            },
-          },
-        ],
-      },
-      {
-        dayOfWeek: 3,
-        isWeekend: false,
-        lessons: [
-          {
-            count: 1,
-            time: { from: "8:30", to: "10:10" },
-            data: {
-              topWeek: {
-                subject: { title: "Мат. анализ", type: "лб." },
-                teacher: { name: "Чумак", degree: "к.м.н" },
-                cabinet: "202",
-              },
-              lowerWeek: {
-                subject: {
-                  title: "Разработка профессиональных приложений",
-                  type: "пр.",
-                },
-                teacher: { name: "Чумак", degree: "к.м.н" },
-                cabinet: "236",
-              },
-            },
-          },
-          {
-            count: 2,
-            time: { from: "10:15", to: "11:50" },
-            data: {
-              topWeek: {
-                subject: { title: "Мат. анализ", type: "лб." },
-                teacher: { name: "Чумак", degree: "к.м.н" },
-                cabinet: "202",
-              },
-            },
-          },
-          {
-            count: 3,
-            time: { from: "12:30", to: "14:05" },
-            data: {
-              topWeek: {
-                subject: { title: "Геометрия", type: "лб." },
-                teacher: { name: "Чумак", degree: "к.м.н" },
-                cabinet: "202",
-              },
-            },
-          },
-        ],
-      },
-      {
-        dayOfWeek: 4,
-        isWeekend: false,
-        lessons: [
-          {
-            count: 1,
-            time: { from: "8:30", to: "10:10" },
-            data: {
-              topWeek: {
-                subject: { title: "Мат. анализ", type: "лб." },
-                teacher: { name: "Чумак", degree: "к.м.н" },
-                cabinet: "202",
-              },
-              lowerWeek: {
-                subject: {
-                  title: "Разработка профессиональных приложений",
-                  type: "пр.",
-                },
-                teacher: { name: "Чумак", degree: "к.м.н" },
-                cabinet: "236",
-              },
-            },
-          },
-          {
-            count: 2,
-            time: { from: "10:15", to: "11:50" },
-            data: {
-              topWeek: {
-                subject: { title: "Мат. анализ", type: "лб." },
-                teacher: { name: "Чумак", degree: "к.м.н" },
-                cabinet: "202",
-              },
-            },
-          },
-          {
-            count: 3,
-            time: { from: "12:30", to: "14:05" },
-            data: {
-              topWeek: {
-                subject: { title: "Геометрия", type: "лб." },
-                teacher: { name: "Чумак", degree: "к.м.н" },
-                cabinet: "202",
-              },
-            },
-          },
-        ],
-      },
-      {
-        dayOfWeek: 5,
-        isWeekend: false,
-        lessons: [
-          {
-            count: 1,
-            time: { from: "8:30", to: "10:10" },
-            data: {
-              topWeek: {
-                subject: { title: "Мат. анализ", type: "лб." },
-                teacher: { name: "Чумак", degree: "к.м.н" },
-                cabinet: "202",
-              },
-              lowerWeek: {
-                subject: {
-                  title: "Разработка профессиональных приложений",
-                  type: "пр.",
-                },
-                teacher: { name: "Чумак", degree: "к.м.н" },
-                cabinet: "236",
-              },
-            },
-          },
-          {
-            count: 2,
-            time: { from: "10:15", to: "11:50" },
-            data: {
-              topWeek: {
-                subject: { title: "Мат. анализ", type: "лб." },
-                teacher: { name: "Чумак", degree: "к.м.н" },
-                cabinet: "202",
-              },
-            },
-          },
-          {
-            count: 3,
-            time: { from: "12:30", to: "14:05" },
-            data: {
-              topWeek: {
-                subject: { title: "Геометрия", type: "лб." },
-                teacher: { name: "Чумак", degree: "к.м.н" },
-                cabinet: "202",
-              },
-            },
-          },
-        ],
-      },
-      {
-        dayOfWeek: 6,
-        isWeekend: false,
-        lessons: [
-          {
-            count: 1,
-            time: { from: "8:30", to: "10:10" },
-            data: {
-              topWeek: {
-                subject: { title: "Мат. анализ", type: "лб." },
-                teacher: { name: "Чумак", degree: "к.м.н" },
-                cabinet: "202",
-              },
-              lowerWeek: {
-                subject: {
-                  title: "Разработка профессиональных приложений",
-                  type: "пр.",
-                },
-                teacher: { name: "Чумак", degree: "к.м.н" },
-                cabinet: "236",
-              },
-            },
-          },
-          {
-            count: 2,
-            time: { from: "10:15", to: "11:50" },
-            data: {
-              topWeek: {
-                subject: { title: "Мат. анализ", type: "лб." },
-                teacher: { name: "Чумак", degree: "к.м.н" },
-                cabinet: "202",
-              },
-            },
-          },
-          {
-            count: 3,
-            time: { from: "12:30", to: "14:05" },
-            data: {
-              topWeek: {
-                subject: { title: "Геометрия", type: "лб." },
-                teacher: { name: "Чумак", degree: "к.м.н" },
-                cabinet: "202",
-              },
-            },
-          },
-          {
-            count: 1,
-            time: { from: "8:30", to: "10:10" },
-            data: {
-              topWeek: {
-                subject: { title: "Мат. анализ", type: "лб." },
-                teacher: { name: "Чумак", degree: "к.м.н" },
-                cabinet: "202",
-              },
-              lowerWeek: {
-                subject: {
-                  title: "Разработка профессиональных приложений",
-                  type: "пр.",
-                },
-                teacher: { name: "Чумак", degree: "к.м.н" },
-                cabinet: "236",
-              },
-            },
-          },
-          {
-            count: 2,
-            time: { from: "10:15", to: "11:50" },
-            data: {
-              topWeek: {
-                subject: { title: "Мат. анализ", type: "лб." },
-                teacher: { name: "Чумак", degree: "к.м.н" },
-                cabinet: "202",
-              },
-            },
-          },
-          {
-            count: 3,
-            time: { from: "12:30", to: "14:05" },
-            data: {
-              topWeek: {
-                subject: { title: "Геометрия", type: "лб." },
-                teacher: { name: "Чумак", degree: "к.м.н" },
-                cabinet: "202",
-              },
-            },
-          },
-        ],
-      },
-    ],
-  },
-];
+export const initialState: ScheduleGroupsStateT = [];
 
 export const scheduleReducer = (
   state: ScheduleGroupsStateT = initialState,
@@ -355,11 +12,28 @@ export const scheduleReducer = (
 ) => {
   switch (action.type) {
     case SCHEDULE.GET:
-      // const { name, surename, age } = <getScheduleAT>action;
-      return { ...state };
+      // console.log(action.schedule);
+      action.schedule.sort((a, b) => a.dayOfWeek - b.dayOfWeek);
+      return [...state, { group: "ВИС 11", days: action.schedule }];
 
     // define rest of actions here
     default:
       return state;
   }
+};
+
+export const getSchedule1 = (
+  groupName: string
+): ThunkAction<Promise<void>, {}, {}, AnyAction> => {
+  return async (dispatch: ThunkDispatch<{}, {}, AnyAction>): Promise<void> => {
+    //  return new Promise<void>(async (resolve) => {
+    return new Promise<void>((resolve) => {
+      scheduleApi.getSchedule(groupName).then((res) => {
+        dispatch(getScheduleA(res));
+        resolve();
+      });
+    });
+    //  resolve();
+    //  });
+  };
 };

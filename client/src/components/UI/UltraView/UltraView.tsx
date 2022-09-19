@@ -55,7 +55,7 @@ export function UltraView<dataType = any>(props: {
       else el.value = withSpring(15, configSpring);
       return el;
     });
-
+    console.log("000000000");
     if (!isStart) {
       count.value = props.curPage.value + 1;
       position.value = withSpring(-posCards[props.curPage.value], configSpring);

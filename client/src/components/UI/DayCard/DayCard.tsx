@@ -9,17 +9,17 @@ import { useStyles } from "../../../hooks/useStyles";
 import { styles } from "./styles";
 
 interface DayCardI {
-  dayOfWeek: 1 | 2 | 3 | 4 | 5 | 6;
+  dayOfWeek: 0 | 1 | 2 | 3 | 4 | 5;
   lessons: LessonT[];
 }
 
 const days = {
-  1: "понедельник",
-  2: "вторник",
-  3: "среда",
-  4: "четверг",
-  5: "пятница",
-  6: "суббота",
+  0: "понедельник",
+  1: "вторник",
+  2: "среда",
+  3: "четверг",
+  4: "пятница",
+  5: "суббота",
 };
 
 export const DayCard: FC<DayCardI> = ({ lessons, dayOfWeek }) => {

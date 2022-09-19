@@ -86,7 +86,7 @@ export const LessonCard: FC<LessonCardI> = ({
             textStyle={style.budgeText}
           />
           <Text style={{ width: 240, lineHeight: 18, ...styleUI.h2 }}>
-            {data[curData]?.subject.title}
+            {data[curData]?.subject && data[curData]?.subject.title}
           </Text>
         </View>
         <View style={style.secondaryContainer}>
@@ -99,10 +99,12 @@ export const LessonCard: FC<LessonCardI> = ({
             <View>
               {!isNotTeacher && (
                 <Text style={styleUI.h3_b}>
-                  {data[curData]?.teacher.degree
+                  {data[curData]?.teacher
                     ? data[curData]?.teacher.degree + " "
                     : ""}
-                  {data[curData]?.teacher.name}
+                  {data[curData]?.teacher
+                    ? data[curData]?.teacher.name + " "
+                    : ""}
                 </Text>
               )}
               <Text style={styleUI.h3_b}>каб: {data[curData]?.cabinet}</Text>

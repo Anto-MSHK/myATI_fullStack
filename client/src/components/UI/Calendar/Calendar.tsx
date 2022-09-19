@@ -51,6 +51,7 @@ export const Calendar: FC<CalendarI> = ({ onChangeDay }) => {
   const [selectedIndex, setSelectedIndex] = useState(curDay);
   const dispatch = useDispatch();
 
+  console.log("sddasd");
   return (
     <View
       onLayout={() => {

@@ -79,7 +79,7 @@ class Manager {
         console.clear()
         ManagerLogs.INFO('Server', managerMSG.RELOAD)
         tick()
-      }, 100000)
+      }, 10000000)
 
       app.listen(PORT, () => {
         ManagerLogs.INFO('Server', managerMSG.ON_PORT)
@@ -156,7 +156,7 @@ class Manager {
     })
     var dateEnd = undefined
 
-    date && (dateEnd = addHours(date, 0.1))
+    date && (dateEnd = addHours(date, 0.5))
     if (!errConnection && dateEnd && new Date() > dateEnd) {
       await getFiles()
       return true

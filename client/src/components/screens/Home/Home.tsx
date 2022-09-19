@@ -5,7 +5,7 @@ import {
   View,
 } from "react-native";
 import { Layoult } from "../../UI/Layoult/Layoult";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { HeaderMain } from "../../UI/Header/Header";
 import { DayCard } from "./../../UI/DayCard/DayCard";
 import { useAppSelector } from "../../../hooks/redux";
@@ -14,13 +14,20 @@ import { styles } from "./styles";
 import { UltraView } from "../../UI/UltraView/UltraView";
 import { useDispatch } from "react-redux";
 import { setCurDayA } from "../../../state/app/actions";
+import { getSchedule1 } from "../../../state/schedule/reducer";
+import store from "../../../state/state";
+import { AnyAction } from "redux";
 
 export const Home = () => {
-  var days = useAppSelector((state) => state.schedule[0].days);
+  var days = useAppSelector((state) => state.schedule);
 
   const [curPage, setCurPage] = useState({ value: 0, isChange: false });
   const [isStart, setIsStart] = useState(true);
   const dispatch = useDispatch();
+  useEffect(() => {
+    if (isStart) dispatch(getSchedule1("ВИС21") as any);
+  }, []);
+
   return (
     <Layoult>
       <View>
@@ -41,9 +48,9 @@ export const Home = () => {
         </View>
       </View>
       <View style={styles.contentContainer}>
-        {!isStart && (
+        {!isStart && days[0] && (
           <UltraView
-            data={days}
+            data={days[0].days}
             renderItem={(item, index) => (
               <DayCard lessons={item.lessons} dayOfWeek={item.dayOfWeek} />
             )}
