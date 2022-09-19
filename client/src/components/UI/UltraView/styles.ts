@@ -6,9 +6,9 @@ export const styles = () => {
   const { theme } = useTheme();
 
   return StyleSheet.create({
-    el: {
-      zIndex: 4,
-      elevation: 4,
-    },
+    //  el: {
+    //    zIndex: 4,
+    //    elevation: 4,
+    //  },
   });
 };

@@ -17,7 +17,7 @@ export const Layoult: FC<ILayoult> = ({ children, isScrollView = false }) => {
   return (
     <ImageBackground
       source={theme === "dark" ? lightBG : darkBG}
-      style={{ flex: 1 }}
+      style={{ flex: 1, zIndex: -2, elevation: -2 }}
     >
       {isScrollView ? <ScrollView>{children}</ScrollView> : children}
     </ImageBackground>
