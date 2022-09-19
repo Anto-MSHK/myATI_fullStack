@@ -1,5 +1,5 @@
 import { LayoutChangeEvent, Dimensions, View } from "react-native";
-import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
+import React, { FC, useCallback, useEffect, useState } from "react";
 import { useAppSelector } from "../../../hooks/redux";
 import { SwipePage } from "./SwipePage";
 import {
@@ -13,13 +13,7 @@ import Animated, {
   useSharedValue,
   withDecay,
   withSpring,
-  withTiming,
 } from "react-native-reanimated";
-import { Logs } from "expo";
-import { setCurDayAT } from "../../../state/appSettings/actions";
-import { useDispatch } from "react-redux";
-import { useStyles } from "../../../hooks/useStyles";
-import { styles } from "./../UltraView/styles";
 
 const { height } = Dimensions.get("screen");
 
@@ -29,11 +23,9 @@ const HEIGHT_CONTENT = height - END_POSITION;
 export function UltraView<dataType = any>(props: {
   data: dataType[];
   renderItem: (item: dataType, index: number) => React.ReactNode;
-  curPage: { value: number; noChange: boolean };
+  curPage: { value: number; isChange: boolean };
   onSwipe?: (curPage: number) => void;
 }) {
-  console.log("dsd");
-  Logs.enableExpoCliLogging();
   const [isStart, setIsStart] = useState(true);
   const position = useSharedValue(0);
   var opacity = [0, 0, 0, 0, 0, 0].map((el) => useSharedValue(el));
@@ -133,8 +125,8 @@ export function UltraView<dataType = any>(props: {
     });
   };
 
-  const callback = (count1: number) => {
-    props.onSwipe && props.onSwipe(count1);
+  const callback = (count: number) => {
+    props.onSwipe && props.onSwipe(count);
   };
   const configSpring = {
     damping: 8,
@@ -165,25 +157,25 @@ export function UltraView<dataType = any>(props: {
     })
     .onUpdate((e) => {
       position.value = contextY.value + e.translationY;
-      var procent = (Math.abs(e.translationY) * 100) / contextOpacity.value;
+      // var procent = (Math.abs(e.translationY) * 100) / contextOpacity.value;
 
-      if (
-        contextAdvanced.value === 0 ||
-        position.value <= -contextAdvanced.value ||
-        position.value > -posCards[count.value - 1]
-      ) {
-        if (count.value !== 6) {
-          opacity[count.value].value = procent / 100;
-          marginHorz[count.value].value = 10 - procent / 5;
-        }
-        opacity[count.value - 1].value = 1 - procent / 100;
-        marginHorz[count.value - 1].value = procent / 5;
+      // if (
+      //   contextAdvanced.value === 0 ||
+      //   position.value <= -contextAdvanced.value ||
+      //   position.value > -posCards[count.value - 1]
+      // ) {
+      //   if (count.value !== 6) {
+      //     opacity[count.value].value = procent / 100;
+      //     marginHorz[count.value].value = 10 - procent / 5;
+      //   }
+      //   opacity[count.value - 1].value = 1 - procent / 100;
+      //   marginHorz[count.value - 1].value = procent / 5;
 
-        if (count.value !== 1) {
-          opacity[count.value - 2].value = procent / 100;
-          marginHorz[count.value - 2].value = -procent / 5;
-        }
-      }
+      //   if (count.value !== 1) {
+      //     opacity[count.value - 2].value = procent / 100;
+      //     marginHorz[count.value - 2].value = -procent / 5;
+      //   }
+      // }
     })
     .onEnd((e) => {
       var minVelocity = 1000;

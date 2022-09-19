@@ -51,9 +51,6 @@ export const Calendar: FC<CalendarI> = ({ onChangeDay }) => {
   const [selectedIndex, setSelectedIndex] = useState(curDay);
   const dispatch = useDispatch();
 
-  //   useEffect(() => {
-  //     onChangeDay(curDay);
-  //   }, [curDay]);
   return (
     <View
       onLayout={() => {
@@ -68,7 +65,6 @@ export const Calendar: FC<CalendarI> = ({ onChangeDay }) => {
             dispatch(setCurDayA(value));
             onChangeDay(value);
             setSelectedIndex(value);
-            console.log(value + " " + curDay + " " + selectedIndex);
           }}
           containerStyle={style.buttonsContainer}
           selectedButtonStyle={style.selectedButton}
