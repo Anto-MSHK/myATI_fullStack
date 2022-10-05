@@ -7,6 +7,7 @@ import { useStyles } from "./../../../hooks/useStyles";
 import { useDispatch } from "react-redux";
 import { setAppSettingsA } from "../../../state/appSettings/actions";
 import { useAppSelector } from "../../../hooks/redux";
+import { getSchedule1 } from "../../../state/schedule/reducer";
 
 interface HeaderMainI {
   title?: string;
@@ -32,6 +33,7 @@ export const HeaderMain: FC<HeaderMainI> = ({
 
   const managePanelActivity = () => {
     dispatch(setAppSettingsA());
+	 dispatch(getSchedule1("ВИС21") as any);
     setMode(themeMode);
     if (icon === "menuunfold") {
       setIcon("menufold");

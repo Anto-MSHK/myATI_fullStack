@@ -201,6 +201,7 @@ class ParserService {
               const fileOfData = XLSX.readFile(directory + file, {
                 raw: true,
               })
+
               workSheet = fileOfData.Sheets[fileOfData.SheetNames[0]] as list
               delete workSheet['!margins']
               delete workSheet['!ref']
@@ -353,6 +354,14 @@ class ParserService {
     }
   }
 
+  times = [
+    { from: '8:30', to: '10:05' },
+    { from: '10:15', to: '11:50' },
+    { from: '12:30', to: '14:05' },
+    { from: '14:15', to: '15:50' },
+    { from: '16:00', to: '17:35' },
+    { from: '17:45', to: '19:20' },
+  ]
   defineLesson = async (
     referLesson: dayCells,
     referСell_letter: string,
@@ -406,11 +415,11 @@ class ParserService {
       }
       lesson = {
         count: `${curLesson}`,
-        time: '',
+        time: this.times[curLesson],
         day_id,
         data,
       }
-      return await LessonService.addLesson(curLesson, day_id, data).then(() => lesson)
+      return await LessonService.addLesson(curLesson, day_id, data, this.times[curLesson]).then(() => lesson)
     } catch (e) {
       return undefined
     }
@@ -442,7 +451,7 @@ const getLessonData = (str: string): [title: string, nameTeacher: string, degree
       for (let i_char_end = str.length; i_char_end >= 1; i_char_end--) {
         let currentPhrase: string = ''
 
-        for (let i = i_char_start; i <= i_char_end; i++) {
+        for (let i = i_char_start; i < i_char_end; i++) {
           currentPhrase += str[i]
         }
         if (surname.test(currentPhrase)) {
@@ -462,12 +471,14 @@ const getLessonData = (str: string): [title: string, nameTeacher: string, degree
 
     let i_first_t = str.indexOf('.')
     if (i_first_t != -1) {
-      for (let j = i_first_t; j >= 0; j--) {
-        if (str[j] === ' ') {
-          i_first_t = j
-          break
+      if (i_first_t > i_degree) i_first_t = i_degree - 1
+      else
+        for (let j = i_first_t; j >= 0; j--) {
+          if (str[j] === ' ') {
+            i_first_t = j
+            break
+          }
         }
-      }
       for (let i = 0; i <= i_first_t; i++) {
         title += str[i]
       }
@@ -480,7 +491,7 @@ const getLessonData = (str: string): [title: string, nameTeacher: string, degree
       }
     }
 
-    for (let i = i_first_t - 1; i <= i_degree - 1; i++) {
+    for (let i = i_first_t; i <= i_degree - 1; i++) {
       degree += str[i]
     }
 
@@ -516,7 +527,7 @@ const lessonConstant = async (
 
     let cabinet = props.cabinet_fCell ? props.cabinet_fCell : props.cabinet_sCell
 
-    var data = await addDataFromLesson(_, name, degree, cabinet)
+    var data = await addDataFromLesson(title, name, degree, cabinet)
 
     return {
       topWeek: {

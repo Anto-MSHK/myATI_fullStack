@@ -7,12 +7,13 @@ const instance = axios.create({
 });
 
 export const scheduleApi = {
-  getSchedule: (groupName: string) => {
+  getSchedule: async (groupName: string) => {
     console.log(groupName);
-    return axios
-      .get(`http://192.168.100.8:5000/schedule/group?name=${groupName}`, {})
+    return await axios
+      .get(`http://192.168.235.107:5000/schedule/group?name=${groupName}`, {})
       .then((response) => {
         return response.data.result;
-      });
+      })
+      .catch((err) => console.log(err));
   },
 };

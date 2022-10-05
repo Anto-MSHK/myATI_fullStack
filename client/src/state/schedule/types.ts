@@ -10,7 +10,7 @@ type teacherT = {
 
 export type dataLessonT = {
   subject: subjectT;
-  teacher: teacherT;
+  teachers: teacherT[];
   cabinet: string;
 };
 

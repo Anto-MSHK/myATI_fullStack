@@ -14,6 +14,9 @@ export const scheduleReducer = (
     case SCHEDULE.GET:
       // console.log(action.schedule);
       action.schedule.sort((a, b) => a.dayOfWeek - b.dayOfWeek);
+      // action.schedule.map((el) => {
+      //   el.lessons.sort((a, b) => a.count - b.count);
+      // });
       return [...state, { group: "ВИС 11", days: action.schedule }];
 
     // define rest of actions here

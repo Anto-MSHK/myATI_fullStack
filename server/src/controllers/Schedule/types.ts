@@ -21,7 +21,7 @@ export type dayG = {
 }
 export type lessonG = {
   count: string
-  time: string
+  time: { from: string; to: string }
   data: {
     topWeek: lessonDataG
     lowerWeek?: lessonDataG | 'none'
@@ -40,7 +40,7 @@ export type lessonDataT =
 export type lessonT = {
   group: string
   count: string
-  time: string
+  time: { from: string; to: string }
   data: {
     topWeek?: lessonDataT
     lowerWeek?: lessonDataT

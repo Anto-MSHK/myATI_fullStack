@@ -24,9 +24,9 @@ export const Home = () => {
   const [curPage, setCurPage] = useState({ value: 0, isChange: false });
   const [isStart, setIsStart] = useState(true);
   const dispatch = useDispatch();
-  useEffect(() => {
-    if (isStart) dispatch(getSchedule1("ВИС21") as any);
-  }, []);
+//   useEffect(() => {
+//     if (isStart) dispatch(getSchedule1("ВИС21") as any);
+//   }, []);
 
   return (
     <Layoult>
