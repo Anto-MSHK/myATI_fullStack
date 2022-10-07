@@ -177,6 +177,9 @@ class Manager {
     await Subject.collection.drop()
     await Teacher.collection.drop()
     await Cabinet.collection.drop()
+    Subject.collection.createIndex({ title: 1 }, { unique: true })
+    Teacher.collection.createIndex({ name: 1 }, { unique: true })
+    Cabinet.collection.createIndex({ item: 1 }, { unique: true })
   }
 }
 

@@ -9,7 +9,7 @@ export type teacher = { name: string; degree?: string }
 export type lessonDataG =
   | {
       subject: subject
-      teachers: teacher[]
+      teacher: teacher
       cabinet: string
     }
   | undefined

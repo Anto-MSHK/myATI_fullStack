@@ -4,7 +4,7 @@ import { ObjectId } from 'mongodb'
 export type byWeek = {
   subject_id: ObjectId
   type?: string
-  teachers_id: ObjectId[]
+  teacher_id: ObjectId
   cabinet_id?: ObjectId
 }
 

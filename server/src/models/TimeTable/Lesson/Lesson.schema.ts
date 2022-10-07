@@ -3,30 +3,30 @@ import * as mongoose from 'mongoose'
 
 const ObjectId = mongoose.Schema.Types.ObjectId
 
-const topWeek = {
+const topWeek = new Schema({
   subject_id: { type: ObjectId, ref: 'Subject', required: true },
   type: { type: String },
-  teachers_id: [{ type: ObjectId, ref: 'Teacher', required: true }],
+  teacher_id: { type: ObjectId, ref: 'Teacher', required: true },
   cabinet_id: { type: ObjectId, ref: 'Cabinet' },
-}
-const lowerWeek = {
+})
+const lowerWeek = new Schema({
   subject_id: { type: ObjectId, ref: 'Subject' },
   type: { type: String },
-  teachers_id: [{ type: ObjectId, ref: 'Teacher' }],
+  teacher_id: { type: ObjectId, ref: 'Teacher' },
   cabinet_id: { type: ObjectId, ref: 'Cabinet' },
-}
-const time = {
-  from: String,
-  to: String,
-}
+})
+const time = new Schema({
+  from: { type: String },
+  to: { type: String },
+})
 
 const LessonSchema = new Schema({
   count: { type: Number, required: true },
-  time: { ...time },
+  time: time,
   day_id: { type: ObjectId, ref: 'Message', required: true },
   data: {
-    topWeek: { ...topWeek },
-    lowerWeek: { ...lowerWeek },
+    topWeek: topWeek,
+    lowerWeek: lowerWeek,
   },
 })
 

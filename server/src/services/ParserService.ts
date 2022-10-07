@@ -499,6 +499,8 @@ const getLessonData = (str: string): [title: string, nameTeacher: string, degree
       str[i] && (typeLesson += str[i])
     }
 
+    if (!degree || degree === 'undefined') degree = ''
+
     return [title, nameTeacher, degree.trim(), typeLesson.trim()]
   } catch (e) {
     console.log(e)
@@ -511,7 +513,7 @@ const lessonConstant = async (
 ): Promise<{
   topWeek: byWeek
 }> => {
-  var data: byWeek = { subject_id: new ObjectId(), teachers_id: [], cabinet_id: new ObjectId() }
+  var data: byWeek = { subject_id: new ObjectId(), teacher_id: new ObjectId(), cabinet_id: new ObjectId() }
 
   try {
     let [_, name, degree, type] = props.cellInfo ? getLessonData(props.cellInfo) : []
@@ -527,7 +529,7 @@ const lessonConstant = async (
 
     let cabinet = props.cabinet_fCell ? props.cabinet_fCell : props.cabinet_sCell
 
-    var data = await addDataFromLesson(title, name, degree, cabinet)
+    var data = await addDataFromLesson(title, type, name, degree, cabinet)
 
     return {
       topWeek: {
@@ -548,21 +550,21 @@ const lessonByWeek = async (
   topWeek: byWeek
   lowerWeek: byWeek
 }> => {
-  var topWeek: byWeek = { subject_id: new ObjectId(), teachers_id: [], cabinet_id: new ObjectId() },
-    lowerWeek: byWeek = { subject_id: new ObjectId(), teachers_id: [], cabinet_id: new ObjectId() }
+  var topWeek: byWeek = { subject_id: new ObjectId(), teacher_id: new ObjectId(), cabinet_id: new ObjectId() },
+    lowerWeek: byWeek = { subject_id: new ObjectId(), teacher_id: new ObjectId(), cabinet_id: new ObjectId() }
   try {
     //? ---->-->-> topWeek <-<--<----
     let [titleTop, nameTop, degreeTop, typeTop] = props.mainCell ? getLessonData(props.mainCell) : []
     let cabinetTop = props.cabinet_fCell ? props.cabinet_fCell : props.cabinet_sCell
 
-    var topWeek = await addDataFromLesson(titleTop, nameTop, degreeTop, cabinetTop)
+    var topWeek = await addDataFromLesson(titleTop, typeTop, nameTop, degreeTop, cabinetTop)
 
     //? ---->-->-> lowerWeek <-<--<----
     let [titleLower, nameLower, degreeLower, typeLower] = props.cellInfo ? getLessonData(props.cellInfo) : []
 
     let cabinetLower = props.cabinet_fCell ? props.cabinet_fCell : props.cabinet_sCell
 
-    var lowerWeek = await addDataFromLesson(titleLower, nameLower, degreeLower, cabinetLower)
+    var lowerWeek = await addDataFromLesson(titleLower, typeLower, nameLower, degreeLower, cabinetLower)
 
     return { topWeek: { type: typeTop, ...topWeek }, lowerWeek: { type: typeLower, ...lowerWeek } }
   } catch (e) {
@@ -572,24 +574,37 @@ const lessonByWeek = async (
 
 const addDataFromLesson = async (
   title: string | undefined,
+  type: string | undefined,
   name: string | undefined,
   degree: string | undefined,
   cabinet: string | undefined
 ) => {
-  var data: byWeek = { subject_id: new ObjectId(), teachers_id: [], cabinet_id: new ObjectId() }
+  var data: byWeek = { subject_id: new ObjectId(), teacher_id: new ObjectId(), cabinet_id: new ObjectId() }
 
-  await new EduStructureService(Subject as any, { title }).add().then(res => {
+  const subjectC = new EduStructureService(Subject as any, { title })
+
+  await subjectC.add().then(async res => {
     if (res.result) data.subject_id = res.result
   })
 
-  await new EduStructureService(Teacher as any, { name, degree }).add().then(res => {
-    if (res.result) data.teachers_id.push(res.result)
+  const teacherC = new EduStructureService(Teacher as any, { name, degree })
+
+  await teacherC.add().then(res => {
+    if (res.result) data.teacher_id = res.result
   })
 
+  await subjectC.addSubjectToTeacher(name)
   if (cabinet && +cabinet !== NaN) {
-    await new EduStructureService(Cabinet as any, { item: +cabinet }).add().then(res => {
+    const cabinetC = new EduStructureService(Cabinet as any, { item: +cabinet })
+
+    await cabinetC.add().then(res => {
       if (res.result) data.cabinet_id = res.result
     })
+    await cabinetC.addCabinetToSubject(title)
+  }
+
+  if (type) {
+    await subjectC.addTypeLessonToSubject(type)
   }
   return data
 }

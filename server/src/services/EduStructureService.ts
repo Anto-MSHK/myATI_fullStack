@@ -1,6 +1,7 @@
 import { RT } from '@src/routes/resTypes'
 import Subject from '@src/models/TimeTable/Subject/Subject.model'
 import Teacher from '@src/models/TimeTable/Teacher/Teacher.model'
+import Cabinet from '@src/models/TimeTable/Cabinet/Cabinet.model'
 import { BT_uniformTypes, QT_uniformTypes } from '@src/routes/eduStructureRouter/eduStructure.types'
 import { ISubjectDocument } from '@src/models/TimeTable/Subject/Subject.types'
 import { ITeacherDocument } from '@src/models/TimeTable/Teacher/Teacher.types'
@@ -23,6 +24,9 @@ class EduStructureService<model = ISubjectDocument | ITeacherDocument | ICabinet
     this.body = body
     this.query = query
     this.add = this.add.bind(this)
+    this.addSubjectToTeacher = this.addSubjectToTeacher.bind(this)
+    this.addCabinetToSubject = this.addCabinetToSubject.bind(this)
+    this.addTypeLessonToSubject = this.addTypeLessonToSubject.bind(this)
     this.change = this.change.bind(this)
     this.delete = this.delete.bind(this)
   }
@@ -63,24 +67,127 @@ class EduStructureService<model = ISubjectDocument | ITeacherDocument | ICabinet
       if (!(this.body as any)[Object.keys(this.body)[0]]) {
         throw ApiError.INVALID_REQUEST(errorsMSG.INCORRECT)
       }
-
-      const candidate = await (this.datatype as any).findOne({
-        [Object.keys(this.body)[0]]: Object.values(this.body)[0],
-      })
+      var a = Object.keys(this.body)[0],
+        b = Object.values(this.body)[0]
+      const candidate = await (this.datatype as any).findOne(
+        {
+          [a]: b,
+        },
+        { runValidators: true, context: 'query' }
+      )
 
       if (candidate) {
         return {
           isAlreadyExist: true,
           result: candidate._id,
         }
+      } else {
+        const model = new this.datatype({
+          ...this.body,
+        })
+
+        await model.save()
+        return { isAlreadyExist: false, result: model._id }
+      }
+    } catch (e: any) {
+      return { result: undefined }
+    }
+  }
+
+  addSubjectToTeacher = async (name: string | undefined) => {
+    try {
+      if (!this.body) {
+        throw ApiError.INVALID_REQUEST(errorsMSG.INCORRECT)
       }
 
-      const model = new this.datatype({
-        ...this.body,
+      if (!(this.body as any)[Object.keys(this.body)[0]]) {
+        throw ApiError.INVALID_REQUEST(errorsMSG.INCORRECT)
+      }
+
+      var title = Object.values(this.body)[0]
+      const candidate = await Subject.findOne({
+        title: title,
       })
 
-      await model.save()
-      return { isAlreadyExist: false, result: model._id }
+      if (!candidate) {
+        throw ApiError.INVALID_REQUEST(errorsMSG.INCORRECT)
+      }
+
+      const teacherCandidate = await Teacher.findOne({
+        name: name,
+      })
+
+      if (!teacherCandidate) {
+        throw ApiError.INVALID_REQUEST(errorsMSG.INCORRECT)
+      }
+
+      var id = candidate._id
+      await teacherCandidate?.update({ $addToSet: { subjects_id: id } })
+
+      return { result: teacherCandidate }
+    } catch (e: any) {
+      return { result: undefined }
+    }
+  }
+
+  addCabinetToSubject = async (title: string | undefined) => {
+    try {
+      if (!this.body) {
+        throw ApiError.INVALID_REQUEST(errorsMSG.INCORRECT)
+      }
+
+      if (!(this.body as any)[Object.keys(this.body)[0]]) {
+        throw ApiError.INVALID_REQUEST(errorsMSG.INCORRECT)
+      }
+
+      var item = Object.values(this.body)[0]
+      const candidate = await Cabinet.findOne({
+        item: item,
+      })
+
+      if (!candidate) {
+        throw ApiError.INVALID_REQUEST(errorsMSG.INCORRECT)
+      }
+
+      const subjectCandidate = await Subject.findOne({
+        title: title,
+      })
+
+      if (!subjectCandidate) {
+        throw ApiError.INVALID_REQUEST(errorsMSG.INCORRECT)
+      }
+
+      var id = candidate._id
+      await subjectCandidate?.update({ $addToSet: { cabinets_id: id } })
+
+      return { result: subjectCandidate }
+    } catch (e: any) {
+      return { result: undefined }
+    }
+  }
+
+  addTypeLessonToSubject = async (type: string | undefined) => {
+    try {
+      if (!this.body) {
+        throw ApiError.INVALID_REQUEST(errorsMSG.INCORRECT)
+      }
+
+      if (!(this.body as any)[Object.keys(this.body)[0]]) {
+        throw ApiError.INVALID_REQUEST(errorsMSG.INCORRECT)
+      }
+
+      var title = Object.values(this.body)[0]
+      const candidate = await Subject.findOne({
+        title: title,
+      })
+
+      if (!candidate) {
+        throw ApiError.INVALID_REQUEST(errorsMSG.INCORRECT)
+      }
+
+      await candidate?.update({ $addToSet: { types: type } })
+
+      return { result: candidate }
     } catch (e: any) {
       return { result: undefined }
     }

@@ -57,9 +57,9 @@ class ScheduleController {
 
               if (subject.title !== 'нет данных') {
                 //? ==< teachers >==
-                let teachers: teacher[] = []
-                await TeacherService.getById(lesson.data.topWeek.teachers_id).then(result => {
-                  teachers.push(result as teacher)
+                let teacher: teacher = { name: '', degree: '' }
+                await TeacherService.getById(lesson.data.topWeek.teacher_id).then(result => {
+                  teacher = result as teacher
                 })
 
                 //? ==< cabinet >==
@@ -71,7 +71,7 @@ class ScheduleController {
                 //? ==< data >==
                 dataTop = {
                   subject,
-                  teachers,
+                  teacher,
                   cabinet,
                 }
               } else dataTop = undefined
@@ -94,9 +94,9 @@ class ScheduleController {
               subjectLower.type = lesson.data.lowerWeek.type
 
               //? ==< teachers >==
-              let teachersLower: teacher[] = []
-              await TeacherService.getById(lesson.data.lowerWeek.teachers_id).then(result => {
-                teachersLower.push(result as teacher)
+              let teacherLower: teacher = { name: '', degree: '' }
+              await TeacherService.getById(lesson.data.lowerWeek.teacher_id).then(result => {
+                teacherLower = result as teacher
               })
 
               //? ==< cabinet >==
@@ -108,7 +108,7 @@ class ScheduleController {
               if (subjectLower.title !== 'нет данных')
                 dataLower = {
                   subject: subjectLower,
-                  teachers: teachersLower,
+                  teacher: teacherLower,
                   cabinet: cabinetLower,
                 }
               else dataLower = 'none'
@@ -211,11 +211,11 @@ class ScheduleController {
                   let teacherNames_Top: string[] = []
                   let teacherNames_Lower: string[] = []
 
-                  await Teacher.findById(lessonDB.data.topWeek.teachers_id).then(res => {
+                  await Teacher.findById(lessonDB.data.topWeek.teacher_id).then(res => {
                     if (res && res.name) teacherNames_Top.push(res.name)
                   })
                   if (lessonDB.data.lowerWeek)
-                    await Teacher.findById(lessonDB.data.lowerWeek.teachers_id).then(res => {
+                    await Teacher.findById(lessonDB.data.lowerWeek.teacher_id).then(res => {
                       if (res && res.name) teacherNames_Lower.push(res.name)
                     })
 
