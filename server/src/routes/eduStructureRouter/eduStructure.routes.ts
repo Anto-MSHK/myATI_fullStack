@@ -23,27 +23,32 @@ import Cabinet from '@src/models/TimeTable/Cabinet/Cabinet.model'
 import { errorsMSG } from '../../exceptions/API/errorsConst'
 
 const eduStructure = Router()
+eduStructure.get<string, any, RT, any, QT_Subject>('/subject', [], EduStructureController.getSubject())
+
 eduStructure.post<string, any, RT, BT_addSubject>(
   '/subject/add',
   [
     check('title', errorsMSG.NO_EMPTY).notEmpty(),
     check('types', errorsMSG.IS_ARRAY).optional().isArray({ min: 1 }),
     check('cabinets_id', errorsMSG.IS_ARRAY).optional().isArray({ min: 1 }),
+    ...accessRights_maximum,
   ],
   EduStructureController.add(Subject)
 )
+
 eduStructure.post<string, any, RT, BT_addTeacher>(
   '/teacher/add',
   [
     check('name', errorsMSG.NO_EMPTY).notEmpty(),
     check('degree', errorsMSG.IS_STRING).optional().isString(),
     check('subjects_id', errorsMSG.IS_ARRAY).optional().isArray({ min: 1 }),
+    ...accessRights_maximum,
   ],
   EduStructureController.add(Teacher)
 )
 eduStructure.post<string, any, RT, BT_addCabinet>(
   '/cabinet/add',
-  [check('item', errorsMSG.NO_EMPTY).notEmpty()],
+  [check('item', errorsMSG.NO_EMPTY).notEmpty(), ...accessRights_maximum],
   EduStructureController.add(Cabinet)
 )
 
@@ -53,6 +58,7 @@ eduStructure.put<string, any, RT, BT_changeSubject, QT_uniformTypes>(
     check('title', errorsMSG.NO_EMPTY).notEmpty(),
     check('types', errorsMSG.IS_ARRAY).optional().isArray({ min: 1 }),
     check('cabinets_id', errorsMSG.IS_ARRAY).optional().isArray({ min: 1 }),
+    ...accessRights_maximum,
   ],
   EduStructureController.change(Subject)
 )
@@ -62,28 +68,29 @@ eduStructure.put<string, any, RT, BT_changeTeacher, QT_uniformTypes>(
     check('name', errorsMSG.NO_EMPTY).notEmpty(),
     check('degree', errorsMSG.IS_STRING).optional().isString(),
     check('subjects_id', errorsMSG.IS_ARRAY).optional().isArray({ min: 1 }),
+    ...accessRights_maximum,
   ],
   EduStructureController.change(Teacher)
 )
 eduStructure.put<string, any, RT, BT_changeCabinet, QT_uniformTypes>(
   '/cabinet',
-  [check('item', errorsMSG.NO_EMPTY).notEmpty()],
+  [check('item', errorsMSG.NO_EMPTY).notEmpty(), ...accessRights_maximum],
   EduStructureController.change(Cabinet)
 )
 
 eduStructure.delete<string, any, RT, {}, QT_Subject>(
   '/subject',
-  [query('title', errorsMSG.QUERY_NO_EMPTY).notEmpty()],
+  [query('title', errorsMSG.QUERY_NO_EMPTY).notEmpty(), ...accessRights_maximum],
   EduStructureController.delete(Subject)
 )
 eduStructure.delete<string, any, RT, {}, QT_Teacher>(
   '/teacher',
-  [query('name', errorsMSG.QUERY_NO_EMPTY).notEmpty()],
+  [query('name', errorsMSG.QUERY_NO_EMPTY).notEmpty(), ...accessRights_maximum],
   EduStructureController.delete(Teacher)
 )
 eduStructure.delete<string, any, RT, {}, QT_Cabinet>(
   '/cabinet',
-  [query('item', errorsMSG.QUERY_NO_EMPTY).notEmpty()],
+  [query('item', errorsMSG.QUERY_NO_EMPTY).notEmpty(), ...accessRights_maximum],
   EduStructureController.delete(Cabinet)
 )
 

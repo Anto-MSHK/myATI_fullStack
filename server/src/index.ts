@@ -24,7 +24,7 @@ const PORT = config.get('serverPort')
 
 app.use(express.json())
 app.use('/auth', auth)
-app.use('/edu', accessRights_maximum, eduStructure)
+app.use('/edu', eduStructure)
 app.use('/group', group)
 app.use('/lesson', lesson)
 app.use('/schedule', schedule)
