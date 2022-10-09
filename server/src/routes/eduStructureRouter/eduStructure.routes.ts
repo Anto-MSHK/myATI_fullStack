@@ -24,6 +24,7 @@ import { errorsMSG } from '../../exceptions/API/errorsConst'
 
 const eduStructure = Router()
 eduStructure.get<string, any, RT, any, QT_Subject>('/subject', [], EduStructureController.getSubject())
+eduStructure.get<string, any, RT, any, QT_Teacher>('/teacher', [], EduStructureController.getTeacher())
 
 eduStructure.post<string, any, RT, BT_addSubject>(
   '/subject/add',
