@@ -19,3 +19,7 @@ export type BT_deleteGroup = {
 export type QT_deleteGroup = {
   name: string
 }
+
+export type QT_getGroup = {
+  name: string
+}

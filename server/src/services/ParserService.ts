@@ -11,6 +11,8 @@ import LessonService from '@src/services/LessonService'
 import { IDayDocument } from '@src/models/TimeTable/Day/Day.types'
 import { byWeek } from '@src/models/TimeTable/Lesson/Lesson.types'
 import { ObjectId } from 'mongodb'
+import { ApiError } from './../exceptions/API/api-error'
+import { errorsMSG } from './../exceptions/API/errorsConst'
 
 type stydyWeek = {
   days: (stydyDay | undefined)[]
@@ -585,11 +587,17 @@ const addDataFromLesson = async (
 
   await subjectC.add().then(async res => {
     if (res.result) data.subject_id = res.result
+    else {
+      const a = await Subject.findOne({ title })
+      if (a) {
+        data.subject_id = a._id
+      }
+    }
   })
 
   const teacherC = new EduStructureService(Teacher as any, { name, degree })
 
-  await teacherC.add().then(res => {
+  await teacherC.add().then(async res => {
     if (res.result) data.teacher_id = res.result
   })
 
@@ -597,7 +605,7 @@ const addDataFromLesson = async (
   if (cabinet && +cabinet !== NaN) {
     const cabinetC = new EduStructureService(Cabinet as any, { item: +cabinet })
 
-    await cabinetC.add().then(res => {
+    await cabinetC.add().then(async res => {
       if (res.result) data.cabinet_id = res.result
     })
     await cabinetC.addCabinetToSubject(title)

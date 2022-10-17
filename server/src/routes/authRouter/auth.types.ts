@@ -6,4 +6,5 @@ export type BT_addRights = {
   login: string
   password: string
   role: 'Redactor' | 'Elder'
+  group_id?: string
 }

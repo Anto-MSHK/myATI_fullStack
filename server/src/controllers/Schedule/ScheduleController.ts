@@ -157,10 +157,10 @@ class ScheduleController {
       var lessons = await Lesson.find({
         $or: [
           {
-            'data.topWeek.teachers_id': { $elemMatch: { $eq: teacher._id } },
+            'data.topWeek.teacher_id': teacher._id,
           },
           {
-            'data.lowerWeek.teachers_id': { $elemMatch: { $eq: teacher._id } },
+            'data.lowerWeek.teacher_id': teacher._id,
           },
         ],
       })
@@ -198,25 +198,25 @@ class ScheduleController {
                 day_id: dayDB._id,
                 $or: [
                   {
-                    'data.topWeek.teachers_id': { $elemMatch: { $eq: teacher._id } },
+                    'data.topWeek.teacher_id': teacher._id,
                   },
                   {
-                    'data.lowerWeek.teachers_id': { $elemMatch: { $eq: teacher._id } },
+                    'data.lowerWeek.teacher_id': teacher._id,
                   },
                 ],
               })
 
               let lessons = await Promise.all(
                 lessonsDB.map(async lessonDB => {
-                  let teacherNames_Top: string[] = []
-                  let teacherNames_Lower: string[] = []
+                  let teacherNames_Top: string = ''
+                  let teacherNames_Lower: string = ''
 
                   await Teacher.findById(lessonDB.data.topWeek.teacher_id).then(res => {
-                    if (res && res.name) teacherNames_Top.push(res.name)
+                    if (res && res.name) teacherNames_Top = res.name
                   })
                   if (lessonDB.data.lowerWeek)
                     await Teacher.findById(lessonDB.data.lowerWeek.teacher_id).then(res => {
-                      if (res && res.name) teacherNames_Lower.push(res.name)
+                      if (res && res.name) teacherNames_Lower = res.name
                     })
 
                   if (!teacher) return undefined
@@ -224,7 +224,7 @@ class ScheduleController {
                   let dataTop: lessonDataT = undefined
                   let dataLower: lessonDataT = undefined
 
-                  if (teacherNames_Top.indexOf(teacher.name) !== -1) {
+                  if (teacherNames_Top === teacher.name) {
                     let subject: subject = { title: '' }
                     subject.title = await SubjectService.getById(lessonDB.data.topWeek.subject_id).then(result => {
                       return result as string
@@ -242,12 +242,20 @@ class ScheduleController {
                       cabinet,
                     }
                   } else dataTop = undefined
+                  // if (!lessonDB.data.lowerWeek) return undefined
 
-                  if (!lessonDB.data.lowerWeek) return undefined
+                  var isLowerWeek = await Lesson.find({ _id: lessonDB._id, 'data.lowerWeek': { $exists: true } })
+                  if (group && (!lessonDB.data.lowerWeek || isLowerWeek.length === 0))
+                    return {
+                      count: lessonDB.count,
+                      time: lessonDB.time,
+                      group: group.name,
+                      data: { topWeek: dataTop },
+                    } as lessonT
 
                   //* >=|=> lower week <=|=<
                   //? ==< subject >==
-                  if (teacherNames_Lower.indexOf(teacher.name) !== -1) {
+                  if (teacherNames_Lower === teacher.name && lessonDB.data.lowerWeek) {
                     let subjectLower: subject = { title: '' }
                     subjectLower.title = await SubjectService.getById(lessonDB.data.lowerWeek.subject_id).then(
                       result => {
@@ -277,7 +285,6 @@ class ScheduleController {
                     } as lessonT
                 })
               )
-
               daysByWeek[i].lessons.push(...lessons)
             }
           })

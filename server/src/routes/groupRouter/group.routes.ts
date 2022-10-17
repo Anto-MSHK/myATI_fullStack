@@ -5,6 +5,7 @@ import {
   BT_deleteGroup,
   QT_changeGroup,
   QT_deleteGroup,
+  QT_getGroup,
 } from '@src/routes/groupRouter/group.types'
 import GroupController from '@src/controllers/GroupController'
 import { accessRights_maximum } from '../authRouter/auth.routes'
@@ -43,5 +44,5 @@ group.delete<string, any, RT, BT_deleteGroup, QT_deleteGroup>(
   GroupController.deleteGroup
 )
 
-group.get<string, any, RT>('/', GroupController.allGroups)
+group.get<string, any, RT, any, QT_getGroup>('/', GroupController.getGroups)
 export default group

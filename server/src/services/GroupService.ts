@@ -5,6 +5,7 @@ import { BT_changeGroup } from '@src/routes/groupRouter/group.types'
 import { IDayDocument } from '@src/models/TimeTable/Day/Day.types'
 import { errorsMSG } from '../exceptions/API/errorsConst'
 import { ApiError } from '../exceptions/API/api-error'
+import LessonService from './LessonService'
 
 const appointsElder = async (elder_id: string | undefined, group_id: string | undefined) => {
   try {
@@ -86,25 +87,32 @@ class GroupService {
     }
 
     const user = await User.findOne({ group_id: group?._id })
-    //!
+
     await user?.updateOne({ $unset: { group_id: 1 } })
 
-    await Day.deleteMany({ group_id: group._id })
+    const days = await Day.find({ group_id: group._id })
+
+    if (days)
+      await Promise.all(
+        days.map(async day => {
+          await LessonService.deleteLessons(day._id)
+        })
+      )
 
     await group.delete()
   }
 
-  allGroups = async () => {
-    const users = await Group.find()
-    return users
-  }
-
-  oneGroup = async (name: string) => {
-    const group = await Group.findOne({ name })
-    if (!group) {
-      throw ApiError.INVALID_DATA(errorsMSG.ALREADY_EXIST)
+  getGroups = async (name: string) => {
+    if (name) {
+      const group = await Group.findOne({ name }, '-_id -__v')
+      if (!group) {
+        throw ApiError.INVALID_DATA(errorsMSG.NOT_EXIST)
+      }
+      return group
+    } else {
+      const groups = await Group.find({}, '-_id -__v -messages_id')
+      return groups
     }
-    return group
   }
 }
 

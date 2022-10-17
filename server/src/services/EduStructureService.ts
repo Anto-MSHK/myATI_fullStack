@@ -31,15 +31,14 @@ class EduStructureService<model = ISubjectDocument | ITeacherDocument | ICabinet
     this.delete = this.delete.bind(this)
   }
 
-  getById = async (id: ObjectId | ObjectId[] | undefined) => {
+  getById = async (id: ObjectId | undefined) => {
     try {
       if (!id) {
         return 'нет данных'
       }
-
       const candidate = await this.datatype.findById({ _id: id })
-
       if (!candidate) {
+        console.log(id)
         return 'нет данных'
       }
 
@@ -72,8 +71,8 @@ class EduStructureService<model = ISubjectDocument | ITeacherDocument | ICabinet
       const candidate = await (this.datatype as any).findOne(
         {
           [a]: b,
-        },
-        { runValidators: true, context: 'query' }
+        }
+        //   { runValidators: true, context: 'query' }
       )
 
       if (candidate) {

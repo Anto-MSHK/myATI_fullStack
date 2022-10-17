@@ -7,6 +7,7 @@ import {
   BT_deleteGroup,
   QT_changeGroup,
   QT_deleteGroup,
+  QT_getGroup,
 } from '@src/routes/groupRouter/group.types'
 import { RT } from '@src/routes/resTypes'
 
@@ -46,9 +47,9 @@ class GroupController {
     }
   }
 
-  allGroups: RequestHandler<Record<string, any>, RT> = async (req, res, next) => {
+  getGroups: RequestHandler<Record<string, any>, RT, any, QT_getGroup> = async (req, res, next) => {
     try {
-      const groups = await GroupService.allGroups()
+      const groups = await GroupService.getGroups(req.query.name)
       return res.json({ status: 'OK', result: groups })
     } catch (e) {
       console.log(e)

@@ -2,6 +2,7 @@ import Lesson from '@src/models/TimeTable/Lesson/Lesson.model'
 import { byWeek } from '@src/models/TimeTable/Lesson/Lesson.types'
 import { errorsMSG } from '../exceptions/API/errorsConst'
 import { ApiError } from '../exceptions/API/api-error'
+import { ObjectId } from 'mongodb'
 class LessonService {
   addLesson = async (
     count: number,
@@ -25,6 +26,10 @@ class LessonService {
     await lesson.save()
     //!
     !data.lowerWeek?.subject_id && (await lesson.updateOne({ $unset: { 'data.lowerWeek': 1 } }))
+  }
+
+  deleteLessons = async (day_id: ObjectId) => {
+    if (day_id) await Lesson.deleteMany({ day_id })
   }
 }
 export default new LessonService()

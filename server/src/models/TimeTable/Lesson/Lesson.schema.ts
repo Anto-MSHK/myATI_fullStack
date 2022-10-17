@@ -15,10 +15,10 @@ const lowerWeek = new Schema({
   teacher_id: { type: ObjectId, ref: 'Teacher' },
   cabinet_id: { type: ObjectId, ref: 'Cabinet' },
 })
-const time = new Schema({
+const time = {
   from: { type: String },
   to: { type: String },
-})
+}
 
 const LessonSchema = new Schema({
   count: { type: Number, required: true },

@@ -40,7 +40,7 @@ class AuthController {
     try {
       validationController(req, res)
 
-      const { login, password, role } = req.body
+      const { login, password, role, group_id } = req.body
       const candidate = await User.findOne({ login, role })
 
       if (candidate) {
@@ -59,6 +59,7 @@ class AuthController {
         login,
         password: hashPassword,
         role: userRole.value,
+        group_id,
       })
 
       await user.save()

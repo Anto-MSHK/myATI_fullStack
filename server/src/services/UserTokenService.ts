@@ -4,7 +4,7 @@ import { ObjectId } from 'mongodb'
 import Token from '@src/models/User/Token/Token.model'
 class UserTokenService {
   generateTokens = (payload: any) => {
-    const accessToken = jwt.sign(payload, config.get('secret'), { expiresIn: '15m' })
+    const accessToken = jwt.sign(payload, config.get('secret'), { expiresIn: '24h' })
     const refreshToken = jwt.sign(payload, config.get('secret-refresh'), { expiresIn: '30d' })
     return {
       accessToken,
