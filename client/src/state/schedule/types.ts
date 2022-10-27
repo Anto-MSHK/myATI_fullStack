@@ -10,7 +10,7 @@ type teacherT = {
 
 export type dataLessonT = {
   subject: subjectT;
-  teachers: teacherT[];
+  teacher: teacherT;
   cabinet: string;
 };
 
@@ -36,4 +36,5 @@ export type DayT = {
 export type ScheduleGroupsStateT = {
   group: string;
   days: DayT[];
-}[];
+  isLoading: boolean;
+};

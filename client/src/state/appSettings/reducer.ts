@@ -12,9 +12,7 @@ export const appSettingsReducer = (
 ) => {
   switch (action.type) {
     case APP_SETTINGS.SET:
-      var theme: "light" | "dark";
-      state.theme === "light" ? (theme = "dark") : (theme = "light");
-      return { ...state, theme };
+      return { ...state, theme: action.theme };
     default:
       return state;
   }

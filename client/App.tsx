@@ -11,8 +11,9 @@ import {
 import AppLoading from "expo-app-loading";
 import { Provider } from "react-redux";
 import store from "./src/state/state";
-import { createTheme, ThemeProvider } from "@rneui/themed";
+import { createTheme, ThemeProvider, useThemeMode } from "@rneui/themed";
 import { registerRootComponent } from "expo";
+import { useEffect } from "react";
 
 export default function App() {
   let [fontsLoaded] = useFonts({
@@ -21,11 +22,9 @@ export default function App() {
     NotoSans_700Bold,
     NotoSans_700Bold_Italic,
   });
-
   const theme = createTheme({
     lightColors: {
       // primary: "#fff",
-      grey5: "../../../../assets/lightBG.jpg",
     },
     darkColors: {
       background: "rgba(35, 48, 64, 0.9)",
@@ -33,7 +32,6 @@ export default function App() {
       primary: "rgba(224, 142, 45, 0.9)",
       secondary: "rgba(119, 119, 119, 0.2)",
       searchBg: "rgba(255, 255, 255)",
-      grey5: "../../../../assets/darkBG.jpg",
     },
   });
 

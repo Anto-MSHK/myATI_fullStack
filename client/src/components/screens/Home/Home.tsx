@@ -13,20 +13,22 @@ import { Calendar } from "../../UI/Calendar/Calendar";
 import { styles } from "./styles";
 import { UltraView } from "../../UI/UltraView/UltraView";
 import { useDispatch } from "react-redux";
-import { setCurDayA } from "../../../state/app/actions";
-import { getSchedule1 } from "../../../state/schedule/reducer";
+import { getSchedule } from "../../../state/schedule/reducer";
 import store from "../../../state/state";
 import { AnyAction } from "redux";
+import { setCurDayA } from "../../../state/app/actions";
+import { HomeTabScreenProps } from "../../../navigation/types";
 
-export const Home = () => {
-  var days = useAppSelector((state) => state.schedule);
+export const Home = ({ route }: HomeTabScreenProps<"Home">) => {
+  var groupSchedule = useAppSelector((state) => state.schedule);
 
   const [curPage, setCurPage] = useState({ value: 0, isChange: false });
   const [isStart, setIsStart] = useState(true);
   const dispatch = useDispatch();
-//   useEffect(() => {
-//     if (isStart) dispatch(getSchedule1("ВИС21") as any);
-//   }, []);
+
+  useEffect(() => {
+    dispatch(getSchedule((route.params as any).group) as any);
+  }, []);
 
   return (
     <Layoult>
@@ -48,9 +50,9 @@ export const Home = () => {
         </View>
       </View>
       <View style={styles.contentContainer}>
-        {!isStart && days[0] && (
+        {!isStart && groupSchedule.group !== "" && (
           <UltraView
-            data={days[0].days}
+            data={groupSchedule.days}
             renderItem={(item, index) => (
               <DayCard lessons={item.lessons} dayOfWeek={item.dayOfWeek} />
             )}

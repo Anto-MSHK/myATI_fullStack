@@ -6,11 +6,16 @@ export enum SCHEDULE {
 
 export type getScheduleAT = {
   type: string;
+  group: string;
   schedule: DayT[];
 };
 
-export const getScheduleA = (schedule: DayT[]): getScheduleAT => ({
+export const getScheduleA = (
+  group: string,
+  schedule: DayT[]
+): getScheduleAT => ({
   type: SCHEDULE.GET,
+  group,
   schedule,
 });
 

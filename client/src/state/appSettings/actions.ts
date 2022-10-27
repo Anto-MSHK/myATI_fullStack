@@ -6,10 +6,12 @@ export enum APP_SETTINGS {
 
 export type getAppSettingsAT = {
   type: string;
+  theme: "light" | "dark";
 };
 
-export const setAppSettingsA = (): getAppSettingsAT => ({
+export const setAppSettingsA = (theme: "light" | "dark"): getAppSettingsAT => ({
   type: APP_SETTINGS.SET,
+  theme,
 });
 
 export type AppSettingsAction = getAppSettingsAT;

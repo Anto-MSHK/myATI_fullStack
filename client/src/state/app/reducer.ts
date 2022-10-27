@@ -2,7 +2,7 @@ import { AppAction, APP } from "./actions";
 import { AppStateT } from "./types";
 
 export const initialState: AppStateT = {
-  curDay: 2,
+  curDay: 0,
   curWeek: "topWeek",
 };
 

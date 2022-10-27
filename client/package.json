@@ -12,6 +12,7 @@
   "dependencies": {
     "@expo-google-fonts/dev": "^0.2.2",
     "@expo-google-fonts/noto-sans": "^0.2.2",
+    "@react-navigation/bottom-tabs": "^6.4.0",
     "@react-navigation/native": "^6.0.10",
     "@react-navigation/native-stack": "^6.6.2",
     "@rneui/base": "^4.0.0-rc.5",

@@ -99,13 +99,13 @@ export const LessonCard: FC<LessonCardI> = ({
             <View>
               {!isNotTeacher && (
                 <Text style={styleUI.h3_b}>
-                  {data[curData]?.teachers &&
-                  data[curData]?.teachers[0].degree &&
-                  data[curData]?.teachers[0].degree !== "undefined"
-                    ? data[curData]?.teachers[0].degree + " "
+                  {data[curData]?.teacher &&
+                  data[curData]?.teacher.degree &&
+                  data[curData]?.teacher.degree !== "undefined"
+                    ? data[curData]?.teacher.degree + " "
                     : ""}
-                  {data[curData]?.teachers
-                    ? data[curData]?.teachers[0].name + " "
+                  {data[curData]?.teacher
+                    ? data[curData]?.teacher.name + " "
                     : ""}
                 </Text>
               )}

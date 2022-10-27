@@ -4,7 +4,7 @@ export type AppContextT = {
   setCurDay: (c: number) => void;
 };
 export const AppContext = createContext<AppContextT>({
-  curDay: 3,
+  curDay: 0,
   setCurDay: () => {},
 });
 export const useAppContext = () => useContext(AppContext);

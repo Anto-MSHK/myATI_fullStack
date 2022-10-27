@@ -4,7 +4,11 @@ import { ThunkAction, ThunkDispatch } from "redux-thunk";
 import { AnyAction } from "redux";
 import { scheduleApi } from "../../api/schedule";
 
-export const initialState: ScheduleGroupsStateT = [];
+export const initialState: ScheduleGroupsStateT = {
+  group: "",
+  days: [],
+  isLoading: false,
+};
 
 export const scheduleReducer = (
   state: ScheduleGroupsStateT = initialState,
@@ -12,31 +16,22 @@ export const scheduleReducer = (
 ) => {
   switch (action.type) {
     case SCHEDULE.GET:
-      // console.log(action.schedule);
       action.schedule.sort((a, b) => a.dayOfWeek - b.dayOfWeek);
-      // action.schedule.map((el) => {
-      //   el.lessons.sort((a, b) => a.count - b.count);
-      // });
-      return [...state, { group: "ВИС 11", days: action.schedule }];
-
-    // define rest of actions here
+      return { group: action.group, days: action.schedule };
     default:
       return state;
   }
 };
 
-export const getSchedule1 = (
+export const getSchedule = (
   groupName: string
 ): ThunkAction<Promise<void>, {}, {}, AnyAction> => {
   return async (dispatch: ThunkDispatch<{}, {}, AnyAction>): Promise<void> => {
-    //  return new Promise<void>(async (resolve) => {
     return new Promise<void>((resolve) => {
       scheduleApi.getSchedule(groupName).then((res) => {
-        dispatch(getScheduleA(res));
+        dispatch(getScheduleA(groupName, res));
         resolve();
       });
     });
-    //  resolve();
-    //  });
   };
 };
