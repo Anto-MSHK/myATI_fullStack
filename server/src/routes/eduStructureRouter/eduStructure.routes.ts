@@ -17,9 +17,9 @@ import {
   QT_Teacher,
   QT_uniformTypes,
 } from '@src/routes/eduStructureRouter/eduStructure.types'
-import Subject from '@src/models/TimeTable/Subject/Subject.model'
-import Teacher from '@src/models/TimeTable/Teacher/Teacher.model'
-import Cabinet from '@src/models/TimeTable/Cabinet/Cabinet.model'
+import Subject from '@src/models/eduStructure/Subject/Subject.model'
+import Teacher from '@src/models/eduStructure/Teacher/Teacher.model'
+import Cabinet from '@src/models/eduStructure/Cabinet/Cabinet.model'
 import { errorsMSG } from '../../exceptions/API/errorsConst'
 
 const eduStructure = Router()

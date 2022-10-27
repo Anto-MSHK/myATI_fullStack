@@ -15,13 +15,13 @@ import { validationController } from './validationController'
 import EduStructureService from '@src/services/EduStructureService'
 import { errorsMSG } from '../exceptions/API/errorsConst'
 import { ApiError } from '../exceptions/API/api-error'
-import Subject from '@src/models/TimeTable/Subject/Subject.model'
-import Cabinet from '@src/models/TimeTable/Cabinet/Cabinet.model'
-import Lesson from '@src/models/TimeTable/Lesson/Lesson.model'
-import Day from '@src/models/TimeTable/Day/Day.model'
+import Subject from '@src/models/eduStructure/Subject/Subject.model'
+import Cabinet from '@src/models/eduStructure/Cabinet/Cabinet.model'
+import Lesson from '@src/models/eduStructure/Lesson/Lesson.model'
+import Day from '@src/models/eduStructure/Day/Day.model'
 import Group from '@src/models/Group/Group.model'
 import { query } from 'express-validator'
-import Teacher from '@src/models/TimeTable/Teacher/Teacher.model'
+import Teacher from '@src/models/eduStructure/Teacher/Teacher.model'
 
 type ofChange = RequestHandler<
   Record<string, any>,

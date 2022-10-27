@@ -5,7 +5,7 @@ import LessonController from '@src/controllers/LessonController'
 import { body, check, query } from 'express-validator'
 import { errorsMSG } from '../../exceptions/API/errorsConst'
 import { QT_getScheduleByGroup } from './schedule.types'
-import ScheduleController from '@src/controllers/Schedule/ScheduleController'
+import ScheduleController from '@src/controllers/ScheduleController'
 import { QT_getScheduleByTeacher } from '@src/routes/scheduleRouter/schedule.types'
 
 const schedule = Router()

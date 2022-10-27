@@ -1,5 +1,5 @@
-import Lesson from '@src/models/TimeTable/Lesson/Lesson.model'
-import { byWeek } from '@src/models/TimeTable/Lesson/Lesson.types'
+import Lesson from '@src/models/eduStructure/Lesson/Lesson.model'
+import { byWeek } from '@src/models/eduStructure/Lesson/Lesson.types'
 import { errorsMSG } from '../exceptions/API/errorsConst'
 import { ApiError } from '../exceptions/API/api-error'
 import { ObjectId } from 'mongodb'
