@@ -31,7 +31,10 @@ import {
   GestureDetector,
   GestureHandlerRootView,
 } from "react-native-gesture-handler";
-import { useAnimatedStyle, useSharedValue } from "react-native-reanimated";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+} from "react-native-reanimated";
 
 export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
   const panGesture = Gesture.Pan()
@@ -41,7 +44,7 @@ export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
   const contextY = useSharedValue(0);
   const animatedStyle = useAnimatedStyle(() => {
     return {
-      transform: [{ translateY: contextY.value }],
+      // transform: [{ translateY: contextY.value }],
     };
   });
 
@@ -92,45 +95,40 @@ export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
         <View>
           <HeaderMain />
         </View>
-        {!loading ? (
-          <ScrollView style={styles.contentContainer}>
-            {groups.map((group) => (
-              <GroupCard
-                onClickNav={(group: string) => {
-                  dispatch(isLoadingA(true));
-                  navigation.navigate("Home", { group: group });
-                }}
-                name={group.name}
-                faculty={group.faculty}
-              />
-            ))}
-          </ScrollView>
-        ) : (
-          <Button
-            size="lg"
-            loadingProps={{ size: "large" }}
-            loading
-            type="clear"
-            style={{ position: "absolute" }}
-          />
-        )}
-        {!loading && (
-          <GestureHandlerRootView>
-            <GestureDetector gesture={panGesture}>
+        <GestureHandlerRootView>
+          <GestureDetector gesture={panGesture}>
+            <Animated.View>
               <Button
                 onPress={() => setIsVisible(true)}
-                style={[
-                  animatedStyle,
-                  { flex: 0, position: "absolute", bottom: 0 },
-                ]}
+                style={{ position: "absolute", bottom: 0 }}
                 buttonStyle={{ height: 58 }}
                 color={theme.colors.primary}
               >
                 <Text style={{ ...UIstyle.h2 }}>Фильтр</Text>
               </Button>
-            </GestureDetector>
-          </GestureHandlerRootView>
-        )}
+              {groups.map((group) => (
+                <GroupCard
+                  onClickNav={(group: string) => {
+                    dispatch(isLoadingA(true));
+                    navigation.navigate("Home", { group: group });
+                  }}
+                  name={group.name}
+                  faculty={group.faculty}
+                />
+              ))}
+            </Animated.View>
+          </GestureDetector>
+        </GestureHandlerRootView>
+        <Animated.View></Animated.View>
+
+        <Button
+          size="lg"
+          loadingProps={{ size: "large" }}
+          loading
+          type="clear"
+          style={{ position: "absolute" }}
+        />
+
         <BottomSheet
           modalProps={{ animationType: "fade" }}
           isVisible={isVisible}
