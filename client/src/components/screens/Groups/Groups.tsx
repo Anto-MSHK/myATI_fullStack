@@ -19,6 +19,7 @@ import { AnyAction } from "redux";
 import { GroupCard } from "./../../UI/GroupCard/GroupCard";
 import { getGroups } from "./../../../state/group/reducer";
 import { HomeTabScreenProps } from "../../../navigation/types";
+import { isLoadingA } from "./../../../state/schedule/actions";
 
 export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
   const dispatch = useDispatch();
@@ -37,6 +38,7 @@ export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
         {groups.map((group) => (
           <GroupCard
             onClickNav={(group: string) => {
+              dispatch(isLoadingA(true));
               navigation.navigate("Home", { group: group });
             }}
             name={group.name}

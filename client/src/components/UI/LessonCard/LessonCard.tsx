@@ -86,34 +86,44 @@ export const LessonCard: FC<LessonCardI> = ({
             textStyle={style.budgeText}
           />
           <Text style={{ width: 240, lineHeight: 18, ...styleUI.h2 }}>
-            {data[curData]?.subject && data[curData]?.subject.title}
+            {data[curData]?.subject
+              ? data[curData]?.subject && data[curData]?.subject.title
+              : "Пары нет"}
           </Text>
         </View>
-        <View style={style.secondaryContainer}>
-          <View style={{ marginRight: 15, ...style.timeContainer }}>
-            <Text style={styleUI.h3}>{time.from}</Text>
-            <View style={style.stripe} />
-            <Text style={styleUI.h3}>{time.to}</Text>
-          </View>
-          <View style={style.secondaryInfo}>
-            <View>
-              {!isNotTeacher && (
-                <Text style={styleUI.h3_b}>
-                  {data[curData]?.teacher &&
-                  data[curData]?.teacher.degree &&
-                  data[curData]?.teacher.degree !== "undefined"
-                    ? data[curData]?.teacher.degree + " "
-                    : ""}
-                  {data[curData]?.teacher
-                    ? data[curData]?.teacher.name + " "
-                    : ""}
-                </Text>
-              )}
-              <Text style={styleUI.h3_b}>каб: {data[curData]?.cabinet}</Text>
+        {data[curData] && (
+          <View style={style.secondaryContainer}>
+            <View style={{ marginRight: 15, ...style.timeContainer }}>
+              <Text style={styleUI.h3}>{time.from}</Text>
+              <View style={style.stripe} />
+              <Text style={styleUI.h3}>{time.to}</Text>
             </View>
-            <Text style={styleUI.h3}>{data[curData]?.subject.type}</Text>
+            <View style={style.secondaryInfo}>
+              <View>
+                {!isNotTeacher && (
+                  <Text style={styleUI.h3_b}>
+                    {data[curData]?.teacher &&
+                    data[curData]?.teacher.degree &&
+                    data[curData]?.teacher.degree !== "undefined"
+                      ? data[curData]?.teacher.degree + " "
+                      : ""}
+                    {data[curData]?.teacher
+                      ? data[curData]?.teacher.name + " "
+                      : ""}
+                  </Text>
+                )}
+                {data[curData]?.cabinet && (
+                  <Text style={styleUI.h3_b}>
+                    каб: {data[curData]?.cabinet}
+                  </Text>
+                )}
+              </View>
+              {data[curData]?.subject && (
+                <Text style={styleUI.h3}>{data[curData]?.subject.type}</Text>
+              )}
+            </View>
           </View>
-        </View>
+        )}
       </View>
       {roundingСorns !== "bottom" && roundingСorns !== "all" && (
         <LinearGradient

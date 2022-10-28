@@ -14,6 +14,7 @@ import Animated, {
   withDecay,
   withSpring,
 } from "react-native-reanimated";
+import { Button } from "@rneui/base";
 
 const { height } = Dimensions.get("screen");
 
@@ -25,9 +26,11 @@ export function UltraView<dataType = any>(props: {
   renderItem: (item: dataType, index: number) => React.ReactNode;
   curPage: { value: number; isChange: boolean };
   onSwipe?: (curPage: number) => void;
+  onLayout: () => void;
 }) {
   const [isStart, setIsStart] = useState(true);
   const position = useSharedValue(0);
+  var isLoading = useAppSelector((state) => state.schedule.isLoading);
   var opacity = [0, 0, 0, 0, 0, 0].map((el) => useSharedValue(el));
   var marginHorz = [0, 0, 0, 0, 0, 0].map((el) => useSharedValue(el));
   var sizeHeight = [0, 0, 0, 0, 0, 0].map((el) => useSharedValue(el));
@@ -90,6 +93,7 @@ export function UltraView<dataType = any>(props: {
       props.curPage.value = count.value - 1;
       position.value = withSpring(-posCards[count.value - 1], configSpring);
       setIsStart(false);
+      props.onLayout();
     }
   };
 
@@ -120,6 +124,7 @@ export function UltraView<dataType = any>(props: {
       }
       for (i = 0; i < 1; i++) prev.unshift(prev.pop() as number);
       prev[0] = 0;
+
       return [...prev];
     });
   };
@@ -251,10 +256,13 @@ export function UltraView<dataType = any>(props: {
         };
     });
   };
+  var styles = {};
+  if (isLoading === false) styles = {};
+  else styles = { margin: -100000 };
   return (
     <GestureHandlerRootView>
       <GestureDetector gesture={panGesture}>
-        <Animated.View style={{ zIndex: 0, elevation: 0 }}>
+        <Animated.View style={styles}>
           {props.data.map((day, index) => {
             return (
               <Animated.View

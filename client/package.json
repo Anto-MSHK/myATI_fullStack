@@ -7,7 +7,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "eject": "expo eject"
+    "eject": "expo eject",
+	 "release": "cd android && ./gradlew assembleRelease"
   },
   "dependencies": {
     "@expo-google-fonts/dev": "^0.2.2",

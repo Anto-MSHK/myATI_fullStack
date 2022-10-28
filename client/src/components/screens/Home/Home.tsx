@@ -18,6 +18,8 @@ import store from "../../../state/state";
 import { AnyAction } from "redux";
 import { setCurDayA } from "../../../state/app/actions";
 import { HomeTabScreenProps } from "../../../navigation/types";
+import { isLoadingA } from "./../../../state/schedule/actions";
+import { Button } from "@rneui/base";
 
 export const Home = ({ route }: HomeTabScreenProps<"Home">) => {
   var groupSchedule = useAppSelector((state) => state.schedule);
@@ -34,6 +36,8 @@ export const Home = ({ route }: HomeTabScreenProps<"Home">) => {
     <Layoult>
       <View>
         <HeaderMain />
+      </View>
+      <View>
         <View
           style={{ zIndex: 10, elevation: 10 }}
           onLayout={() => {
@@ -48,20 +52,30 @@ export const Home = ({ route }: HomeTabScreenProps<"Home">) => {
             }}
           />
         </View>
-      </View>
-      <View style={styles.contentContainer}>
-        {!isStart && groupSchedule.group !== "" && (
-          <UltraView
-            data={groupSchedule.days}
-            renderItem={(item, index) => (
-              <DayCard lessons={item.lessons} dayOfWeek={item.dayOfWeek} />
-            )}
-            curPage={curPage}
-            onSwipe={(count2) => {
-              dispatch(setCurDayA(count2));
-            }}
+        <View style={styles.contentContainer}>
+          {!isStart && groupSchedule.group !== "" && (
+            <UltraView
+              data={groupSchedule.days}
+              renderItem={(item, index) => (
+                <DayCard lessons={item.lessons} dayOfWeek={item.dayOfWeek} />
+              )}
+              curPage={curPage}
+              onSwipe={(count2) => {
+                dispatch(setCurDayA(count2));
+              }}
+              onLayout={() => {
+                dispatch(isLoadingA(false));
+              }}
+            />
+          )}
+          <Button
+            size="lg"
+            loadingProps={{ size: "large" }}
+            loading
+            type="clear"
+            style={{ position: "absolute" }}
           />
-        )}
+        </View>
       </View>
     </Layoult>
   );

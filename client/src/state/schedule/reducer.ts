@@ -1,4 +1,4 @@
-import { getScheduleA, SCHEDULE, ScheduleAction } from "./actions";
+import { getScheduleA, isLoadingA, SCHEDULE, ScheduleAction } from "./actions";
 import { ScheduleGroupsStateT } from "./types";
 import { ThunkAction, ThunkDispatch } from "redux-thunk";
 import { AnyAction } from "redux";
@@ -18,6 +18,9 @@ export const scheduleReducer = (
     case SCHEDULE.GET:
       action.schedule.sort((a, b) => a.dayOfWeek - b.dayOfWeek);
       return { group: action.group, days: action.schedule };
+    case SCHEDULE.LOADING:
+      console.log(action.isLoading);
+      return { ...state, isLoading: action.isLoading };
     default:
       return state;
   }

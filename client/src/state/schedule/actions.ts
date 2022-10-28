@@ -2,6 +2,7 @@ import { DayT } from "./types";
 
 export enum SCHEDULE {
   GET = "SCHEDULE/GET",
+  LOADING = "SCHEDULE/LOADING",
 }
 
 export type getScheduleAT = {
@@ -19,4 +20,13 @@ export const getScheduleA = (
   schedule,
 });
 
-export type ScheduleAction = getScheduleAT;
+export type isLoadingAT = {
+  type: string;
+  isLoading: boolean;
+};
+
+export const isLoadingA = (isLoading: boolean): isLoadingAT => ({
+  type: SCHEDULE.LOADING,
+  isLoading,
+});
+export type ScheduleAction = getScheduleAT & isLoadingAT;
