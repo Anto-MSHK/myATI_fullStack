@@ -2,6 +2,7 @@ import { GroupMinT } from "./types";
 
 export enum GROUP {
   GET = "GROUP/GET",
+  LOADING = "GROUP/LOADING",
 }
 
 export type getGroupsAT = {
@@ -14,4 +15,14 @@ export const getGroupsA = (groups: GroupMinT[]): getGroupsAT => ({
   groups,
 });
 
-export type GroupAction = getGroupsAT;
+export type isLoadingAT = {
+  type: string;
+  isLoading: boolean;
+};
+
+export const isLoadingGroupA = (isLoading: boolean): isLoadingAT => ({
+  type: GROUP.LOADING,
+  isLoading,
+});
+
+export type GroupAction = getGroupsAT & isLoadingAT;

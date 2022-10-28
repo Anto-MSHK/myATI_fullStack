@@ -4,4 +4,4 @@ export type GroupMinT = {
   elder?: string;
 };
 
-export type GroupsStateT = GroupMinT[];
+export type GroupsStateT = { groups: GroupMinT[]; isLoading: boolean };

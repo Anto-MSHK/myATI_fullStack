@@ -43,7 +43,7 @@ export const GroupCard: FC<GroupCardI> = ({ name, faculty, onClickNav }) => {
           }}
           radius={50}
           buttonStyle={{ width: 40, height: 40 }}
-          color={theme.colors.primary}
+          color={theme.colors.grey1}
         >
           <Icon name="arrowsalt" type="antdesign" size={20} />
         </Button>

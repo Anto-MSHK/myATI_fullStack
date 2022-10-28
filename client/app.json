@@ -1,7 +1,8 @@
 {
   "expo": {
     "name": "client",
-    "slug": "client",
+    "slug": "myati",
+    "owner": "antomshk",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -24,10 +25,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.antomshk.myati"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "4954c4a1-8281-4e60-a2c6-c57d5e81d797"
+      }
     }
   }
 }
