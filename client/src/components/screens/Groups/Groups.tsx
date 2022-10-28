@@ -38,13 +38,12 @@ export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
     .onStart(() => {})
     .onUpdate((e) => {})
     .onEnd((e) => {});
-	}
-
-	 var contextY = useSharedValue(0);
-	 const animatedStyle = useAnimatedStyle(() => 
-			 {
-				transform: {y: contextY}
-			 })
+  const contextY = useSharedValue(0);
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateY: contextY.value }],
+    };
+  });
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -120,7 +119,10 @@ export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
             <GestureDetector gesture={panGesture}>
               <Button
                 onPress={() => setIsVisible(true)}
-                style={[animatedStyle,{ flex: 0, position: "absolute", bottom: 0 }]}
+                style={[
+                  animatedStyle,
+                  { flex: 0, position: "absolute", bottom: 0 },
+                ]}
                 buttonStyle={{ height: 58 }}
                 color={theme.colors.primary}
               >
