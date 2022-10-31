@@ -1,6 +1,5 @@
 import XLSX from 'xlsx'
 import fs from 'fs'
-import config from 'config'
 import GroupService from '@src/services/GroupService'
 import EduStructureService from './EduStructureService'
 import Teacher from '@src/models/eduStructure/Teacher/Teacher.model'
@@ -13,6 +12,7 @@ import { byWeek } from '@src/models/eduStructure/Lesson/Lesson.types'
 import { ObjectId } from 'mongodb'
 import { ApiError } from './../exceptions/API/api-error'
 import { errorsMSG } from './../exceptions/API/errorsConst'
+import path from 'path'
 
 type stydyWeek = {
   days: (stydyDay | undefined)[]
@@ -191,16 +191,18 @@ function checkingGroupCellIsCorrect<N extends number, T extends string>(
 class ParserService {
   public start = async () => {
     try {
-      const basePath = config.get('basePath') as string
       var workSheet: list
-      const directories = [`${basePath}vpo/`, `${basePath}spo/`]
+      const directories = [
+        path.resolve(`${process.env.FOLDER_PATH}/schedule/vpo`),
+        path.resolve(`${process.env.FOLDER_PATH}/schedule/spo`),
+      ]
       return await new Promise<void>(async resolve => {
         directories.map(async (directory, index) => {
           fs.readdir(directory, async (err, files) => {
             if (err) throw err
 
             for (const file of files) {
-              const fileOfData = XLSX.readFile(directory + file, {
+              const fileOfData = XLSX.readFile(directory + '/' + file, {
                 raw: true,
               })
 

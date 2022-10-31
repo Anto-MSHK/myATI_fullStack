@@ -1,17 +1,9 @@
 import fs from 'fs'
 import https from 'https' // or 'https' for https:// URLs
-import config from 'config'
 import antonio from 'cheerio'
 import path from 'path'
 import ParserService from './ParserService'
 import XLSX from 'xlsx'
-const { distance, closest } = require('fastest-levenshtein')
-
-const htmlPath = config.get('htmlPath') as string
-const basePath = config.get('basePath') as string
-
-const htmlURL = config.get('htmlURL') as string
-const baseURL = config.get('baseURL') as string
 
 type fileLink = {
   url: string
@@ -22,7 +14,7 @@ class FileService {
   public checkConnection = async () => {
     return await new Promise<undefined | Error>(resolve => {
       https
-        .get(baseURL)
+        .get(process.env.BASE_URL as string)
         .on('finish', () => {
           resolve(undefined)
         })
@@ -33,7 +25,10 @@ class FileService {
   }
 
   public deleteObsoleteFiles = async () => {
-    const directories = [`${basePath}/vpo`, `${basePath}/spo`]
+    const directories = [
+      path.resolve(`${process.env.FOLDER_PATH}/schedule/vpo`),
+      path.resolve(`${process.env.FOLDER_PATH}/schedule/spo`),
+    ]
     return await Promise.all(
       directories.map(async directory => {
         new Promise<void>(resolve => {
@@ -72,14 +67,14 @@ class FileService {
       'XLW',
       'XLR',
     ]
-    const fileHtml = fs.createWriteStream(`${htmlPath}`)
+    const fileHtml = fs.createWriteStream(path.resolve(`src/html.html`))
     return await new Promise<fileLink[]>(resolve => {
-      https.get(htmlURL, res => {
+      https.get(process.env.HTML_URL as string, res => {
         res.pipe(fileHtml)
         fileHtml.on('finish', () => {
           fileHtml.close()
 
-          const parse = antonio.load(fs.readFileSync(htmlPath))
+          const parse = antonio.load(fs.readFileSync(path.resolve(`src/html.html`)))
           parse('a').each((index, value) => {
             var linkFile = parse(value).attr('href')
             var isNotImg = parse(value).children('img').length === 0
@@ -125,14 +120,18 @@ class FileService {
           var file: fs.WriteStream
           //!
           if (link.url.indexOf('spo') === -1) {
-            file = fs.createWriteStream(`${basePath}/vpo/${link.fileName}.${link.extension}`)
+            file = fs.createWriteStream(
+              path.resolve(`${process.env.FOLDER_PATH}/schedule/vpo/${link.fileName}.${link.extension}`)
+            )
             i_vpo++
           } else if (link.url.indexOf('spo') > -1) {
-            file = fs.createWriteStream(`${basePath}/spo/${link.fileName}.${link.extension}`)
+            file = fs.createWriteStream(
+              path.resolve(`${process.env.FOLDER_PATH}/schedule/spo/${link.fileName}.${link.extension}`)
+            )
             i_spo++
           } else return
 
-          https.get(baseURL + link.url, res => {
+          https.get(process.env.BASE_URL + link.url, res => {
             res.pipe(file)
             file.on('finish', () => {
               file.close()
@@ -143,62 +142,6 @@ class FileService {
             })
           })
         } else return
-      })
-    })
-  }
-
-  //!This function is not executed
-  public cleaningStuff = async (filelinks: fileLink[]) => {
-    const directories = [`${basePath}vpo/`, `${basePath}spo/`]
-    return await new Promise<void>(resolve => {
-      directories.map(async directory => {
-        fs.readdir(directory, (err, files) => {
-          if (err) {
-            throw err
-          }
-          var mas: { fileName: string; date: string | undefined }[] = []
-          for (const file of files) {
-            const fileOfData = XLSX.readFile(directory + file, {
-              raw: true,
-            })
-            mas.push({ fileName: file, date: fileOfData.Props?.LastPrinted })
-          }
-          mas.map((el, index, arr) => {
-            var i = 0
-            var t = mas.filter(qqq => qqq.fileName !== el.fileName)
-            var l = t
-              .map(xc => {
-                if (el.fileName.length !== xc.fileName.length) return xc.fileName
-              })
-              .filter(xc => xc !== undefined)
-            if (l) {
-              var b = closest(el.fileName, l)
-              for (var a = 0; a <= el.fileName.length; a++) {
-                if (b[a] === el.fileName[a]) {
-                  i++
-                } else {
-                  if (i >= 15) {
-                    mas = mas.filter(els => els.fileName !== el.fileName)
-                  }
-                  return
-                }
-              }
-            }
-          })
-          for (const file of mas) {
-            let file2 = mas.find(f => f.fileName === file.fileName)
-            if (file2 && file2.date && file.date && new Date(file2.date) <= new Date(file.date))
-              fs.unlink(path.join(directory + '/' + file.fileName), err => {
-                if (err) throw err
-              })
-            else if (file2 && file2.date && file.date && new Date(file2.date) >= new Date(file.date))
-              fs.unlink(path.join(directory + '/' + file2.fileName), err => {
-                if (err) throw err
-              })
-          }
-          resolve()
-          console.log(1)
-        })
       })
     })
   }

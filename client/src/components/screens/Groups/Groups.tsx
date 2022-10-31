@@ -4,6 +4,8 @@ import {
   Text,
   View,
   ScrollView,
+  LayoutChangeEvent,
+  Dimensions,
 } from "react-native";
 import { Layoult } from "../../UI/Layoult/Layoult";
 import React, { useEffect, useState } from "react";
@@ -34,17 +36,44 @@ import {
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
+  withDecay,
+  withTiming,
 } from "react-native-reanimated";
 
 export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
-  const panGesture = Gesture.Pan()
-    .onStart(() => {})
-    .onUpdate((e) => {})
-    .onEnd((e) => {});
+  const position = useSharedValue(0);
   const contextY = useSharedValue(0);
-  const animatedStyle = useAnimatedStyle(() => {
+  const heightComponent = useSharedValue(0);
+  const { height } = Dimensions.get("screen");
+  const END_POSITION = 80;
+  const HEIGHT_CONTENT = height - END_POSITION;
+  const panGesture = Gesture.Pan()
+    .onStart(() => {
+      contextY.value = position.value;
+    })
+    .onUpdate((e) => {
+      if (
+        (position.value <= 0 || e.translationY < 0) &&
+        (position.value >= -heightComponent.value + HEIGHT_CONTENT ||
+          e.translationY > 0)
+      )
+        position.value = contextY.value + e.translationY;
+      console.log(position.value);
+    })
+    .onEnd((e) => {
+      position.value = withDecay({
+        velocity: e.velocityY,
+        clamp: [-heightComponent.value + HEIGHT_CONTENT, 0],
+      });
+    });
+  const buttonStyle = useAnimatedStyle(() => {
     return {
       // transform: [{ translateY: contextY.value }],
+    };
+  });
+  const scrollStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateY: position.value }],
     };
   });
 
@@ -58,6 +87,11 @@ export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
   var loading = useAppSelector((state) => state.groups.isLoading);
   const { theme } = useTheme();
 
+  //   const [heihgt, setHeihgt] = useState(0);
+  const measureHeight = (event: LayoutChangeEvent) => {
+    event.persist();
+    heightComponent.value = event.nativeEvent.layout.height;
+  };
   const [isVisible, setIsVisible] = useState(false);
   const list = [
     {
@@ -97,15 +131,12 @@ export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
         </View>
         <GestureHandlerRootView>
           <GestureDetector gesture={panGesture}>
-            <Animated.View>
-              <Button
-                onPress={() => setIsVisible(true)}
-                style={{ position: "absolute", bottom: 0 }}
-                buttonStyle={{ height: 58 }}
-                color={theme.colors.primary}
-              >
-                <Text style={{ ...UIstyle.h2 }}>Фильтр</Text>
-              </Button>
+            <Animated.View
+              style={scrollStyle}
+              onLayout={(event) => {
+                measureHeight(event);
+              }}
+            >
               {groups.map((group) => (
                 <GroupCard
                   onClickNav={(group: string) => {
@@ -119,6 +150,14 @@ export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
             </Animated.View>
           </GestureDetector>
         </GestureHandlerRootView>
+        <Button
+          onPress={() => setIsVisible(true)}
+          style={{ position: "absolute", bottom: 0 }}
+          buttonStyle={{ height: 58 }}
+          color={theme.colors.primary}
+        >
+          <Text style={{ ...UIstyle.h2 }}>Фильтр</Text>
+        </Button>
         <Animated.View></Animated.View>
 
         <Button

@@ -1,6 +1,6 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { FC } from "react";
-import { View } from "react-native";
+import { LayoutChangeEvent, View } from "react-native";
 import { Text } from "react-native";
 import { Badge, Button, Icon } from "@rneui/base";
 import { ButtonSwitch } from "./../ButtonSwitch/ButtonSwitch";
@@ -16,9 +16,15 @@ interface GroupCardI {
   name: string;
   faculty: string;
   onClickNav: (group: string) => void;
+  onLayout?: (event: LayoutChangeEvent) => void;
 }
 
-export const GroupCard: FC<GroupCardI> = ({ name, faculty, onClickNav }) => {
+export const GroupCard: FC<GroupCardI> = ({
+  name,
+  faculty,
+  onClickNav,
+  onLayout,
+}) => {
   const style = useStyles(styles);
   const { theme } = useTheme();
 
@@ -27,7 +33,10 @@ export const GroupCard: FC<GroupCardI> = ({ name, faculty, onClickNav }) => {
       containerStyle={style.cardContainer_all}
       wrapperStyle={style.cardWrapper}
     >
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+      <View
+        style={{ flexDirection: "row", justifyContent: "space-between" }}
+        onLayout={onLayout}
+      >
         <View style={style.mainContainer}>
           <Badge
             value={faculty === "FVO" ? "ФВО" : "СПО"}
