@@ -88,6 +88,7 @@ class ScheduleController {
               var isLowerWeek = await Lesson.find({ _id: lesson._id, 'data.lowerWeek': { $exists: true } })
               if (!lesson.data.lowerWeek || isLowerWeek.length === 0) {
                 return {
+                  id: lesson.id,
                   count: +lesson.count + 1 + '',
                   time: lesson.time,
                   data: { topWeek: dataTop },
@@ -123,6 +124,7 @@ class ScheduleController {
               else dataLower = 'none'
 
               return {
+                id: lesson.id,
                 count: +lesson.count + 1 + '',
                 time: lesson.time,
                 data: { topWeek: dataTop, lowerWeek: dataLower },
@@ -256,6 +258,7 @@ class ScheduleController {
                   var isLowerWeek = await Lesson.find({ _id: lessonDB._id, 'data.lowerWeek': { $exists: true } })
                   if (group && (!lessonDB.data.lowerWeek || isLowerWeek.length === 0))
                     return {
+                      id: lessonDB.id,
                       count: lessonDB.count,
                       time: lessonDB.time,
                       group: group.name,
@@ -287,6 +290,7 @@ class ScheduleController {
                   } else dataLower = undefined
                   if (group)
                     return {
+                      id: lessonDB.id,
                       count: lessonDB.count,
                       time: lessonDB.time,
                       group: group.name,

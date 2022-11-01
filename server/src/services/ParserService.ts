@@ -16,6 +16,7 @@ import EduStructureService from './EduStructureService'
 import { IGroupDocument } from '@src/models/Group/Group.types'
 import Day from '@src/models/eduStructure/Day/Day.model'
 import Lesson from '@src/models/eduStructure/Lesson/Lesson.model'
+import { times } from './../routes/scheduleRouter/schedule.types'
 
 type stydyWeek = {
   days: (stydyDay | undefined)[]
@@ -361,15 +362,6 @@ class ParserService {
     }
   }
 
-  times = [
-    { from: '8:30', to: '10:05' },
-    { from: '10:15', to: '11:50' },
-    { from: '12:30', to: '14:05' },
-    { from: '14:15', to: '15:50' },
-    { from: '16:00', to: '17:35' },
-    { from: '17:45', to: '19:20' },
-  ]
-
   defineLesson = async (
     referLesson: dayCells,
     referСell_letter: string,
@@ -421,11 +413,11 @@ class ParserService {
       } else data = await lessonByWeek(propsLesson)
       lesson = {
         count: `${curLesson}`,
-        time: this.times[curLesson],
+        time: times[curLesson],
         day_id,
         data,
       }
-      return await LessonService.addLesson(curLesson, day_id, data, this.times[curLesson]).then(() => lesson)
+      return await LessonService.addLesson(curLesson, day_id, data, times[curLesson]).then(() => lesson)
     } catch (e) {
       return undefined
     }

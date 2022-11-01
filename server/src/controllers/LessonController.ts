@@ -17,6 +17,19 @@ class LessonController {
       next(e)
     }
   }
+  changeLesson: RequestHandler<Record<string, any>, RT, BT_addLesson, any> = async (req, res, next) => {
+    try {
+      validationController(req, res)
+
+      const { count, time, data } = req.body
+      const { id } = req.query
+
+      await LessonService.changeLesson(id, { count, data, time })
+      return res.json({ status: 'OK' })
+    } catch (e) {
+      next(e)
+    }
+  }
 }
 
 export default new LessonController()
