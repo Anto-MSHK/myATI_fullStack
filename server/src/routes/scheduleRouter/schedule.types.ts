@@ -34,10 +34,11 @@ export type lessonG = {
   id: ObjectId
   count: string
   time: { from: string; to: string }
-  data: {
+  data?: {
     topWeek: lessonDataG
     lowerWeek?: lessonDataG | 'none'
   }
+  special?: string
 }
 
 //? >-->> byTeacher <<--<

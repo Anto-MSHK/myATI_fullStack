@@ -8,8 +8,9 @@ class LessonService {
   addLesson = async (
     count: number,
     day_id: string,
-    data: { topWeek: byWeek; lowerWeek?: byWeek },
-    time?: { from: string; to: string }
+    data?: { topWeek: byWeek; lowerWeek?: byWeek },
+    time?: { from: string; to: string },
+    special?: string
   ) => {
     const candidate = await Lesson.findOne({ day_id, count })
 
@@ -22,11 +23,12 @@ class LessonService {
       time,
       day_id,
       data,
+      special,
     })
 
     await lesson.save()
     //!
-    !data.lowerWeek?.subject_id && (await lesson.updateOne({ $unset: { 'data.lowerWeek': 1 } }))
+    data && !data.lowerWeek?.subject_id && (await lesson.updateOne({ $unset: { 'data.lowerWeek': 1 } }))
   }
 
   changeLesson = async (
@@ -35,6 +37,7 @@ class LessonService {
       count?: number
       data?: { topWeek: byWeek; lowerWeek?: byWeek }
       time?: { from: string; to: string }
+      special?: string
     }
   ) => {
     if (!id) {
@@ -60,8 +63,8 @@ class LessonService {
     return { result: candidate }
   }
 
-  deleteLessons = async (day_id: ObjectId) => {
-    if (day_id) await Lesson.deleteMany({ day_id })
+  deleteLesson = async (id: ObjectId) => {
+    if (id) await Lesson.deleteOne({ _id: id })
   }
 }
 export default new LessonService()

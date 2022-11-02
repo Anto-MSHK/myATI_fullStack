@@ -1,13 +1,15 @@
 import { RT } from '@src/routes/resTypes'
-import { BT_addLesson } from '@src/routes/lessonRouter/lesson.types'
+import { BT_addLesson } from '@src/routes/timeRouter/time.types'
 import { Router } from 'express'
 import LessonController from '@src/controllers/LessonController'
+import DayController from '@src/services/DayService'
 import { body, check, query } from 'express-validator'
 import { errorsMSG } from '../../exceptions/API/errorsConst'
 
-const lesson = Router()
-lesson.post<string, any, RT, BT_addLesson>(
-  '/add',
+const time = Router()
+
+time.post<string, any, RT, BT_addLesson>(
+  '/lesson/add',
   [
     check('count', errorsMSG.NO_EMPTY).notEmpty(),
     check('day_id', errorsMSG.NO_EMPTY).notEmpty(),
@@ -18,10 +20,22 @@ lesson.post<string, any, RT, BT_addLesson>(
   ],
   LessonController.addLesson
 )
-lesson.put<string, any, RT, BT_addLesson>(
-  '/',
+
+time.put<string, any, RT, BT_addLesson>(
+  '/lesson',
   [query('id', errorsMSG.QUERY_NO_EMPTY).notEmpty()],
   LessonController.changeLesson
 )
 
-export default lesson
+time.delete<string, any, RT, BT_addLesson>(
+  '/lesson',
+  [query('id', errorsMSG.QUERY_NO_EMPTY).notEmpty()],
+  LessonController.deleteLesson
+)
+
+time.delete<string, any, RT, BT_addLesson>(
+  '/day',
+  [query('id', errorsMSG.QUERY_NO_EMPTY).notEmpty()],
+  DayController.deleteLessons
+)
+export default time

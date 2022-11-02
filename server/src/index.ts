@@ -3,7 +3,7 @@ import mongoose from 'mongoose'
 import fs from 'fs'
 import auth, { accessRights_maximum } from '@src/routes/authRouter/auth.routes'
 import group from './routes/groupRouter/group.routes'
-import lesson from './routes/lessonRouter/lesson.routes'
+import time from './routes/timeRouter/time.routes'
 import eduStructure from './routes/eduStructureRouter/eduStructure.routes'
 import FileService from './services/FileService'
 import Group from '@src/models/Group/Group.model'
@@ -35,7 +35,7 @@ app.use(cors(corsOptions))
 app.use('/auth', auth)
 app.use('/edu', eduStructure)
 app.use('/group', group)
-app.use('/lesson', lesson)
+app.use('/time', time)
 app.use('/schedule', schedule)
 app.use(errorMiddleware)
 

@@ -55,6 +55,15 @@ class ScheduleController {
             lessonsDB.map(async lesson => {
               //* >=|=> top week <=|=<
 
+              if (!lesson.data?.topWeek)
+                return {
+                  id: lesson.id,
+                  count: +lesson.count + 1 + '',
+                  time: lesson.time,
+                  data: {},
+                  special: lesson.special,
+                } as lessonG
+
               let dataTop: lessonDataG = undefined
               let dataLower: lessonDataG = undefined
               //? ==< subject >==
@@ -221,6 +230,8 @@ class ScheduleController {
                 lessonsDB.map(async lessonDB => {
                   let teacherNames_Top: string = ''
                   let teacherNames_Lower: string = ''
+
+                  if (!lessonDB.data?.topWeek) return undefined
 
                   await Teacher.findById(lessonDB.data.topWeek.teacher_id).then(res => {
                     if (res && res.name) teacherNames_Top = res.name
