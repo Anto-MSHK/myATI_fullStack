@@ -447,7 +447,9 @@ class ParserService {
         cabinet_firstCell !== cabinet_secondCell
       ) {
         data = await lessonConstant(propsLesson)
-      } else data = await lessonByWeek(propsLesson)
+      } else {
+        data = await lessonByWeek(propsLesson)
+      }
       lesson = {
         count: `${curLesson}`,
         time: times[curLesson],
@@ -470,7 +472,7 @@ type propsLessonType = {
 
 const getLessonData = (str: string): [title: string, nameTeacher: string, degree: string, typeLesson: string] | [] => {
   try {
-    const surname = /^[А-Я][а-я]{1,20}(?:\s+)+[А-Я]\.[А-Я]\.$/
+    const surname = /^[А-Я][а-я]{1,20}(?:\s+)+[А-Я]+(?:\s*)+\.+(?:\s*)+[А-Я]$/
 
     let title = ''
     let nameTeacher = ''
@@ -491,6 +493,7 @@ const getLessonData = (str: string): [title: string, nameTeacher: string, degree
         }
         if (surname.test(currentPhrase)) {
           nameTeacher = currentPhrase
+          if (nameTeacher[nameTeacher.length - 1] !== '.') nameTeacher += '.'
           i_degree = i_char_start
           i_type_lesson = i_char_end
           stop = true

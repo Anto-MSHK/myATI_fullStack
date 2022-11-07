@@ -6,3 +6,4 @@ coverage
 *.log
 src/files/*.html
 src/files/schedule/**/*.xls
+src/files/state.json
