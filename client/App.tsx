@@ -28,7 +28,7 @@ export default function App() {
     },
     darkColors: {
       background: "rgba(35, 48, 64, 0.9)",
-      grey0: "rgba(27, 32, 38, 0.8)",
+      grey0: "rgba(27, 32, 38, 1)",
       primary: "rgba(224, 142, 45, 0.9)",
       secondary: "rgba(119, 119, 119, 0.2)",
       searchBg: "rgba(255, 255, 255)",
