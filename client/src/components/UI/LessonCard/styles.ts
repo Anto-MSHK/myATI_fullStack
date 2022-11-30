@@ -11,6 +11,8 @@ export const styles = () => {
     backgroundColor: theme.colors.background,
     marginVertical: 0,
     margin: 0,
+    borderColor: "none",
+    borderWidth: 0,
   };
 
   return StyleSheet.create({
@@ -35,7 +37,7 @@ export const styles = () => {
 
       overflow: "hidden",
       borderRadius: 15,
-      borderBottomWidth: 5,
+      borderBottomWidth: 0,
     },
 
     cardContainer_top: {
@@ -52,7 +54,6 @@ export const styles = () => {
       ...cardContainer,
 
       borderTopWidth: 0,
-      borderBottomWidth: 5,
 
       borderBottomRightRadius: 15,
       borderBottomLeftRadius: 15,

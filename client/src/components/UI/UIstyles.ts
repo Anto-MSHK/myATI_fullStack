@@ -1,4 +1,5 @@
 import { useTheme } from "@rneui/themed";
+import { StyleSheetProperties } from "react-native";
 import { c_style } from "./../../stylesConst";
 
 export const UIstyles = () => {
@@ -88,9 +89,15 @@ export const UIstyles = () => {
     },
 
     shadow: {
-      borderWidth: 2,
-      borderColor: "rgba(0, 0, 0, 0.2)",
-      shadowColor: "rgba(0, 0, 0, 0.2)",
+      //Its for IOS
+      shadowColor: "black",
+      shadowOffset: { width: -5, height: 5 },
+      shadowOpacity: 0.2,
+      shadowRadius: 10,
+
+      // its for android
+      elevation: 5,
+      position: "relative",
     },
   };
 };

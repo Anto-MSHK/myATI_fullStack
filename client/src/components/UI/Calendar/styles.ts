@@ -12,9 +12,8 @@ export const styles = () => {
       borderBottomLeftRadius: 25,
       borderBottomEndRadius: 25,
       backgroundColor: theme.colors.grey0,
-      //   borderWidth: 0,
+      borderWidth: 0,
       ...UIstyles().shadow,
-      borderBottomWidth: 4,
     },
     buttonsContainer: {
       marginTop: 10,

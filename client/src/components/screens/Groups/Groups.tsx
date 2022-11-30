@@ -34,55 +34,102 @@ import {
   GestureHandlerRootView,
 } from "react-native-gesture-handler";
 import Animated, {
+  interpolate,
   interpolateColor,
+  interpolateColors,
   useAnimatedStyle,
   useSharedValue,
   withDecay,
   withSpring,
   withTiming,
 } from "react-native-reanimated";
+import {
+  BottomList,
+  ButtonCloseList,
+} from "../../UI/BottomButtons/BottomButtons";
 
 export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
   const position = useSharedValue(0);
-  const positionButton = useSharedValue(0);
-  const positionButton2 = useSharedValue(120);
+  const posBtnOpen = useSharedValue(0);
+  const posBtnClose = useSharedValue(120);
+  const sizeBtn = useSharedValue(100);
+  const sizeBtn2 = useSharedValue(100);
+  const opacityV = useSharedValue(0);
+  const backgV = useSharedValue(0);
+
+  const { theme } = useTheme();
+  const opacityStyle = useAnimatedStyle(() => {
+    const opacity = interpolate(opacityV.value, [0, 100], [0, 1]);
+
+    return {
+      opacity: opacity,
+    };
+  });
+
+  const backgroundStyle = useAnimatedStyle(() => {
+    const backgroundColor = interpolateColor(
+      backgV.value,
+      [0, 1],
+      [theme.colors.primary, "red"]
+    );
+
+    return {
+      backgroundColor: backgroundColor,
+    };
+  });
+
+  const [isVisible, setIsVisible] = useState(false);
   const contextY = useSharedValue(0);
   const heightComponent = useSharedValue(0);
-  const heightButtons = useSharedValue(0);
+
   const { height } = Dimensions.get("screen");
   const END_POSITION = 80;
   const HEIGHT_CONTENT = height - END_POSITION;
+  const styleUI = useStyles(UIstyles);
+
+  const onToggle = () => {
+    const curSize = 73;
+    setIsVisible((prev) => !prev);
+    if (!isVisible) {
+      posBtnOpen.value = withSpring(-(curSize * list.length - list.length));
+      posBtnClose.value = withSpring(0);
+      opacityV.value = withSpring(100);
+      backgV.value = withSpring(1);
+      sizeBtn.value = withSpring(0);
+      sizeBtn2.value = withSpring(100);
+    } else {
+      posBtnOpen.value = withSpring(0);
+      posBtnClose.value = withSpring(curSize * list.length - list.length);
+      opacityV.value = withSpring(0);
+      backgV.value = withSpring(0);
+      sizeBtn.value = withSpring(100);
+      sizeBtn2.value = withSpring(0);
+    }
+  };
+
   const panGesture = Gesture.Pan()
     .onStart(() => {
       contextY.value = position.value;
     })
     .onUpdate((e) => {
+      const heightAllCards = -heightComponent.value + HEIGHT_CONTENT - 20;
       if (
         (position.value <= 0 || e.translationY < 0) &&
-        (position.value >= -heightComponent.value + HEIGHT_CONTENT ||
-          e.translationY > 0)
+        (position.value >= heightAllCards || e.translationY > 0)
       )
         position.value = contextY.value + e.translationY;
     })
     .onEnd((e) => {
+      const heightAllCards = -heightComponent.value + HEIGHT_CONTENT - 20;
       if (e.translationY > 0) {
-        positionButton.value = withSpring(0);
-      } else positionButton.value = withSpring(90);
+        posBtnOpen.value = withSpring(0);
+      } else posBtnOpen.value = withSpring(90);
       position.value = withDecay({
         velocity: e.velocityY,
-        clamp: [-heightComponent.value + HEIGHT_CONTENT, 0],
+        clamp: [heightAllCards, 0],
       });
     });
-  const buttonStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ translateY: positionButton.value }],
-    };
-  });
-  const buttonStyle2 = useAnimatedStyle(() => {
-    return {
-      transform: [{ translateY: positionButton2.value }],
-    };
-  });
+
   const scrollStyle = useAnimatedStyle(() => {
     return {
       transform: [{ translateY: position.value }],
@@ -97,23 +144,15 @@ export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
 
   var groups = useAppSelector((state) => state.groups.groups);
   var loading = useAppSelector((state) => state.groups.isLoading);
-  const { theme } = useTheme();
 
   //   const [heihgt, setHeihgt] = useState(0);
-  const measureHeight = (event: LayoutChangeEvent) => {
-    event.persist();
-    return event.nativeEvent.layout.height;
-  };
-  const [isVisible, setIsVisible] = useState(false);
+
   const list = [
     {
       title: "Факультет:",
       color: "white",
       containerStyle: {
-        backgroundColor: theme.colors.grey0,
-        borderTopColor: "black",
-        borderColor: "none",
-        borderWidth: 1,
+        backgroundColor: theme.colors.grey5,
       },
       children: ["ФВО", "СПО"].map((el) => (
         <Badge
@@ -121,19 +160,19 @@ export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
           badgeStyle={{
             width: 40,
             height: 40,
-            backgroundColor: theme.colors.secondary,
+            backgroundColor: theme.colors.grey3,
+            borderWidth: 0,
+            ...(styleUI.shadow as any),
           }}
         />
       )),
     },
+
     {
-      title: "Курсы:",
+      title: "Курс:",
       color: "white",
       containerStyle: {
-        backgroundColor: theme.colors.grey0,
-        borderTopColor: "black",
-        borderColor: "none",
-        borderWidth: 1,
+        backgroundColor: theme.colors.grey5,
       },
       children: ["1", "2", "3", "4"].map((el) => (
         <Badge
@@ -141,147 +180,62 @@ export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
           badgeStyle={{
             width: 40,
             height: 40,
-            backgroundColor: theme.colors.secondary,
+            backgroundColor: theme.colors.grey3,
+            borderWidth: 0,
+            ...(styleUI.shadow as any),
           }}
         />
       )),
     },
-
-    //  {
-    //    containerStyle: { backgroundColor: "red" },
-    //    titleStyle: { color: "white" },
-    //    color: "white",
-    //    icon: "close",
-    //    onPress: () => setIsVisible(false),
-    //  },
   ];
 
-  const onToggle = () => {
-    const curSize = 75;
-    setIsVisible((prev) => !prev);
-    if (!isVisible) {
-      positionButton.value = withSpring(-(curSize * list.length - list.length));
-      positionButton2.value = withSpring(0);
-    } else {
-      positionButton.value = withSpring(0);
-      positionButton2.value = withSpring(curSize * list.length - list.length);
-    }
+  const measureHeight = (event: LayoutChangeEvent) => {
+    event.persist();
+    return event.nativeEvent.layout.height;
   };
-  const UIstyle = useStyles(UIstyles);
   return (
     <Layoult>
-      <SafeAreaProvider>
-        <View>
-          <HeaderMain />
-        </View>
+      <View>
+        <HeaderMain />
+      </View>
 
-        <GestureHandlerRootView>
-          <GestureDetector gesture={panGesture}>
-            <Animated.View
-              style={scrollStyle}
-              onLayout={(event) => {
-                heightComponent.value = measureHeight(event);
-              }}
-            >
-              {groups.map((group) => (
-                <GroupCard
-                  onClickNav={(group: string) => {
-                    dispatch(isLoadingA(true));
-                    navigation.navigate("Home", { group: group });
-                  }}
-                  name={group.name}
-                  faculty={group.faculty}
-                />
-              ))}
-            </Animated.View>
-          </GestureDetector>
-        </GestureHandlerRootView>
-
-        <BottomSheet
-          modalProps={{
-            animationType: "fade",
-          }}
-          isVisible={isVisible}
-          onBackdropPress={onToggle}
-          containerStyle={{ backgroundColor: "rgba(27, 32, 38, 0.4)" }}
-        >
-          <Animated.View style={buttonStyle2}>
-            <Button
-              onPress={onToggle}
-              style={{ position: "absolute" }}
-              radius={50}
-              containerStyle={{
-                marginLeft: 10,
-                width: 60,
-                marginBottom: 10,
-              }}
-              buttonStyle={{
-                backgroundColor: "red",
-                height: 60,
-              }}
-            >
-              <Icon
-                name="close"
-                type="antdesign"
-                size={30}
-                color={"white"}
-              ></Icon>
-            </Button>
-          </Animated.View>
-          <View
+      <GestureHandlerRootView>
+        <GestureDetector gesture={panGesture}>
+          <Animated.View
+            style={[scrollStyle, { paddingHorizontal: 10 }]}
             onLayout={(event) => {
-              heightButtons.value = measureHeight(event);
+              heightComponent.value = measureHeight(event);
             }}
           >
-            {list.map((l, i) => (
-              <ListItem
-                key={i}
-                containerStyle={l.containerStyle}
-                onPress={l.onPress}
-              >
-                {l.icon && (
-                  <Icon
-                    name={l.icon}
-                    type="antdesign"
-                    color="white"
-                    size={25}
-                  />
-                )}
-                {l.title && (
-                  <Text
-                    style={{
-                      ...UIstyle.h2,
-                      color: l.color,
-                      marginLeft: 10,
-                    }}
-                  >
-                    {l.title}
-                  </Text>
-                )}
-                {l.children}
-              </ListItem>
+            {groups.map((group) => (
+              <GroupCard
+                onClickNav={(group: string) => {
+                  dispatch(isLoadingA(true));
+                  navigation.navigate("Home", { group: group });
+                }}
+                name={group.name}
+                faculty={group.faculty}
+              />
             ))}
-          </View>
-        </BottomSheet>
-      </SafeAreaProvider>
-      <Animated.View style={buttonStyle}>
-        <Button
-          onPress={onToggle}
-          style={{ position: "absolute", zIndex: 1000, elevation: 1000 }}
-          radius={50}
-          containerStyle={{
-            marginLeft: 10,
-            width: 60,
-            marginBottom: 10,
-          }}
-          buttonStyle={{
-            height: 60,
-          }}
-          color={theme.colors.primary}
-        >
-          <Icon name="filter" type="antdesign" size={30} color={"white"}></Icon>
-        </Button>
-      </Animated.View>
+          </Animated.View>
+        </GestureDetector>
+      </GestureHandlerRootView>
+      <ButtonCloseList
+        posBtnOpen={posBtnOpen}
+        onToggle={onToggle}
+        backgroundBtn={backgroundStyle}
+        visible={isVisible}
+        btnSize={sizeBtn}
+        btnSize2={sizeBtn2}
+      />
+      <BottomList
+        visible={isVisible}
+        list={list}
+        heightScreen={HEIGHT_CONTENT}
+        posBtnClose={posBtnClose}
+        onToggle={onToggle}
+        opacity={opacityStyle}
+      />
     </Layoult>
   );
 };

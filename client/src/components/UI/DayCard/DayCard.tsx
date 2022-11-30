@@ -38,7 +38,14 @@ export const DayCard: FC<DayCardI> = ({ lessons, dayOfWeek }) => {
         Сегодня,
         <Text style={styleUI.h1}> {days[`${dayOfWeek}`]}</Text>
       </Text>
-      <View style={{ marginTop: 10, marginHorizontal: -5 }}>
+      <View
+        style={{
+          marginTop: 10,
+          marginHorizontal: -5,
+          ...UIstyles().shadow,
+          borderColor: "black",
+        }}
+      >
         {lessons.map((lesson, i) => (
           <LessonCard
             count={lesson.count}

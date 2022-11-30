@@ -34,8 +34,9 @@ export const styles = () => {
 
       overflow: "hidden",
       borderRadius: 15,
-      borderBottomWidth: 5,
       marginVertical: 10,
+      borderColor: "black",
+      borderWidth: 0,
     },
 
     cardWrapper: {},
