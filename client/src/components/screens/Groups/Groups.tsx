@@ -46,107 +46,12 @@ import Animated, {
 import {
   BottomList,
   ButtonCloseList,
-} from "../../UI/BottomButtons/BottomButtons";
+} from "../../UI/BottomList/BottomList";
 
 export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
-  const position = useSharedValue(0);
-  const posBtnOpen = useSharedValue(0);
-  const posBtnClose = useSharedValue(120);
-  const sizeBtn = useSharedValue(100);
-  const sizeBtn2 = useSharedValue(100);
-  const opacityV = useSharedValue(0);
-  const backgV = useSharedValue(0);
-
   const { theme } = useTheme();
-  const opacityStyle = useAnimatedStyle(() => {
-    const opacity = interpolate(opacityV.value, [0, 100], [0, 1]);
-
-    return {
-      opacity: opacity,
-    };
-  });
-
-  const backgroundStyle = useAnimatedStyle(() => {
-    const backgroundColor = interpolateColor(
-      backgV.value,
-      [0, 1],
-      [theme.colors.primary, "red"]
-    );
-
-    return {
-      backgroundColor: backgroundColor,
-    };
-  });
-
-  const [isVisible, setIsVisible] = useState(false);
-  const contextY = useSharedValue(0);
-  const heightComponent = useSharedValue(0);
-
-  const { height } = Dimensions.get("screen");
-  const END_POSITION = 80;
-  const HEIGHT_CONTENT = height - END_POSITION;
   const styleUI = useStyles(UIstyles);
-
-  const onToggle = () => {
-    const curSize = 73;
-    setIsVisible((prev) => !prev);
-    if (!isVisible) {
-      posBtnOpen.value = withSpring(-(curSize * list.length - list.length));
-      posBtnClose.value = withSpring(0);
-      opacityV.value = withSpring(100);
-      backgV.value = withSpring(1);
-      sizeBtn.value = withSpring(0);
-      sizeBtn2.value = withSpring(100);
-    } else {
-      posBtnOpen.value = withSpring(0);
-      posBtnClose.value = withSpring(curSize * list.length - list.length);
-      opacityV.value = withSpring(0);
-      backgV.value = withSpring(0);
-      sizeBtn.value = withSpring(100);
-      sizeBtn2.value = withSpring(0);
-    }
-  };
-
-  const panGesture = Gesture.Pan()
-    .onStart(() => {
-      contextY.value = position.value;
-    })
-    .onUpdate((e) => {
-      const heightAllCards = -heightComponent.value + HEIGHT_CONTENT - 20;
-      if (
-        (position.value <= 0 || e.translationY < 0) &&
-        (position.value >= heightAllCards || e.translationY > 0)
-      )
-        position.value = contextY.value + e.translationY;
-    })
-    .onEnd((e) => {
-      const heightAllCards = -heightComponent.value + HEIGHT_CONTENT - 20;
-      if (e.translationY > 0) {
-        posBtnOpen.value = withSpring(0);
-      } else posBtnOpen.value = withSpring(90);
-      position.value = withDecay({
-        velocity: e.velocityY,
-        clamp: [heightAllCards, 0],
-      });
-    });
-
-  const scrollStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ translateY: position.value }],
-    };
-  });
-
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(isLoadingGroupA(true));
-    dispatch(getGroups() as any);
-  }, []);
-
-  var groups = useAppSelector((state) => state.groups.groups);
-  var loading = useAppSelector((state) => state.groups.isLoading);
-
-  //   const [heihgt, setHeihgt] = useState(0);
-
+  const curSize = 73;
   const list = [
     {
       title: "Факультет:",
@@ -189,6 +94,82 @@ export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
     },
   ];
 
+  const position = useSharedValue(0);
+
+  const posModal = useSharedValue(curSize * list.length - list.length);
+  const opacityBG = useSharedValue(0);
+
+  const posBtnOpen = useSharedValue(0);
+  const colorBtn = useSharedValue(0);
+
+  const opacityIconOpen = useSharedValue(100);
+  const opacityIconClose = useSharedValue(0);
+
+  const [isVisible, setIsVisible] = useState(false);
+  const contextY = useSharedValue(0);
+  const heightComponent = useSharedValue(0);
+
+  const { height } = Dimensions.get("screen");
+  const END_POSITION = 80;
+  const HEIGHT_CONTENT = height - END_POSITION;
+
+  const onToggle = () => {
+    setIsVisible((prev) => !prev);
+    if (!isVisible) {
+      posBtnOpen.value = withSpring(-(curSize * list.length - list.length));
+      posModal.value = withSpring(0);
+      opacityBG.value = withSpring(100);
+      colorBtn.value = withSpring(1);
+      opacityIconOpen.value = withSpring(0);
+      opacityIconClose.value = withSpring(100);
+    } else {
+      posBtnOpen.value = withSpring(0);
+      posModal.value = withSpring(curSize * list.length - list.length);
+      opacityBG.value = withSpring(0);
+      colorBtn.value = withSpring(0);
+      opacityIconOpen.value = withSpring(100);
+      opacityIconClose.value = withSpring(0);
+    }
+  };
+
+  const panGesture = Gesture.Pan()
+    .onStart(() => {
+      contextY.value = position.value;
+    })
+    .onUpdate((e) => {
+      const heightAllCards = -heightComponent.value + HEIGHT_CONTENT - 20;
+      if (
+        (position.value <= 0 || e.translationY < 0) &&
+        (position.value >= heightAllCards || e.translationY > 0)
+      )
+        position.value = contextY.value + e.translationY;
+    })
+    .onEnd((e) => {
+      const heightAllCards = -heightComponent.value + HEIGHT_CONTENT - 20;
+      if (e.translationY > 0) {
+        posBtnOpen.value = withSpring(0);
+      } else posBtnOpen.value = withSpring(90);
+      position.value = withDecay({
+        velocity: e.velocityY,
+        clamp: [heightAllCards, 0],
+      });
+    });
+
+  const scrollStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateY: position.value }],
+    };
+  });
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(isLoadingGroupA(true));
+    dispatch(getGroups() as any);
+  }, []);
+
+  var groups = useAppSelector((state) => state.groups.groups);
+  var loading = useAppSelector((state) => state.groups.isLoading);
+
   const measureHeight = (event: LayoutChangeEvent) => {
     event.persist();
     return event.nativeEvent.layout.height;
@@ -223,18 +204,18 @@ export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
       <ButtonCloseList
         posBtnOpen={posBtnOpen}
         onToggle={onToggle}
-        backgroundBtn={backgroundStyle}
+        colorBtn={colorBtn}
         visible={isVisible}
-        btnSize={sizeBtn}
-        btnSize2={sizeBtn2}
+        opacityIconOpen={opacityIconOpen}
+        opacityIconClose={opacityIconClose}
       />
       <BottomList
         visible={isVisible}
         list={list}
         heightScreen={HEIGHT_CONTENT}
-        posBtnClose={posBtnClose}
+        posModal={posModal}
         onToggle={onToggle}
-        opacity={opacityStyle}
+        opacityBackground={opacityBG}
       />
     </Layoult>
   );

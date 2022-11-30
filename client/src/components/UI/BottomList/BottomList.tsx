@@ -4,6 +4,7 @@ import React, { FC, useState } from "react";
 import { LayoutChangeEvent, StyleProp, View } from "react-native";
 import Animated, {
   interpolate,
+  interpolateColor,
   SharedValue,
   StyleProps,
   useAnimatedStyle,
@@ -16,17 +17,17 @@ import { UIstyles } from "../UIstyles";
 interface BottomButtonsI {
   visible: boolean;
   list: any[];
-  opacity: any;
   heightScreen: number;
-  posBtnClose: SharedValue<number>;
+  opacityBackground: any;
+  posModal: SharedValue<number>;
   onToggle: () => void;
 }
 
 export const BottomList: FC<BottomButtonsI> = ({
   list,
-  posBtnClose,
+  posModal,
   heightScreen,
-  opacity,
+  opacityBackground,
   onToggle,
   visible,
 }) => {
@@ -34,9 +35,17 @@ export const BottomList: FC<BottomButtonsI> = ({
 
   const UIstyle = useStyles(UIstyles);
 
-  const btnCloseStyle = useAnimatedStyle(() => {
+  const opacityStyle = useAnimatedStyle(() => {
+    const opacity = interpolate(opacityBackground.value, [0, 100], [0, 1]);
+
     return {
-      transform: [{ translateY: posBtnClose.value }],
+      opacity: opacity,
+    };
+  });
+
+  const posModalStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateY: posModal.value }],
     };
   });
 
@@ -68,7 +77,7 @@ export const BottomList: FC<BottomButtonsI> = ({
             right: 0,
             left: 0,
           },
-          opacity,
+          opacityStyle,
         ]}
         onTouchStart={() => {
           if (visible) onToggle();
@@ -83,7 +92,7 @@ export const BottomList: FC<BottomButtonsI> = ({
             paddingBottom: 50,
             bottom: -50,
           },
-          btnCloseStyle,
+          posModalStyle,
         ]}
         onLayout={(event) => {
           heightButtons.value = measureHeight(event);
@@ -120,19 +129,18 @@ export const BottomList: FC<BottomButtonsI> = ({
 interface ButtonCloseListI {
   posBtnOpen: SharedValue<number>;
   onToggle: () => void;
-  backgroundBtn: any;
+  colorBtn: SharedValue<number>;
   visible: boolean;
-  btnSize: SharedValue<number>;
-  btnSize2: SharedValue<number>;
+  opacityIconOpen: SharedValue<number>;
+  opacityIconClose: SharedValue<number>;
 }
 
 export const ButtonCloseList: FC<ButtonCloseListI> = ({
   posBtnOpen,
   onToggle,
-  backgroundBtn,
-  visible,
-  btnSize,
-  btnSize2,
+  colorBtn,
+  opacityIconOpen,
+  opacityIconClose,
 }) => {
   const btnOpenStyle = useAnimatedStyle(() => {
     return {
@@ -143,19 +151,30 @@ export const ButtonCloseList: FC<ButtonCloseListI> = ({
   const styleUI = useStyles(UIstyles);
   const { theme } = useTheme();
 
-  const opacityStyle = useAnimatedStyle(() => {
-    const opacity = interpolate(btnSize.value, [0, 100], [0, 1]);
+  const opacityOpen = useAnimatedStyle(() => {
+    const opacity = interpolate(opacityIconOpen.value, [0, 100], [0, 1]);
 
     return {
       opacity: opacity,
     };
   });
 
-  const opacityStyle2 = useAnimatedStyle(() => {
-    const opacity = interpolate(btnSize2.value, [0, 100], [0, 1]);
+  const opacityClose = useAnimatedStyle(() => {
+    const opacity = interpolate(opacityIconClose.value, [0, 100], [0, 1]);
 
     return {
       opacity: opacity,
+    };
+  });
+  const colorStyle = useAnimatedStyle(() => {
+    const backgroundColor = interpolateColor(
+      colorBtn.value,
+      [0, 1],
+      [theme.colors.primary, "red"]
+    );
+
+    return {
+      backgroundColor: backgroundColor,
     };
   });
   return (
@@ -174,14 +193,14 @@ export const ButtonCloseList: FC<ButtonCloseListI> = ({
           alignItems: "center",
         },
         btnOpenStyle,
-        backgroundBtn,
+        colorStyle,
       ]}
       onTouchStart={onToggle}
     >
-      <Animated.View style={[{ position: "absolute" }, opacityStyle2]}>
+      <Animated.View style={[{ position: "absolute" }, opacityClose]}>
         <Icon name="close" type="antdesign" size={30} color={"white"} />
       </Animated.View>
-      <Animated.View style={[{ position: "absolute" }, opacityStyle]}>
+      <Animated.View style={[{ position: "absolute" }, opacityOpen]}>
         <Icon name="filter" type="antdesign" size={30} color={"white"} />
       </Animated.View>
     </Animated.View>
