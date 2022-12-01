@@ -97,11 +97,15 @@ export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
       ),
     },
   ];
+  const { height } = Dimensions.get("screen");
+  const END_POSITION = 80;
+  const HEIGHT_CONTENT = height - END_POSITION;
 
   const position = useSharedValue(0);
 
   const posModal = useSharedValue(curSize * list.length - list.length);
   const opacityBG = useSharedValue(0);
+  const heightBG = useSharedValue(0);
 
   const posBtnOpen = useSharedValue(0);
   const colorBtn = useSharedValue(0);
@@ -113,16 +117,13 @@ export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
   const contextY = useSharedValue(0);
   const heightComponent = useSharedValue(0);
 
-  const { height } = Dimensions.get("screen");
-  const END_POSITION = 80;
-  const HEIGHT_CONTENT = height - END_POSITION;
-
   const onToggle = () => {
     setIsVisible((prev) => !prev);
     if (!isVisible) {
       posBtnOpen.value = withSpring(-(curSize * list.length - list.length));
       posModal.value = withSpring(0);
       opacityBG.value = withSpring(100);
+      heightBG.value = withSpring(HEIGHT_CONTENT);
       colorBtn.value = withSpring(1);
       opacityIconOpen.value = withSpring(0);
       opacityIconClose.value = withSpring(100);
@@ -130,6 +131,7 @@ export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
       posBtnOpen.value = withSpring(0);
       posModal.value = withSpring(curSize * list.length - list.length);
       opacityBG.value = withSpring(0);
+      heightBG.value = withSpring(0);
       colorBtn.value = withSpring(0);
       opacityIconOpen.value = withSpring(100);
       opacityIconClose.value = withSpring(0);
@@ -195,27 +197,33 @@ export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
               </Animated.View>
             </GestureDetector>
           </GestureHandlerRootView>
-          <ButtonCloseList
-            posBtnOpen={posBtnOpen}
-            onToggle={onToggle}
-            colorBtn={colorBtn}
-            visible={isVisible}
-            opacityIconOpen={opacityIconOpen}
-            opacityIconClose={opacityIconClose}
-            tags={[facults, courses]}
-          />
-          <BottomList
-            visible={isVisible}
-            list={list}
-            heightScreen={HEIGHT_CONTENT}
-            posModal={posModal}
-            onToggle={onToggle}
-            opacityBackground={opacityBG}
-          />
         </View>
       ) : (
-        <Text>Загрузка...</Text>
+        <Button
+          size="lg"
+          loadingProps={{ size: "large" }}
+          loading
+          type="clear"
+          style={{ position: "absolute" }}
+        />
       )}
+      <ButtonCloseList
+        posBtnOpen={posBtnOpen}
+        onToggle={onToggle}
+        colorBtn={colorBtn}
+        visible={isVisible}
+        opacityIconOpen={opacityIconOpen}
+        opacityIconClose={opacityIconClose}
+        tags={[facults, courses]}
+      />
+      <BottomList
+        visible={isVisible}
+        list={list}
+        heightScreen={heightBG}
+        posModal={posModal}
+        onToggle={onToggle}
+        opacityBackground={opacityBG}
+      />
     </Layoult>
   );
 };

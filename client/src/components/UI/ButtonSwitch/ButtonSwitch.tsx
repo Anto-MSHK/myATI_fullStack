@@ -16,7 +16,7 @@ interface ButtonGroupI {
 }
 
 export const ButtonSwitch: FC<ButtonGroupI> = ({ buttons, customStyle }) => {
-  var week = useAppSelector((state) => state.app.curWeek);
+  var week = useAppSelector((state) => state.settings.curWeek);
   var l = 0;
   if (week === "topWeek") l = 0;
   else l = 1;

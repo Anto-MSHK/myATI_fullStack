@@ -16,7 +16,7 @@ export const scheduleReducer = (
 ) => {
   switch (action.type) {
     case SCHEDULE.GET:
-      action.schedule.sort((a, b) => a.dayOfWeek - b.dayOfWeek);
+      
       return { group: action.group, days: action.schedule };
     case SCHEDULE.LOADING:
       console.log(action.isLoading);

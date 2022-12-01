@@ -8,29 +8,29 @@ import { Layoult } from "../../UI/Layoult/Layoult";
 import React, { useEffect, useState } from "react";
 import { HeaderMain } from "../../UI/Header/Header";
 import { DayCard } from "./../../UI/DayCard/DayCard";
-import { useAppSelector } from "../../../hooks/redux";
+import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
 import { Calendar } from "../../UI/Calendar/Calendar";
 import { styles } from "./styles";
 import { UltraView } from "../../UI/UltraView/UltraView";
 import { useDispatch } from "react-redux";
 import { getSchedule } from "../../../state/schedule/reducer";
-import store from "../../../state/state";
 import { AnyAction } from "redux";
-import { setCurDayA } from "../../../state/app/actions";
 import { HomeTabScreenProps } from "../../../navigation/types";
 import { isLoadingA } from "./../../../state/schedule/actions";
 import { Button } from "@rneui/base";
+import { useGetScheduleQuery } from "../../../state/services/schedule";
+import { setCurDay } from "../../../state/slices/settings/settingSlice";
 
 export const Home = ({ route }: HomeTabScreenProps<"Home">) => {
-  var groupSchedule = useAppSelector((state) => state.schedule);
+  //   var groupSchedule = useAppSelector((state) => state.schedule);
 
   const [curPage, setCurPage] = useState({ value: 0, isChange: false });
   const [isStart, setIsStart] = useState(true);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    dispatch(getSchedule((route.params as any).group) as any);
-  }, []);
+  const { data, error, isLoading } = useGetScheduleQuery(
+    (route.params as any).group
+  );
 
   return (
     <Layoult>
@@ -53,28 +53,27 @@ export const Home = ({ route }: HomeTabScreenProps<"Home">) => {
           />
         </View>
         <View style={styles.contentContainer}>
-          {!isStart && groupSchedule.group !== "" && (
+          {!isStart && !isLoading && data ? (
             <UltraView
-              data={groupSchedule.days}
+              data={data}
               renderItem={(item, index) => (
                 <DayCard lessons={item.lessons} dayOfWeek={item.dayOfWeek} />
               )}
               curPage={curPage}
               onSwipe={(count2) => {
-                dispatch(setCurDayA(count2));
+                dispatch(setCurDay(count2 as any));
               }}
-              onLayout={() => {
-                dispatch(isLoadingA(false));
-              }}
+              onLayout={() => {}}
+            />
+          ) : (
+            <Button
+              size="lg"
+              loadingProps={{ size: "large" }}
+              loading
+              type="clear"
+              style={{ position: "absolute" }}
             />
           )}
-          <Button
-            size="lg"
-            loadingProps={{ size: "large" }}
-            loading
-            type="clear"
-            style={{ position: "absolute" }}
-          />
         </View>
       </View>
     </Layoult>

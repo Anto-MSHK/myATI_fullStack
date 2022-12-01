@@ -17,7 +17,7 @@ import { UIstyles } from "../UIstyles";
 interface BottomButtonsI {
   visible: boolean;
   list: any[];
-  heightScreen: number;
+  heightScreen: SharedValue<number>;
   opacityBackground: any;
   posModal: SharedValue<number>;
   onToggle: () => void;
@@ -33,6 +33,7 @@ export const BottomList: FC<BottomButtonsI> = ({
 }) => {
   const heightButtons = useSharedValue(0);
 
+  const [active, setActive] = useState(true);
   const UIstyle = useStyles(UIstyles);
 
   const opacityStyle = useAnimatedStyle(() => {
@@ -40,6 +41,7 @@ export const BottomList: FC<BottomButtonsI> = ({
 
     return {
       opacity: opacity,
+      top: -heightScreen.value + 150,
     };
   });
 
@@ -55,7 +57,6 @@ export const BottomList: FC<BottomButtonsI> = ({
   };
   const styleUI = useStyles(UIstyles);
   const { theme } = useTheme();
-
   return (
     <View
       style={{
@@ -72,7 +73,7 @@ export const BottomList: FC<BottomButtonsI> = ({
             position: "absolute",
             zIndex: 0,
             backgroundColor: "rgba(27, 32, 38, 0.7)",
-            top: -heightScreen + 150,
+
             bottom: 0,
             right: 0,
             left: 0,
@@ -80,7 +81,9 @@ export const BottomList: FC<BottomButtonsI> = ({
           opacityStyle,
         ]}
         onTouchStart={() => {
-          if (visible) onToggle();
+          if (visible) {
+            onToggle();
+          }
         }}
       />
       <Animated.View
@@ -180,6 +183,7 @@ export const ButtonCloseList: FC<ButtonCloseListI> = ({
       elevation: -1,
     };
   });
+
   return (
     <Animated.View
       style={[

@@ -1,16 +1,23 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { groupAPI } from "./services/group";
+import { scheduleAPI } from "./services/schedule";
 import groupSlice from "./slices/group/groupSlice";
 import settingsSlice from "./slices/settings/settingSlice";
+import scheduleSlice from "./slices/schedule/scheduleSlice";
 
 export const store = configureStore({
   reducer: {
     [groupAPI.reducerPath]: groupAPI.reducer,
+    [scheduleAPI.reducerPath]: scheduleAPI.reducer,
     group: groupSlice,
+    schedule: scheduleSlice,
     settings: settingsSlice,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat([groupAPI.middleware]),
+    getDefaultMiddleware().concat([
+      groupAPI.middleware,
+      scheduleAPI.middleware,
+    ]),
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

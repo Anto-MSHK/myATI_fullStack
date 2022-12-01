@@ -30,7 +30,6 @@ export function UltraView<dataType = any>(props: {
 }) {
   const [isStart, setIsStart] = useState(true);
   const position = useSharedValue(0);
-  var isLoading = useAppSelector((state) => state.schedule.isLoading);
   var opacity = [0, 0, 0, 0, 0, 0].map((el) => useSharedValue(el));
   var marginHorz = [0, 0, 0, 0, 0, 0].map((el) => useSharedValue(el));
   var sizeHeight = [0, 0, 0, 0, 0, 0].map((el) => useSharedValue(el));
@@ -257,8 +256,8 @@ export function UltraView<dataType = any>(props: {
     });
   };
   var styles = {};
-  if (isLoading === false) styles = {};
-  else styles = { margin: -100000 };
+  //   if (isLoading === false) styles = {};
+  //   else styles = { margin: -100000 };
   return (
     <GestureHandlerRootView>
       <GestureDetector gesture={panGesture}>

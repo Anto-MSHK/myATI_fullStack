@@ -6,5 +6,4 @@ export type GroupMinT = {
 
 export interface GroupsStateI {
   groups: GroupMinT[];
-  isLoading: boolean;
 }
