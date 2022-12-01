@@ -1,29 +1,19 @@
-import { Store, combineReducers, applyMiddleware } from "redux";
-import { legacy_createStore as createStore } from "redux";
-import { appSettingsReducer } from "./appSettings/reducer";
-import { AppSettingsStateT } from "./appSettings/types";
-import { scheduleReducer } from "./schedule/reducer";
-import { ScheduleGroupsStateT } from "./schedule/types";
-import thunk from "redux-thunk";
-import { groupReducer } from "./group/reducer";
-import { GroupsStateT } from "./group/types";
-import { AppStateT } from "./app/types";
-import { appReducer } from "./app/reducer";
-export interface RootState {
-  schedule: ScheduleGroupsStateT;
-  groups: GroupsStateT;
-  appSettings: AppSettingsStateT;
-  app: AppStateT;
-}
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import { groupAPI } from "./services/group";
+import groupSlice from "./slices/group/groupSlice";
+import settingsSlice from "./slices/settings/settingSlice";
 
-const rootReducer = combineReducers<RootState>({
-  schedule: scheduleReducer,
-  groups: groupReducer,
-  appSettings: appSettingsReducer,
-  app: appReducer,
+export const store = configureStore({
+  reducer: {
+    [groupAPI.reducerPath]: groupAPI.reducer,
+    group: groupSlice,
+    settings: settingsSlice,
+  },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat([groupAPI.middleware]),
 });
 
-const store = createStore(rootReducer, applyMiddleware(thunk));
-
+// Infer the `RootState` and `AppDispatch` types from the store itself
+export type RootState = ReturnType<typeof store.getState>;
+// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
 export type AppDispatch = typeof store.dispatch;
-export default store;

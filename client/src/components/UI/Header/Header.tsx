@@ -5,8 +5,8 @@ import { styles } from "./styles";
 import { UIstyles } from "./../UIstyles";
 import { useStyles } from "./../../../hooks/useStyles";
 import { useDispatch } from "react-redux";
-import { setAppSettingsA } from "../../../state/appSettings/actions";
-import { useAppSelector } from "../../../hooks/redux";
+import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
+import { setTheme } from "../../../state/slices/settings/settingSlice";
 
 interface HeaderMainI {
   title?: string;
@@ -17,17 +17,17 @@ export const HeaderMain: FC<HeaderMainI> = ({
   title = "My ATI",
   isNotActiveButton = false,
 }) => {
-  const dispatch = useDispatch();
-  var themeMode = useAppSelector((state) => state.appSettings.theme);
+  const dispatch = useAppDispatch();
+  var themeMode = useAppSelector((state) => state.settings.theme);
 
   const { mode, setMode } = useThemeMode();
   const { theme } = useTheme();
 
   const [icon, setIcon] = useState<"menufold" | "menuunfold">("menuunfold");
 
-  //   useEffect(() => {
-  //     setMode(themeMode);
-  //   }, []);
+  useEffect(() => {
+    setMode(themeMode);
+  }, []);
 
   const managePanelActivity = () => {
     if (icon === "menuunfold") {
@@ -37,7 +37,7 @@ export const HeaderMain: FC<HeaderMainI> = ({
       setIcon("menuunfold");
       setMode("dark");
     }
-    //  dispatch(setAppSettingsA(mode));
+    dispatch(setTheme(mode));
   };
 
   const style = useStyles(styles);

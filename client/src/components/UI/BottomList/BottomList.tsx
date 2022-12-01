@@ -1,5 +1,5 @@
 import { BottomSheet, Button, Icon, ListItem, Text } from "@rneui/base";
-import { useTheme } from "@rneui/themed";
+import { Badge, useTheme } from "@rneui/themed";
 import React, { FC, useState } from "react";
 import { LayoutChangeEvent, StyleProp, View } from "react-native";
 import Animated, {
@@ -101,7 +101,7 @@ export const BottomList: FC<BottomButtonsI> = ({
         {list.map((l, i) => (
           <ListItem
             key={i}
-            containerStyle={l.containerStyle}
+            containerStyle={[l.containerStyle, { padding: 10 }]}
             onPress={l.onPress}
           >
             {l.icon && (
@@ -133,6 +133,7 @@ interface ButtonCloseListI {
   visible: boolean;
   opacityIconOpen: SharedValue<number>;
   opacityIconClose: SharedValue<number>;
+  tags: string[];
 }
 
 export const ButtonCloseList: FC<ButtonCloseListI> = ({
@@ -141,6 +142,7 @@ export const ButtonCloseList: FC<ButtonCloseListI> = ({
   colorBtn,
   opacityIconOpen,
   opacityIconClose,
+  tags,
 }) => {
   const btnOpenStyle = useAnimatedStyle(() => {
     return {
@@ -175,6 +177,7 @@ export const ButtonCloseList: FC<ButtonCloseListI> = ({
 
     return {
       backgroundColor: backgroundColor,
+      elevation: -1,
     };
   });
   return (
@@ -184,25 +187,58 @@ export const ButtonCloseList: FC<ButtonCloseListI> = ({
           position: "absolute",
           bottom: 0,
           zIndex: 2,
-          borderRadius: 50,
-          marginLeft: 10,
           width: 60,
           height: 60,
           marginBottom: 10,
-          justifyContent: "center",
+          flexDirection: "row",
           alignItems: "center",
         },
         btnOpenStyle,
-        colorStyle,
       ]}
-      onTouchStart={onToggle}
     >
-      <Animated.View style={[{ position: "absolute" }, opacityClose]}>
-        <Icon name="close" type="antdesign" size={30} color={"white"} />
+      <Animated.View
+        style={[
+          {
+            borderRadius: 50,
+            marginLeft: 10,
+            width: 60,
+            height: 60,
+            marginBottom: 10,
+            justifyContent: "center",
+            alignItems: "center",
+            marginRight: 5,
+          },
+          colorStyle,
+        ]}
+        onTouchStart={onToggle}
+      >
+        <Animated.View style={[{ position: "absolute" }, opacityClose]}>
+          <Icon name="close" type="antdesign" size={30} color={"white"} />
+        </Animated.View>
+        <Animated.View style={[{ position: "absolute" }, opacityOpen]}>
+          <Icon name="filter" type="antdesign" size={30} color={"white"} />
+        </Animated.View>
       </Animated.View>
-      <Animated.View style={[{ position: "absolute" }, opacityOpen]}>
-        <Icon name="filter" type="antdesign" size={30} color={"white"} />
-      </Animated.View>
+      {tags.map(
+        (tag) =>
+          tag !== "" && (
+            <Badge
+              value={tag}
+              containerStyle={{ marginBottom: 10, marginHorizontal: 5 }}
+              badgeStyle={{
+                width: 40,
+                height: 40,
+                borderRadius: 50,
+                borderWidth: 0,
+              }}
+              textStyle={{
+                textAlign: "center",
+                lineHeight: 12,
+                fontWeight: "700",
+              }}
+            />
+          )
+      )}
     </Animated.View>
   );
 };
