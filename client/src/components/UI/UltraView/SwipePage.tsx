@@ -1,7 +1,6 @@
 import { View, Text } from "react-native";
 import React, { FC } from "react";
 import DayCard from "../DayCard/DayCard";
-import { DayT } from "../../../state/schedule/types";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
 
 interface DayPage {
@@ -23,6 +22,7 @@ export const SwipePage: FC<DayPage> = ({
     <Animated.View
       style={[animatedStyle]}
       onLayout={(event) => {
+        console.log("swipe " + index);
         onChange(event, index);
       }}
     >

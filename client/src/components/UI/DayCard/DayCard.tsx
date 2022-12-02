@@ -101,7 +101,6 @@ export const DayCard: FC<DayCardI> = ({ lessons, dayOfWeek, dates }) => {
               0
             );
             if (time >= startTime && time < endTime) {
-              console.log(timeTo);
               if (timeTo === undefined) {
                 setTimeTo({
                   from: lesson.time.from,

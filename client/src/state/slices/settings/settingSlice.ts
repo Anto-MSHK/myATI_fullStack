@@ -46,9 +46,6 @@ export const settingsSlice = createSlice({
         if (day === state.curDate) state.curDay = i as any;
       });
       state.weekDates = weekDays;
-      console.log(state.curDate);
-      console.log(weekDays);
-      console.log(state.curDay);
     },
   },
 });

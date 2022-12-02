@@ -73,22 +73,25 @@ export function UltraView<dataType = any>(props: {
     if (
       posCards.length !== 6 ||
       (event.nativeEvent &&
-        heightCards[dayOfWeek - 1] &&
-        heightCards[dayOfWeek - 1].size !== event.nativeEvent.layout.height)
+        heightCards[dayOfWeek] &&
+        heightCards[dayOfWeek].size !== event.nativeEvent.layout.height)
     ) {
       event.persist();
       setHeightCards((prev) => {
-        if (event.nativeEvent && dayOfWeek) {
-          prev[dayOfWeek - 1] = {
-            size: event.nativeEvent.layout.height,
-            day: dayOfWeek - 1,
-          };
-          prev.sort(function (a, b) {
-            return a.day - b.day;
-          });
-          sizeHeight[dayOfWeek - 1].value = event.nativeEvent.layout.height;
-          addMargin(dayOfWeek);
-        }
+        //   if (dayOfWeek) {
+        if (dayOfWeek === 0) console.log("ne pon XXX");
+        prev[dayOfWeek] = {
+          size: event.nativeEvent.layout.height,
+          day: dayOfWeek,
+        };
+        prev.sort(function (a, b) {
+          return a.day - b.day;
+        });
+        //  prev[0].day = 0;
+        sizeHeight[dayOfWeek].value = event.nativeEvent.layout.height;
+        if (dayOfWeek === 0) console.log("ne pon");
+        addMargin(dayOfWeek);
+        //   }
         return prev;
       });
       if (marginCards.length === 6) {
@@ -99,18 +102,17 @@ export function UltraView<dataType = any>(props: {
       position.value = withSpring(-posCards[count.value], configSpring);
       setIsStart(false);
       props.onLayout();
-      // console.log("yes");
     }
+    //  console.log(posCards);
   };
 
   const addMargin = (day: number) => {
     var margin = 0;
-    if (heightCards[day - 1] && HEIGHT_CONTENT - heightCards[day - 1].size <= 0)
+    if (heightCards[day] && HEIGHT_CONTENT - heightCards[day].size <= 0)
       margin = HEIGHT_CONTENT / 4;
-    else if (heightCards[day - 1])
-      margin = HEIGHT_CONTENT - heightCards[day - 1].size;
+    else if (heightCards[day]) margin = HEIGHT_CONTENT - heightCards[day].size;
     setMarginCards((prev) => {
-      prev[day - 1] = margin;
+      prev[day] = margin;
       var newArr = [...prev];
       return newArr;
     });
@@ -148,18 +150,18 @@ export function UltraView<dataType = any>(props: {
   const panGesture = Gesture.Pan()
     .onStart(() => {
       contextOpacity.value =
-        heightCards[count.value - 1].size - marginCards[count.value - 1];
-      if (heightCards[count.value - 1].size >= HEIGHT_CONTENT) {
-        if (posCards[count.value - 1] === 0)
+        heightCards[count.value].size - marginCards[count.value];
+      if (heightCards[count.value].size >= HEIGHT_CONTENT) {
+        if (posCards[count.value] === 0)
           contextAdvanced.value =
-            posCards[count.value] -
-            heightCards[count.value - 1].size +
-            marginCards[count.value - 1];
+            posCards[count.value + 1] -
+            heightCards[count.value].size +
+            marginCards[count.value];
         else
           contextAdvanced.value =
-            posCards[count.value - 1] +
-            heightCards[count.value - 1].size -
-            (HEIGHT_CONTENT - marginCards[count.value - 1]);
+            posCards[count.value] +
+            heightCards[count.value].size -
+            (HEIGHT_CONTENT - marginCards[count.value]);
       } else {
         contextAdvanced.value = 0;
       }
@@ -186,8 +188,12 @@ export function UltraView<dataType = any>(props: {
       //     marginHorz[count.value - 2].value = -procent / 5;
       //   }
       // }
+      console.log(count.value);
     })
     .onEnd((e) => {
+      console.log(heightCards);
+      console.log(marginCards);
+      console.log(posCards);
       var minVelocity = 1000;
       var minPulling = 200;
 
@@ -200,7 +206,7 @@ export function UltraView<dataType = any>(props: {
           position.value <= -contextAdvanced.value &&
           e.translationY < -minPulling;
         pullingDown =
-          position.value > -posCards[count.value - 1] &&
+          position.value > -posCards[count.value] &&
           e.translationY > minPulling;
       }
 
@@ -209,42 +215,42 @@ export function UltraView<dataType = any>(props: {
 
       if (pushUp || pullingUp) {
         contextAdvanced.value = 0;
-        if (count.value === 6) count.value = 1;
+        if (count.value === 5) count.value = 0;
         else {
           count.value += 1;
         }
       }
       if (pushDown || pullingDown) {
         contextAdvanced.value = 0;
-        if (count.value === 1) count.value = 6;
+        if (count.value === 0) count.value = 5;
         else {
           count.value -= 1;
         }
       }
       if (contextAdvanced.value === 0) {
-        position.value = withSpring(-posCards[count.value - 1], configSpring);
+        position.value = withSpring(-posCards[count.value], configSpring);
       } else if (position.value <= -contextAdvanced.value) {
         position.value = withSpring(-contextAdvanced.value, configSpring);
-      } else if (position.value > -posCards[count.value - 1]) {
-        position.value = withSpring(-posCards[count.value - 1], configSpring);
+      } else if (position.value > -posCards[count.value]) {
+        position.value = withSpring(-posCards[count.value], configSpring);
       } else
         position.value = withDecay({
           velocity: e.velocityY,
           deceleration: 0.998,
-          clamp: [-contextAdvanced.value, -posCards[count.value - 1]],
+          clamp: [-contextAdvanced.value, -posCards[count.value]],
         });
 
-      if (count.value !== 6) {
-        opacity[count.value].value = withSpring(0, configSpring);
-        marginHorz[count.value].value = withSpring(10, configSpring);
+      if (count.value !== 5) {
+        opacity[count.value + 1].value = withSpring(0, configSpring);
+        marginHorz[count.value + 1].value = withSpring(10, configSpring);
       }
-      opacity[count.value - 1].value = withSpring(1, configSpring);
-      marginHorz[count.value - 1].value = withSpring(0, configSpring);
-      if (count.value !== 1) {
-        opacity[count.value - 2].value = withSpring(0, configSpring);
-        marginHorz[count.value - 2].value = withSpring(10, configSpring);
+      opacity[count.value].value = withSpring(1, configSpring);
+      marginHorz[count.value].value = withSpring(0, configSpring);
+      if (count.value !== 0) {
+        opacity[count.value - 1].value = withSpring(0, configSpring);
+        marginHorz[count.value - 1].value = withSpring(10, configSpring);
       }
-      runOnJS(callback)(count.value - 1);
+      runOnJS(callback)(count.value);
     });
 
   const animatedStyle = (index: number) => {
@@ -271,7 +277,10 @@ export function UltraView<dataType = any>(props: {
             return (
               <Animated.View
                 onLayout={(event) => {
-                  if (isStart) measureHeight(event, index + 1);
+                  if (isStart) {
+                    if (index === 0) console.log("ne pon x3");
+                    measureHeight(event, index);
+                  }
                 }}
                 style={[
                   animatedStyle(index),
@@ -280,10 +289,11 @@ export function UltraView<dataType = any>(props: {
                 key={index + "swipe-page"}
               >
                 <SwipePage
-                  index={index + 1}
+                  index={index}
                   translateY={position}
                   onChange={(event, dayOfWeek) => {
                     if (posCards.length !== 6 || count.value === dayOfWeek) {
+                      if (dayOfWeek === 0) console.log("ne pon x2");
                       measureHeight(event, dayOfWeek);
                     }
                   }}
