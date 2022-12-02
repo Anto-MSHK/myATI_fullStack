@@ -1,4 +1,10 @@
-import { LayoutChangeEvent, Dimensions, View } from "react-native";
+import {
+  LayoutChangeEvent,
+  Dimensions,
+  View,
+  ViewStyle,
+  StyleProp,
+} from "react-native";
 import React, { FC, useCallback, useEffect, useState } from "react";
 import { useAppSelector } from "../../../hooks/redux";
 import { SwipePage } from "./SwipePage";
@@ -27,6 +33,7 @@ export function UltraView<dataType = any>(props: {
   curPage: { value: number; isChange: boolean };
   onSwipe?: (curPage: number) => void;
   onLayout: () => void;
+  style: StyleProp<ViewStyle>;
 }) {
   const [isStart, setIsStart] = useState(true);
   const position = useSharedValue(0);
@@ -93,6 +100,7 @@ export function UltraView<dataType = any>(props: {
       position.value = withSpring(-posCards[count.value - 1], configSpring);
       setIsStart(false);
       props.onLayout();
+      // console.log("yes");
     }
   };
 
@@ -255,9 +263,7 @@ export function UltraView<dataType = any>(props: {
         };
     });
   };
-  var styles = {};
-  //   if (isLoading === false) styles = {};
-  //   else styles = { margin: -100000 };
+  var styles = props.style;
   return (
     <GestureHandlerRootView>
       <GestureDetector gesture={panGesture}>

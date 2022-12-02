@@ -26,6 +26,7 @@ export const Home = ({ route }: HomeTabScreenProps<"Home">) => {
 
   const [curPage, setCurPage] = useState({ value: 0, isChange: false });
   const [isStart, setIsStart] = useState(true);
+  const [isStart2, setIsStart2] = useState(true);
   const dispatch = useAppDispatch();
 
   const { data, error, isLoading } = useGetScheduleQuery(
@@ -53,7 +54,7 @@ export const Home = ({ route }: HomeTabScreenProps<"Home">) => {
           />
         </View>
         <View style={styles.contentContainer}>
-          {!isStart && !isLoading && data ? (
+          {!isLoading && !isStart && data && (
             <UltraView
               data={data}
               renderItem={(item, index) => (
@@ -63,17 +64,19 @@ export const Home = ({ route }: HomeTabScreenProps<"Home">) => {
               onSwipe={(count2) => {
                 dispatch(setCurDay(count2 as any));
               }}
-              onLayout={() => {}}
-            />
-          ) : (
-            <Button
-              size="lg"
-              loadingProps={{ size: "large" }}
-              loading
-              type="clear"
-              style={{ position: "absolute" }}
+              onLayout={() => {
+                setIsStart2(false);
+              }}
+              style={isStart2 ? { opacity: 0, position: "absolute" } : {}}
             />
           )}
+          <Button
+            size="lg"
+            loadingProps={{ size: "large" }}
+            loading
+            type="clear"
+            style={{ position: "absolute" }}
+          />
         </View>
       </View>
     </Layoult>
