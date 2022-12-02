@@ -36,8 +36,8 @@ export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
   const styleUI = useStyles(UIstyles);
   const curSize = 63;
 
-  const [facults, setFacults] = useState("");
-  const [courses, setCourses] = useState("");
+  const [faculty, setFaculty] = useState("");
+  const [course, setCourse] = useState("");
 
   const list = [
     {
@@ -46,18 +46,19 @@ export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
       containerStyle: {
         backgroundColor: theme.colors.grey5,
       },
-      children: ["ФВО", "СПО"].map((el) => (
-        <Badge
-          value={el}
-          badgeStyle={{
-            width: 40,
+      children: ["FVO", "SPO"].map((el) => (
+        <Button
+          buttonStyle={{
             height: 40,
-            backgroundColor: theme.colors.grey3,
+            backgroundColor:
+              el === faculty ? theme.colors.primary : theme.colors.grey3,
             borderWidth: 0,
-            ...(styleUI.shadow as any),
           }}
-          onPress={() => setFacults(el)}
-        />
+          containerStyle={{ borderRadius: 10, ...(styleUI.shadow as any) }}
+          onPress={() => setFaculty(el)}
+        >
+          {el}
+        </Button>
       )),
     },
 
@@ -68,17 +69,19 @@ export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
         backgroundColor: theme.colors.grey5,
       },
       children: ["1", "2", "3", "4"].map((el) => (
-        <Badge
-          value={el}
-          badgeStyle={{
+        <Button
+          buttonStyle={{
             width: 40,
             height: 40,
-            backgroundColor: theme.colors.grey3,
+            backgroundColor:
+              el === course ? theme.colors.primary : theme.colors.grey3,
             borderWidth: 0,
-            ...(styleUI.shadow as any),
           }}
-          onPress={() => setCourses(el + " курс")}
-        />
+          containerStyle={{ borderRadius: 10, ...(styleUI.shadow as any) }}
+          onPress={() => setCourse(el)}
+        >
+          {el}
+        </Button>
       )),
     },
     {
@@ -88,9 +91,12 @@ export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
       },
       children: (
         <Button
-          containerStyle={{ marginHorizontal: 10 }}
+          containerStyle={{ marginHorizontal: 10, borderRadius: 20 }}
           color={theme.colors.grey4}
-          buttonStyle={{ borderRadius: 20 }}
+          onPress={() => {
+            setFaculty("");
+            setCourse("");
+          }}
         >
           Очистить
         </Button>
@@ -105,7 +111,7 @@ export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
 
   const posModal = useSharedValue(curSize * list.length - list.length);
   const opacityBG = useSharedValue(0);
-  const heightBG = useSharedValue(0);
+  const heightBG = useSharedValue(-300);
 
   const posBtnOpen = useSharedValue(0);
   const colorBtn = useSharedValue(0);
@@ -131,7 +137,7 @@ export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
       posBtnOpen.value = withSpring(0);
       posModal.value = withSpring(curSize * list.length - list.length);
       opacityBG.value = withSpring(0);
-      heightBG.value = withSpring(0);
+      heightBG.value = withSpring(-300);
       colorBtn.value = withSpring(0);
       opacityIconOpen.value = withSpring(100);
       opacityIconClose.value = withSpring(0);
@@ -163,7 +169,7 @@ export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
     };
   });
 
-  const { data, error, isLoading } = useGetGroupsQuery();
+  const { data, error, isLoading } = useGetGroupsQuery({ faculty, course });
 
   const measureHeight = (event: LayoutChangeEvent) => {
     event.persist();
@@ -185,15 +191,33 @@ export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
                 }}
               >
                 {data &&
-                  data.map((group) => (
-                    <GroupCard
-                      onClickNav={(group: string) => {
-                        navigation.navigate("Home", { group: group });
-                      }}
-                      name={group.name}
-                      faculty={group.faculty}
-                    />
-                  ))}
+                  data.map((group) => {
+                    if (group.faculty === "FVO")
+                      return (
+                        <GroupCard
+                          onClickNav={(group: string) => {
+                            navigation.navigate("Home", { group: group });
+                          }}
+                          name={group.name}
+                          faculty={group.faculty}
+                          key={`${group.name}gr`}
+                        />
+                      );
+                  })}
+                {data &&
+                  data.map((group) => {
+                    if (group.faculty === "SPO")
+                      return (
+                        <GroupCard
+                          onClickNav={(group: string) => {
+                            navigation.navigate("Home", { group: group });
+                          }}
+                          name={group.name}
+                          faculty={group.faculty}
+                          key={`${group.name}gr`}
+                        />
+                      );
+                  })}
               </Animated.View>
             </GestureDetector>
           </GestureHandlerRootView>
@@ -214,7 +238,7 @@ export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
         visible={isVisible}
         opacityIconOpen={opacityIconOpen}
         opacityIconClose={opacityIconClose}
-        tags={[facults, courses]}
+        tags={[{ value: faculty }, { value: course, name: "курс" }]}
       />
       <BottomList
         visible={isVisible}

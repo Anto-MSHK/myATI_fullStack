@@ -1,6 +1,6 @@
 export type GroupMinT = {
   name: string;
-  faculty: "ФВО" | "СПО";
+  faculty: "FVO" | "SPO";
   elder?: string;
 };
 

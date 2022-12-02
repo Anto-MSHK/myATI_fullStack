@@ -5,10 +5,11 @@ import { styles } from "./styles";
 import { c_style } from "./../../../stylesConst";
 import { ButtonSwitch } from "./../ButtonSwitch/ButtonSwitch";
 import { UIstyles } from "./../UIstyles";
-import { dataLessonT, dataT, LessonT } from "../../../state/schedule/types";
 import { LinearGradient } from "expo-linear-gradient";
 import { useStyles } from "./../../../hooks/useStyles";
 import { useAppSelector } from "../../../hooks/redux";
+import { useTheme } from "@rneui/themed";
+import { dataT } from "../../../state/slices/schedule/types";
 
 export interface LessonCardI {
   roundingСorns?: "none" | "top" | "bottom" | "all";
@@ -17,6 +18,7 @@ export interface LessonCardI {
   count: 1 | 2 | 3 | 4 | 5;
   time: { from: string; to: string };
   data: dataT;
+  isActive: boolean;
 }
 
 export const LessonCard: FC<LessonCardI> = ({
@@ -25,7 +27,10 @@ export const LessonCard: FC<LessonCardI> = ({
   time,
   roundingСorns = "all",
   isNotTeacher = false,
+  isActive = false,
 }) => {
+  const { theme } = useTheme();
+
   var styleForLine: StyleProp<ViewStyle> = {};
   var [curData, setCurData] = useState<"topWeek" | "lowerWeek">("topWeek");
 
@@ -82,7 +87,12 @@ export const LessonCard: FC<LessonCardI> = ({
           <Badge
             value={count}
             containerStyle={style.budgeContainer}
-            badgeStyle={style.budge}
+            badgeStyle={[
+              style.budge,
+              isActive
+                ? { backgroundColor: theme.colors.primary }
+                : { backgroundColor: theme.colors.secondary },
+            ]}
             textStyle={style.budgeText}
           />
           <Text style={{ width: 240, lineHeight: 18, ...styleUI.h2 }}>

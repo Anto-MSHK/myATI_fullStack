@@ -13,16 +13,18 @@ import { Calendar } from "../../UI/Calendar/Calendar";
 import { styles } from "./styles";
 import { UltraView } from "../../UI/UltraView/UltraView";
 import { useDispatch } from "react-redux";
-import { getSchedule } from "../../../state/schedule/reducer";
 import { AnyAction } from "redux";
 import { HomeTabScreenProps } from "../../../navigation/types";
-import { isLoadingA } from "./../../../state/schedule/actions";
 import { Button } from "@rneui/base";
 import { useGetScheduleQuery } from "../../../state/services/schedule";
-import { setCurDay } from "../../../state/slices/settings/settingSlice";
+import {
+  setCurDay,
+  setCurDayAndWeek,
+} from "../../../state/slices/settings/settingSlice";
+import { useTheme } from "@rneui/themed";
 
 export const Home = ({ route }: HomeTabScreenProps<"Home">) => {
-  //   var groupSchedule = useAppSelector((state) => state.schedule);
+  let curStatus = useAppSelector((state) => state.settings.curStatus);
 
   const [curPage, setCurPage] = useState({ value: 0, isChange: false });
   const [isStart, setIsStart] = useState(true);
@@ -32,12 +34,32 @@ export const Home = ({ route }: HomeTabScreenProps<"Home">) => {
   const { data, error, isLoading } = useGetScheduleQuery(
     (route.params as any).group
   );
+  useEffect(() => {
+    dispatch(setCurDayAndWeek());
+  }, []);
+  const { theme } = useTheme();
 
+  const weekDates = useAppSelector((state) => state.settings.weekDates);
   return (
     <Layoult>
       <View>
         <HeaderMain />
       </View>
+      {!isStart2 && (
+        <Text
+          style={{
+            backgroundColor: theme.colors.primary,
+            textAlign: "center",
+            zIndex: 10,
+            elevation: 10,
+            color: theme.colors.black,
+            paddingVertical: 2,
+            fontSize: 13,
+          }}
+        >
+          {curStatus}
+        </Text>
+      )}
       <View>
         <View
           style={{ zIndex: 10, elevation: 10 }}
@@ -51,6 +73,7 @@ export const Home = ({ route }: HomeTabScreenProps<"Home">) => {
                 return { ...prev, value: day, noChange: !prev.isChange };
               });
             }}
+            weekDates={weekDates}
           />
         </View>
         <View style={styles.contentContainer}>
@@ -58,7 +81,11 @@ export const Home = ({ route }: HomeTabScreenProps<"Home">) => {
             <UltraView
               data={data}
               renderItem={(item, index) => (
-                <DayCard lessons={item.lessons} dayOfWeek={item.dayOfWeek} />
+                <DayCard
+                  lessons={item.lessons}
+                  dayOfWeek={item.dayOfWeek}
+                  dates={weekDates[index]}
+                />
               )}
               curPage={curPage}
               onSwipe={(count2) => {

@@ -5,6 +5,15 @@ import groupSlice from "./slices/group/groupSlice";
 import settingsSlice from "./slices/settings/settingSlice";
 import scheduleSlice from "./slices/schedule/scheduleSlice";
 
+import {
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from "redux-persist";
+
 export const store = configureStore({
   reducer: {
     [groupAPI.reducerPath]: groupAPI.reducer,
@@ -14,10 +23,11 @@ export const store = configureStore({
     settings: settingsSlice,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat([
-      groupAPI.middleware,
-      scheduleAPI.middleware,
-    ]),
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }).concat([groupAPI.middleware, scheduleAPI.middleware]),
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

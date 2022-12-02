@@ -85,7 +85,7 @@ export const styles = () => {
       width: 65,
       height: 25,
 
-      backgroundColor: theme.colors.primary,
+
 
       alignItems: "flex-end",
       justifyContent: "center",

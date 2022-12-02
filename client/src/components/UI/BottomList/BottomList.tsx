@@ -35,18 +35,20 @@ export const BottomList: FC<BottomButtonsI> = ({
 
   const [active, setActive] = useState(true);
   const UIstyle = useStyles(UIstyles);
+  const { theme } = useTheme();
 
   const opacityStyle = useAnimatedStyle(() => {
     const opacity = interpolate(opacityBackground.value, [0, 100], [0, 1]);
 
     return {
       opacity: opacity,
-      top: -heightScreen.value + 150,
+      top: -heightScreen.value,
     };
   });
 
   const posModalStyle = useAnimatedStyle(() => {
     return {
+      // backgroundColor: theme.colors.grey5,
       transform: [{ translateY: posModal.value }],
     };
   });
@@ -56,16 +58,18 @@ export const BottomList: FC<BottomButtonsI> = ({
     return event.nativeEvent.layout.height;
   };
   const styleUI = useStyles(UIstyles);
-  const { theme } = useTheme();
   return (
-    <View
-      style={{
-        position: "absolute",
-        bottom: 0,
-        right: 0,
-        left: 0,
-        zIndex: 1,
-      }}
+    <Animated.View
+      style={[
+        {
+          position: "absolute",
+          bottom: 0,
+          right: 0,
+          left: 0,
+          zIndex: 1,
+        },
+        posModalStyle,
+      ]}
     >
       <Animated.View
         style={[
@@ -73,7 +77,7 @@ export const BottomList: FC<BottomButtonsI> = ({
             position: "absolute",
             zIndex: 0,
             backgroundColor: "rgba(27, 32, 38, 0.7)",
-
+            borderRadius: 500,
             bottom: 0,
             right: 0,
             left: 0,
@@ -95,7 +99,7 @@ export const BottomList: FC<BottomButtonsI> = ({
             paddingBottom: 50,
             bottom: -50,
           },
-          posModalStyle,
+          //  posModalStyle,
         ]}
         onLayout={(event) => {
           heightButtons.value = measureHeight(event);
@@ -125,7 +129,7 @@ export const BottomList: FC<BottomButtonsI> = ({
           </ListItem>
         ))}
       </Animated.View>
-    </View>
+    </Animated.View>
   );
 };
 
@@ -136,7 +140,7 @@ interface ButtonCloseListI {
   visible: boolean;
   opacityIconOpen: SharedValue<number>;
   opacityIconClose: SharedValue<number>;
-  tags: string[];
+  tags: { name?: string; value: string }[];
 }
 
 export const ButtonCloseList: FC<ButtonCloseListI> = ({
@@ -224,10 +228,10 @@ export const ButtonCloseList: FC<ButtonCloseListI> = ({
         </Animated.View>
       </Animated.View>
       {tags.map(
-        (tag) =>
-          tag !== "" && (
+        (tag, i) =>
+          tag.value !== "" && (
             <Badge
-              value={tag}
+              value={tag.name ? `${tag.value} ${tag.name}` : tag.value}
               containerStyle={{ marginBottom: 10, marginHorizontal: 5 }}
               badgeStyle={{
                 width: 40,
@@ -240,6 +244,7 @@ export const ButtonCloseList: FC<ButtonCloseListI> = ({
                 lineHeight: 12,
                 fontWeight: "700",
               }}
+              key={i + "b"}
             />
           )
       )}

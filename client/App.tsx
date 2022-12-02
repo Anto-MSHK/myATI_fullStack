@@ -14,6 +14,8 @@ import { createTheme, ThemeProvider, useThemeMode } from "@rneui/themed";
 import { registerRootComponent } from "expo";
 import { useEffect } from "react";
 import { store } from "./src/state/state";
+import { useAppDispatch } from "./src/hooks/redux";
+import { setCurDayAndWeek } from "./src/state/slices/settings/settingSlice";
 
 export default function App() {
   let [fontsLoaded] = useFonts({
