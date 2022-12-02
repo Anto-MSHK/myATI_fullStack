@@ -84,7 +84,10 @@ export const Home = ({ route }: HomeTabScreenProps<"Home">) => {
                 <DayCard
                   lessons={item.lessons}
                   dayOfWeek={item.dayOfWeek}
-                  dates={weekDates[index]}
+                  dates={{
+                    today: weekDates[index],
+                    tommorow: weekDates[index + 1],
+                  }}
                 />
               )}
               curPage={curPage}

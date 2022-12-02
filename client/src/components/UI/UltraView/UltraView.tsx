@@ -45,8 +45,7 @@ export function UltraView<dataType = any>(props: {
   var contextAdvanced = useSharedValue(0);
   var contextOpacity = useSharedValue(0);
 
-  var count = useSharedValue(props.curPage.value + 1);
-
+  var count = useSharedValue(props.curPage.value);
   var [heightCards, setHeightCards] = useState<{ size: number; day: number }[]>(
     []
   );
@@ -65,7 +64,7 @@ export function UltraView<dataType = any>(props: {
       return el;
     });
     if (!isStart) {
-      count.value = props.curPage.value + 1;
+      count.value = props.curPage.value;
       position.value = withSpring(-posCards[props.curPage.value], configSpring);
     }
   }, [props.curPage]);
@@ -96,8 +95,8 @@ export function UltraView<dataType = any>(props: {
         posAllCardsCalc(heightCards, marginCards);
       }
     } else if (posCards.length === 6 && isStart) {
-      props.curPage.value = count.value - 1;
-      position.value = withSpring(-posCards[count.value - 1], configSpring);
+      props.curPage.value = count.value;
+      position.value = withSpring(-posCards[count.value], configSpring);
       setIsStart(false);
       props.onLayout();
       // console.log("yes");

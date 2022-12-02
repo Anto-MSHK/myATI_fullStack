@@ -55,7 +55,10 @@ export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
             borderWidth: 0,
           }}
           containerStyle={{ borderRadius: 10, ...(styleUI.shadow as any) }}
-          onPress={() => setFaculty(el)}
+          onPress={() => {
+            setFaculty(el);
+            position.value = 0;
+          }}
         >
           {el}
         </Button>
@@ -78,7 +81,10 @@ export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
             borderWidth: 0,
           }}
           containerStyle={{ borderRadius: 10, ...(styleUI.shadow as any) }}
-          onPress={() => setCourse(el)}
+          onPress={() => {
+            setCourse(el);
+            position.value = 0;
+          }}
         >
           {el}
         </Button>
@@ -96,6 +102,7 @@ export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
           onPress={() => {
             setFaculty("");
             setCourse("");
+            position.value = 0;
           }}
         >
           Очистить
@@ -150,17 +157,21 @@ export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
     })
     .onUpdate((e) => {
       const heightAllCards = -heightComponent.value + HEIGHT_CONTENT - 20;
-      position.value = contextY.value + e.translationY;
+      if (
+        (position.value <= 0 || e.translationY < 0) &&
+        (position.value >= heightAllCards || e.translationY > 0)
+      )
+        position.value = contextY.value + e.translationY;
     })
     .onEnd((e) => {
       const heightAllCards = -heightComponent.value + HEIGHT_CONTENT - 20;
-      if (e.translationY > 0) {
-        posBtnOpen.value = withSpring(0);
-      } else posBtnOpen.value = withSpring(90);
-      position.value = withDecay({
-        velocity: e.velocityY,
-        clamp: [heightAllCards, 0],
-      });
+      // if (e.translationY > 0) {
+      //   posBtnOpen.value = withSpring(0);
+      // } else posBtnOpen.value = withSpring(90);
+      // position.value = withDecay({
+      //   velocity: e.velocityY,
+      //   clamp: [heightAllCards, 0],
+      // });
     });
 
   const scrollStyle = useAnimatedStyle(() => {

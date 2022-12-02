@@ -1,5 +1,5 @@
 import { View, ScrollView, FlatList } from "react-native";
-import React, { FC, useEffect } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { LessonCard, LessonCardI } from "../../UI/LessonCard/LessonCard";
 import { c_style } from "./../../../stylesConst";
 import { Text } from "@rneui/base";
@@ -9,12 +9,12 @@ import { styles } from "./styles";
 import { LessonT } from "../../../state/slices/schedule/types";
 import { useAppSelector } from "../../../hooks/redux";
 import { setCurStatus } from "../../../state/slices/settings/settingSlice";
-import { useAppDispatch } from './../../../hooks/redux';
+import { useAppDispatch } from "./../../../hooks/redux";
 
 interface DayCardI {
   dayOfWeek: 0 | 1 | 2 | 3 | 4 | 5;
   lessons: LessonT[];
-  dates: string;
+  dates: { today: string; tommorow: string };
 }
 
 const mounts = {
@@ -48,17 +48,23 @@ export const DayCard: FC<DayCardI> = ({ lessons, dayOfWeek, dates }) => {
   const styleUI = useStyles(UIstyles);
   const date = useAppSelector((state) => state.settings.curDate);
 
-  const day = dates.split("/");
+  const day = dates.today.split("/");
+  const dayNext = dates.tommorow.split("/");
   const correctDay = day[1][0] !== "0" ? day[1] : day[1][1];
   const curD = day[1] === date.split("/")[1] ? "сегодня" : `${correctDay} `;
   const curM = curD === "сегодня" ? "" : mounts[+day[0] as any];
 
   const style = curD === "сегодня" ? { ...styleUI.h1_p } : { ...styleUI.h1 };
 
+  let [timeTo, setTimeTo] = useState<
+    { from: string; to: string; count: number; day: string } | undefined
+  >(undefined);
+
   const time = new Date();
   //   .toLocaleTimeString("en-US", {
   //     timeZone: "Europe/Moscow",
   //   });
+
   return (
     <View>
       <Text
@@ -81,29 +87,35 @@ export const DayCard: FC<DayCardI> = ({ lessons, dayOfWeek, dates }) => {
         }}
       >
         {lessons.map((lesson, i) => {
-          let startHappyHourD = new Date();
-          let endHappyHourD = new Date();
-          let isTime = false;
-          if (lesson.time.from && lesson.time.to) {
-            startHappyHourD.setHours(
+          let startTime = new Date();
+          let endTime = new Date();
+          if (lesson.time.from && lesson.time.to && curD === "сегодня") {
+            startTime.setHours(
               +lesson.time.from.split(":")[0],
               +lesson.time.from.split(":")[1],
               0
             ); // 5.30 pm
-            endHappyHourD.setHours(
+            endTime.setHours(
               +lesson.time.to.split(":")[0],
               +lesson.time.to.split(":")[1],
               0
             );
-            if (time >= startHappyHourD && time < endHappyHourD) {
-              isTime = true;
-              dispatch(
-                setCurStatus(
-                  `Сейчас идёт ${lesson.count} пара, с ${lesson.time.from} до ${lesson.time.to}.`
-                )
-              );
+            if (time >= startTime && time < endTime) {
+              console.log(timeTo);
+              if (timeTo === undefined) {
+                setTimeTo({
+                  from: lesson.time.from,
+                  to: lesson.time.to,
+                  count: +lesson.count,
+                  day: curD,
+                });
+              } else
+                dispatch(
+                  setCurStatus(
+                    `Сейчас идёт ${timeTo.count} пара, с ${timeTo.from} до ${timeTo.to}.`
+                  )
+                );
             }
-            if (!isTime) dispatch(setCurStatus(`Сейчас пар нет.`));
           }
           return (
             <LessonCard
@@ -120,7 +132,11 @@ export const DayCard: FC<DayCardI> = ({ lessons, dayOfWeek, dates }) => {
                   : "none"
               }
               key={i + "lesson"}
-              isActive={isTime}
+              isActive={
+                curD === "сегодня" && +lesson.count === +timeTo?.count
+                  ? true
+                  : false
+              }
             />
           );
         })}
