@@ -8,6 +8,7 @@ import { useStyles } from "./../../../hooks/useStyles";
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
 import { useDispatch } from "react-redux";
 import { setCurDay } from "../../../state/slices/settings/settingSlice";
+import Animated from "react-native-reanimated";
 
 const BtnCalendar =
   (value: number, weekDay: string): FC =>
@@ -23,22 +24,27 @@ const BtnCalendar =
 interface CalendarI {
   onChangeDay: (day: number) => void;
   weekDates: string[];
+  animStyle: any;
 }
 
-export const Calendar: FC<CalendarI> = ({ onChangeDay, weekDates }) => {
+export const Calendar: FC<CalendarI> = ({
+  onChangeDay,
+  weekDates,
+  animStyle,
+}) => {
   const mountsNames = {
-    1: "январь",
-    2: "февраль",
-    3: "март",
-    4: "апрель",
-    5: "май",
-    6: "июнь",
-    7: "июль",
-    8: "август",
-    9: "сентябрь",
-    10: "октябрь",
-    11: "ноябрь",
-    12: "декабрь",
+    "01": "январь",
+    "02": "февраль",
+    "03": "март",
+    "04": "апрель",
+    "05": "май",
+    "06": "июнь",
+    "07": "июль",
+    "08": "август",
+    "09": "сентябрь",
+    "10": "октябрь",
+    "11": "ноябрь",
+    "12": "декабрь",
   };
   const curMounts: string[] = [];
   weekDates.map((day) => {
@@ -85,18 +91,20 @@ export const Calendar: FC<CalendarI> = ({ onChangeDay, weekDates }) => {
       }}
     >
       <Card containerStyle={style.calendarContainer}>
-        <ButtonGroup
-          buttons={buttons}
-          selectedIndex={curDay}
-          onPress={(value) => {
-            dispatch(setCurDay(value));
-            onChangeDay(value);
-            setSelectedIndex(value);
-          }}
-          containerStyle={style.buttonsContainer}
-          selectedButtonStyle={style.selectedButton}
-          buttonContainerStyle={style.buttonContainer}
-        />
+        <Animated.View style={animStyle}>
+          <ButtonGroup
+            buttons={buttons}
+            selectedIndex={curDay}
+            onPress={(value) => {
+              dispatch(setCurDay(value));
+              onChangeDay(value);
+              setSelectedIndex(value);
+            }}
+            containerStyle={style.buttonsContainer}
+            selectedButtonStyle={style.selectedButton}
+            buttonContainerStyle={style.buttonContainer}
+          />
+        </Animated.View>
         <View style={style.infoContainer}>
           <Text style={{ textAlign: "center", ...UIstyles().h3_p }}>
             {curMounts.length === 2

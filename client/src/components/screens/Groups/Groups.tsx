@@ -165,13 +165,13 @@ export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
     })
     .onEnd((e) => {
       const heightAllCards = -heightComponent.value + HEIGHT_CONTENT - 20;
-      // if (e.translationY > 0) {
-      //   posBtnOpen.value = withSpring(0);
-      // } else posBtnOpen.value = withSpring(90);
-      // position.value = withDecay({
-      //   velocity: e.velocityY,
-      //   clamp: [heightAllCards, 0],
-      // });
+      if (e.translationY > 0) {
+        posBtnOpen.value = withSpring(0);
+      } else posBtnOpen.value = withSpring(90);
+      position.value = withDecay({
+        velocity: e.velocityY,
+        clamp: [heightAllCards, 0],
+      });
     });
 
   const scrollStyle = useAnimatedStyle(() => {
@@ -189,7 +189,7 @@ export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
   return (
     <Layoult>
       <View>
-        <HeaderMain />
+        <HeaderMain title="Выберите группу" />
       </View>
       {!isLoading ? (
         <View>

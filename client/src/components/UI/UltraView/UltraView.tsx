@@ -21,6 +21,7 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import { Button } from "@rneui/base";
+import { SharedValue } from "react-native-reanimated/lib/types/lib/reanimated2/commonTypes";
 
 const { height } = Dimensions.get("screen");
 
@@ -32,7 +33,9 @@ export function UltraView<dataType = any>(props: {
   renderItem: (item: dataType, index: number) => React.ReactNode;
   curPage: { value: number; isChange: boolean };
   onSwipe?: (curPage: number) => void;
+  onSwipeHorz: (operation: number) => void;
   onLayout: () => void;
+  posX: SharedValue<number>;
   style: StyleProp<ViewStyle>;
 }) {
   const [isStart, setIsStart] = useState(true);
@@ -40,6 +43,8 @@ export function UltraView<dataType = any>(props: {
   var opacity = [0, 0, 0, 0, 0, 0].map((el) => useSharedValue(el));
   var marginHorz = [0, 0, 0, 0, 0, 0].map((el) => useSharedValue(el));
   var sizeHeight = [0, 0, 0, 0, 0, 0].map((el) => useSharedValue(el));
+
+  var opacityHorz = useSharedValue(1);
 
   var contextY = useSharedValue(0);
   var contextAdvanced = useSharedValue(0);
@@ -137,6 +142,15 @@ export function UltraView<dataType = any>(props: {
   const callback = (count: number) => {
     props.onSwipe && props.onSwipe(count);
   };
+
+  const callback2 = (operation: number) => {
+    props.onSwipeHorz(operation);
+    setTimeout(() => {
+      props.posX.value = 0;
+      opacityHorz.value = withSpring(1, configSpring);
+    }, 400);
+  };
+
   const configSpring = {
     damping: 8,
     mass: 0.45,
@@ -144,30 +158,62 @@ export function UltraView<dataType = any>(props: {
     restDisplacementThreshold: 0.1,
   };
 
-  const positionX = useSharedValue(0);
   var contextX = useSharedValue(0);
 
   const horzGesture = Gesture.Pan()
     .onStart(() => {
       // if (typeGesture.value === "") {
       //   typeGesture.value = "horz";
-      contextX.value = positionX.value;
+      contextX.value = props.posX.value;
       // }
     })
     .onUpdate((e) => {
       if (
-        (typeGesture.value !== "vert" && e.translationX < -30) ||
-        (typeGesture.value !== "vert" && e.translationX > 30)
+        (typeGesture.value !== "vert" && e.translationX < -20) ||
+        (typeGesture.value !== "vert" && e.translationX > 20)
       ) {
-        positionX.value = contextX.value + e.translationX;
+        props.posX.value = contextX.value + e.translationX;
         typeGesture.value = "horz";
-        console.log("horz");
       }
-      if (typeGesture.value === "horz" || typeGesture.value === "")
-        positionX.value = contextX.value + e.translationX;
+      if (typeGesture.value === "horz" || typeGesture.value === "") {
+        let procent = (Math.abs(e.translationX) * 100) / 300;
+
+        props.posX.value = contextX.value + e.translationX;
+        opacityHorz.value = 1 - procent / 100;
+      }
     })
     .onEnd((e) => {
-      typeGesture.value = "";
+      props.posX.value = withSpring(0, configSpring);
+      if (typeGesture.value === "horz") {
+        var minVelocity = 500;
+        var minPulling = 150;
+
+        var pullingUp = e.translationX < -minPulling;
+        var pullingDown = e.translationX > minPulling;
+
+        pullingUp =
+          props.posX.value <= -contextAdvanced.value &&
+          e.translationX < -minPulling;
+        pullingDown =
+          props.posX.value > -posCards[count.value] &&
+          e.translationX > minPulling;
+
+        var pushUp = e.velocityX < 0 && e.velocityX < -minVelocity;
+        var pushDown = e.velocityX > 0 && e.velocityX > minVelocity;
+
+        if (pushUp || pullingUp) {
+          props.posX.value = withSpring(-400, configSpring);
+          opacityHorz.value = withSpring(0, configSpring);
+          runOnJS(callback2)(+7);
+        } else if (pushDown || pullingDown) {
+          props.posX.value = withSpring(400, configSpring);
+          opacityHorz.value = withSpring(0, configSpring);
+          runOnJS(callback2)(-7);
+        } else {
+          opacityHorz.value = withSpring(1, configSpring);
+        }
+        typeGesture.value = "";
+      }
     });
 
   const vertGesture = Gesture.Pan()
@@ -191,72 +237,64 @@ export function UltraView<dataType = any>(props: {
       contextY.value = position.value;
     })
     .onUpdate((e) => {
-      console.log(e.translationY);
-
       if (
-        (typeGesture.value !== "horz" && e.translationY < -30) ||
-        (typeGesture.value !== "horz" && e.translationY > 30)
+        (typeGesture.value !== "horz" && e.translationY < -20) ||
+        (typeGesture.value !== "horz" && e.translationY > 20)
       ) {
-        position.value = contextY.value + e.translationY;
+        position.value = contextX.value + e.translationY;
         typeGesture.value = "vert";
-        console.log("vert");
       }
-      if (typeGesture.value === "vert" || typeGesture.value === "")
+      if (typeGesture.value === "vert" || typeGesture.value === "") {
         position.value = contextY.value + e.translationY;
-      // var procent = (Math.abs(e.translationY) * 100) / contextOpacity.value;
-
-      // if (
-      //   contextAdvanced.value === 0 ||
-      //   position.value <= -contextAdvanced.value ||
-      //   position.value > -posCards[count.value - 1]
-      // ) {
-      //   if (count.value !== 6) {
-      //     opacity[count.value].value = procent / 100;
-      //     marginHorz[count.value].value = 10 - procent / 5;
-      //   }
-      //   opacity[count.value - 1].value = 1 - procent / 100;
-      //   marginHorz[count.value - 1].value = procent / 5;
-
-      //   if (count.value !== 1) {
-      //     opacity[count.value - 2].value = procent / 100;
-      //     marginHorz[count.value - 2].value = -procent / 5;
-      //   }
-      // }
+      }
     })
     .onEnd((e) => {
-      typeGesture.value = "";
-      var minVelocity = 1000;
-      var minPulling = 200;
+      if (typeGesture.value === "vert") {
+        var minVelocity = 1000;
+        var minPulling = 200;
 
-      var pullingUp = e.translationY < -minPulling;
-      var pullingDown = e.translationY > minPulling;
+        var pullingUp = e.translationY < -minPulling;
+        var pullingDown = e.translationY > minPulling;
 
-      if (contextAdvanced.value !== 0) {
-        minVelocity = 2500;
-        pullingUp =
-          position.value <= -contextAdvanced.value &&
-          e.translationY < -minPulling;
-        pullingDown =
-          position.value > -posCards[count.value] &&
-          e.translationY > minPulling;
-      }
-
-      var pushUp = e.velocityY < 0 && e.velocityY < -minVelocity;
-      var pushDown = e.velocityY > 0 && e.velocityY > minVelocity;
-
-      if (pushUp || pullingUp) {
-        contextAdvanced.value = 0;
-        if (count.value === 5) count.value = 0;
-        else {
-          count.value += 1;
+        if (contextAdvanced.value !== 0) {
+          minVelocity = 2500;
+          pullingUp =
+            position.value <= -contextAdvanced.value &&
+            e.translationY < -minPulling;
+          pullingDown =
+            position.value > -posCards[count.value] &&
+            e.translationY > minPulling;
         }
-      }
-      if (pushDown || pullingDown) {
-        contextAdvanced.value = 0;
-        if (count.value === 0) count.value = 5;
-        else {
-          count.value -= 1;
+
+        var pushUp = e.velocityY < 0 && e.velocityY < -minVelocity;
+        var pushDown = e.velocityY > 0 && e.velocityY > minVelocity;
+
+        if (pushUp || pullingUp) {
+          contextAdvanced.value = 0;
+          if (count.value === 5) count.value = 0;
+          else {
+            count.value += 1;
+          }
         }
+        if (pushDown || pullingDown) {
+          contextAdvanced.value = 0;
+          if (count.value === 0) count.value = 5;
+          else {
+            count.value -= 1;
+          }
+        }
+        if (count.value !== 5) {
+          opacity[count.value + 1].value = withSpring(0, configSpring);
+          marginHorz[count.value + 1].value = withSpring(10, configSpring);
+        }
+        opacity[count.value].value = withSpring(1, configSpring);
+        marginHorz[count.value].value = withSpring(0, configSpring);
+        if (count.value !== 0) {
+          opacity[count.value - 1].value = withSpring(0, configSpring);
+          marginHorz[count.value - 1].value = withSpring(10, configSpring);
+        }
+        runOnJS(callback)(count.value);
+        typeGesture.value = "";
       }
       if (contextAdvanced.value === 0) {
         position.value = withSpring(-posCards[count.value], configSpring);
@@ -270,18 +308,6 @@ export function UltraView<dataType = any>(props: {
           deceleration: 0.998,
           clamp: [-contextAdvanced.value, -posCards[count.value]],
         });
-
-      if (count.value !== 5) {
-        opacity[count.value + 1].value = withSpring(0, configSpring);
-        marginHorz[count.value + 1].value = withSpring(10, configSpring);
-      }
-      opacity[count.value].value = withSpring(1, configSpring);
-      marginHorz[count.value].value = withSpring(0, configSpring);
-      if (count.value !== 0) {
-        opacity[count.value - 1].value = withSpring(0, configSpring);
-        marginHorz[count.value - 1].value = withSpring(10, configSpring);
-      }
-      runOnJS(callback)(count.value);
     });
 
   const composed = Gesture.Simultaneous(vertGesture, horzGesture);
@@ -302,7 +328,8 @@ export function UltraView<dataType = any>(props: {
     });
   };
   const animatedStyle2 = useAnimatedStyle(() => ({
-    transform: [{ translateX: positionX.value }],
+    transform: [{ translateX: props.posX.value }],
+    opacity: opacityHorz.value,
   }));
   var styles = props.style;
   return (

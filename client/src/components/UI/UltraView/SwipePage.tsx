@@ -22,7 +22,6 @@ export const SwipePage: FC<DayPage> = ({
     <Animated.View
       style={[animatedStyle]}
       onLayout={(event) => {
-        console.log("swipe " + index);
         onChange(event, index);
       }}
     >

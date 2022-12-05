@@ -39,6 +39,7 @@ export const Home = ({ route }: HomeTabScreenProps<"Home">) => {
   const [isStart, setIsStart] = useState(true);
   const [isStart2, setIsStart2] = useState(true);
   const dispatch = useAppDispatch();
+  const positionX = useSharedValue(0);
 
   const { data, error, isLoading } = useGetScheduleQuery(
     (route.params as any).group
@@ -48,12 +49,34 @@ export const Home = ({ route }: HomeTabScreenProps<"Home">) => {
   }, []);
   const { theme } = useTheme();
 
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: positionX.value }],
+  }));
+
+  const operWeek = (firstDay: string, oper: number) => {
+    const curDate = new Date(firstDay);
+    console.log(curDate);
+
+    //  state.curDate = curDate.toLocaleDateString("en-US", {
+    //    timeZone: "Europe/Moscow",
+    //  });
+
+    const weekDays: any[] = [];
+    for (let i = 0; i < 6; i++) {
+      weekDays.push(
+        new Date(curDate.setDate(curDate.getDate() + i + oper)).getDate()
+      );
+    }
+    console.log(weekDays);
+    setWeekDate(weekDays);
+  };
 
   const weekDates = useAppSelector((state) => state.settings.weekDates);
+  const [weekDate, setWeekDate] = useState([...weekDates]);
   return (
     <Layoult>
       <View>
-        <HeaderMain />
+        <HeaderMain title={route.params.group} />
       </View>
       {!isStart2 && (
         <Text
@@ -83,14 +106,15 @@ export const Home = ({ route }: HomeTabScreenProps<"Home">) => {
                 return { ...prev, value: day, noChange: !prev.isChange };
               });
             }}
-            weekDates={weekDates}
+            animStyle={animatedStyle}
+            weekDates={weekDate}
           />
         </View>
         <View style={styles.contentContainer}>
           {!isLoading && !isStart && data && (
-				
             <UltraView
               data={data}
+              posX={positionX}
               renderItem={(item, index) => (
                 <DayCard
                   lessons={item.lessons}
@@ -104,6 +128,9 @@ export const Home = ({ route }: HomeTabScreenProps<"Home">) => {
               curPage={curPage}
               onSwipe={(count2) => {
                 dispatch(setCurDay(count2 as any));
+              }}
+              onSwipeHorz={(operation) => {
+                operWeek(weekDate[0], operation);
               }}
               onLayout={() => {
                 setIsStart2(false);
