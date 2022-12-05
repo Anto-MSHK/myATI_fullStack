@@ -45,6 +45,8 @@ export function UltraView<dataType = any>(props: {
   var contextAdvanced = useSharedValue(0);
   var contextOpacity = useSharedValue(0);
 
+  var typeGesture = useSharedValue("");
+
   var count = useSharedValue(props.curPage.value);
   var [heightCards, setHeightCards] = useState<{ size: number; day: number }[]>(
     []
@@ -74,12 +76,11 @@ export function UltraView<dataType = any>(props: {
       posCards.length !== 6 ||
       (event.nativeEvent &&
         heightCards[dayOfWeek] &&
-        heightCards[dayOfWeek].size !== event.nativeEvent.layout.height)
+        heightCards[dayOfWeek].size !== event.nativeEvent.layout.height) ||
+      dayOfWeek === posCards.length - 1
     ) {
       event.persist();
       setHeightCards((prev) => {
-        //   if (dayOfWeek) {
-        if (dayOfWeek === 0) console.log("ne pon XXX");
         prev[dayOfWeek] = {
           size: event.nativeEvent.layout.height,
           day: dayOfWeek,
@@ -87,11 +88,8 @@ export function UltraView<dataType = any>(props: {
         prev.sort(function (a, b) {
           return a.day - b.day;
         });
-        //  prev[0].day = 0;
         sizeHeight[dayOfWeek].value = event.nativeEvent.layout.height;
-        if (dayOfWeek === 0) console.log("ne pon");
         addMargin(dayOfWeek);
-        //   }
         return prev;
       });
       if (marginCards.length === 6) {
@@ -103,7 +101,6 @@ export function UltraView<dataType = any>(props: {
       setIsStart(false);
       props.onLayout();
     }
-    //  console.log(posCards);
   };
 
   const addMargin = (day: number) => {
@@ -147,7 +144,33 @@ export function UltraView<dataType = any>(props: {
     restDisplacementThreshold: 0.1,
   };
 
-  const panGesture = Gesture.Pan()
+  const positionX = useSharedValue(0);
+  var contextX = useSharedValue(0);
+
+  const horzGesture = Gesture.Pan()
+    .onStart(() => {
+      // if (typeGesture.value === "") {
+      //   typeGesture.value = "horz";
+      contextX.value = positionX.value;
+      // }
+    })
+    .onUpdate((e) => {
+      if (
+        (typeGesture.value !== "vert" && e.translationX < -30) ||
+        (typeGesture.value !== "vert" && e.translationX > 30)
+      ) {
+        positionX.value = contextX.value + e.translationX;
+        typeGesture.value = "horz";
+        console.log("horz");
+      }
+      if (typeGesture.value === "horz" || typeGesture.value === "")
+        positionX.value = contextX.value + e.translationX;
+    })
+    .onEnd((e) => {
+      typeGesture.value = "";
+    });
+
+  const vertGesture = Gesture.Pan()
     .onStart(() => {
       contextOpacity.value =
         heightCards[count.value].size - marginCards[count.value];
@@ -168,7 +191,18 @@ export function UltraView<dataType = any>(props: {
       contextY.value = position.value;
     })
     .onUpdate((e) => {
-      position.value = contextY.value + e.translationY;
+      console.log(e.translationY);
+
+      if (
+        (typeGesture.value !== "horz" && e.translationY < -30) ||
+        (typeGesture.value !== "horz" && e.translationY > 30)
+      ) {
+        position.value = contextY.value + e.translationY;
+        typeGesture.value = "vert";
+        console.log("vert");
+      }
+      if (typeGesture.value === "vert" || typeGesture.value === "")
+        position.value = contextY.value + e.translationY;
       // var procent = (Math.abs(e.translationY) * 100) / contextOpacity.value;
 
       // if (
@@ -188,12 +222,9 @@ export function UltraView<dataType = any>(props: {
       //     marginHorz[count.value - 2].value = -procent / 5;
       //   }
       // }
-      console.log(count.value);
     })
     .onEnd((e) => {
-      console.log(heightCards);
-      console.log(marginCards);
-      console.log(posCards);
+      typeGesture.value = "";
       var minVelocity = 1000;
       var minPulling = 200;
 
@@ -253,6 +284,8 @@ export function UltraView<dataType = any>(props: {
       runOnJS(callback)(count.value);
     });
 
+  const composed = Gesture.Simultaneous(vertGesture, horzGesture);
+
   const animatedStyle = (index: number) => {
     return useAnimatedStyle(() => {
       if (sizeHeight[index].value !== 0)
@@ -268,17 +301,19 @@ export function UltraView<dataType = any>(props: {
         };
     });
   };
+  const animatedStyle2 = useAnimatedStyle(() => ({
+    transform: [{ translateX: positionX.value }],
+  }));
   var styles = props.style;
   return (
     <GestureHandlerRootView>
-      <GestureDetector gesture={panGesture}>
-        <Animated.View style={styles}>
+      <GestureDetector gesture={composed}>
+        <Animated.View style={animatedStyle2}>
           {props.data.map((day, index) => {
             return (
               <Animated.View
                 onLayout={(event) => {
                   if (isStart) {
-                    if (index === 0) console.log("ne pon x3");
                     measureHeight(event, index);
                   }
                 }}
@@ -292,8 +327,7 @@ export function UltraView<dataType = any>(props: {
                   index={index}
                   translateY={position}
                   onChange={(event, dayOfWeek) => {
-                    if (posCards.length !== 6 || count.value === dayOfWeek) {
-                      if (dayOfWeek === 0) console.log("ne pon x2");
+                    if (posCards.length !== 6 || count.value <= dayOfWeek) {
                       measureHeight(event, dayOfWeek);
                     }
                   }}

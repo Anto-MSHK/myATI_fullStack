@@ -22,6 +22,15 @@ import {
   setCurDayAndWeek,
 } from "../../../state/slices/settings/settingSlice";
 import { useTheme } from "@rneui/themed";
+import {
+  Gesture,
+  GestureDetector,
+  GestureHandlerRootView,
+} from "react-native-gesture-handler";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+} from "react-native-reanimated";
 
 export const Home = ({ route }: HomeTabScreenProps<"Home">) => {
   let curStatus = useAppSelector((state) => state.settings.curStatus);
@@ -38,6 +47,7 @@ export const Home = ({ route }: HomeTabScreenProps<"Home">) => {
     dispatch(setCurDayAndWeek());
   }, []);
   const { theme } = useTheme();
+
 
   const weekDates = useAppSelector((state) => state.settings.weekDates);
   return (
@@ -78,6 +88,7 @@ export const Home = ({ route }: HomeTabScreenProps<"Home">) => {
         </View>
         <View style={styles.contentContainer}>
           {!isLoading && !isStart && data && (
+				
             <UltraView
               data={data}
               renderItem={(item, index) => (
