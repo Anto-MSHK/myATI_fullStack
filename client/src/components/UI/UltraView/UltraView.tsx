@@ -36,6 +36,7 @@ export function UltraView<dataType = any>(props: {
   onSwipeHorz: (operation: number) => void;
   onLayout: () => void;
   posX: SharedValue<number>;
+  opacity: SharedValue<number>;
   style: StyleProp<ViewStyle>;
 }) {
   const [isStart, setIsStart] = useState(true);
@@ -43,8 +44,6 @@ export function UltraView<dataType = any>(props: {
   var opacity = [0, 0, 0, 0, 0, 0].map((el) => useSharedValue(el));
   var marginHorz = [0, 0, 0, 0, 0, 0].map((el) => useSharedValue(el));
   var sizeHeight = [0, 0, 0, 0, 0, 0].map((el) => useSharedValue(el));
-
-  var opacityHorz = useSharedValue(1);
 
   var contextY = useSharedValue(0);
   var contextAdvanced = useSharedValue(0);
@@ -146,9 +145,16 @@ export function UltraView<dataType = any>(props: {
   const callback2 = (operation: number) => {
     props.onSwipeHorz(operation);
     setTimeout(() => {
-      props.posX.value = 0;
-      opacityHorz.value = withSpring(1, configSpring);
-    }, 400);
+      if (operation < 0) {
+        props.posX.value = 0;
+        props.posX.value = withSpring(0, configSpring);
+        props.opacity.value = withSpring(1, configSpring);
+      } else {
+        props.posX.value = 0;
+        props.posX.value = withSpring(0, configSpring);
+        props.opacity.value = withSpring(1, configSpring);
+      }
+    }, 1);
   };
 
   const configSpring = {
@@ -169,8 +175,8 @@ export function UltraView<dataType = any>(props: {
     })
     .onUpdate((e) => {
       if (
-        (typeGesture.value !== "vert" && e.translationX < -20) ||
-        (typeGesture.value !== "vert" && e.translationX > 20)
+        (typeGesture.value !== "vert" && e.translationX < -10) ||
+        (typeGesture.value !== "vert" && e.translationX > 10)
       ) {
         props.posX.value = contextX.value + e.translationX;
         typeGesture.value = "horz";
@@ -179,7 +185,7 @@ export function UltraView<dataType = any>(props: {
         let procent = (Math.abs(e.translationX) * 100) / 300;
 
         props.posX.value = contextX.value + e.translationX;
-        opacityHorz.value = 1 - procent / 100;
+        props.opacity.value = 1 - procent / 100;
       }
     })
     .onEnd((e) => {
@@ -203,14 +209,14 @@ export function UltraView<dataType = any>(props: {
 
         if (pushUp || pullingUp) {
           props.posX.value = withSpring(-400, configSpring);
-          opacityHorz.value = withSpring(0, configSpring);
+          props.opacity.value = withSpring(0, configSpring);
           runOnJS(callback2)(+7);
         } else if (pushDown || pullingDown) {
           props.posX.value = withSpring(400, configSpring);
-          opacityHorz.value = withSpring(0, configSpring);
+          props.opacity.value = withSpring(0, configSpring);
           runOnJS(callback2)(-7);
         } else {
-          opacityHorz.value = withSpring(1, configSpring);
+          props.opacity.value = withSpring(1, configSpring);
         }
         typeGesture.value = "";
       }
@@ -238,8 +244,8 @@ export function UltraView<dataType = any>(props: {
     })
     .onUpdate((e) => {
       if (
-        (typeGesture.value !== "horz" && e.translationY < -20) ||
-        (typeGesture.value !== "horz" && e.translationY > 20)
+        (typeGesture.value !== "horz" && e.translationY < -5) ||
+        (typeGesture.value !== "horz" && e.translationY > 5)
       ) {
         position.value = contextX.value + e.translationY;
         typeGesture.value = "vert";
@@ -329,13 +335,13 @@ export function UltraView<dataType = any>(props: {
   };
   const animatedStyle2 = useAnimatedStyle(() => ({
     transform: [{ translateX: props.posX.value }],
-    opacity: opacityHorz.value,
+    opacity: props.opacity.value,
   }));
-  var styles = props.style;
+  const styles = props.style;
   return (
     <GestureHandlerRootView>
       <GestureDetector gesture={composed}>
-        <Animated.View style={animatedStyle2}>
+        <Animated.View style={[animatedStyle2, styles]}>
           {props.data.map((day, index) => {
             return (
               <Animated.View

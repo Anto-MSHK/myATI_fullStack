@@ -14,7 +14,7 @@ import { useAppDispatch } from "./../../../hooks/redux";
 interface DayCardI {
   dayOfWeek: 0 | 1 | 2 | 3 | 4 | 5;
   lessons: LessonT[];
-  dates: { today: string; tommorow: string };
+  dates: string;
 }
 
 const mounts = {
@@ -48,8 +48,7 @@ export const DayCard: FC<DayCardI> = ({ lessons, dayOfWeek, dates }) => {
   const styleUI = useStyles(UIstyles);
   const date = useAppSelector((state) => state.settings.curDate);
 
-  const day = dates.today.split("/");
-  const dayNext = dates.tommorow.split("/");
+  const day = dates.split("/");
   const correctDay = day[1][0] !== "0" ? day[1] : day[1][1];
   const curD = day[1] === date.split("/")[1] ? "сегодня" : `${correctDay} `;
   const curM = curD === "сегодня" ? "" : mounts[+day[0] as any];

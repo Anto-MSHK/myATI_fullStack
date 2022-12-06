@@ -6,6 +6,7 @@ const initialState: AppSettingsStateI = {
   theme: "dark",
   curDay: 0,
   curWeek: "topWeek",
+  switchWeek: "topWeek",
   curDate: "",
   weekDates: [],
   curStatus: "Сейчас пар нет.",
@@ -23,6 +24,13 @@ export const settingsSlice = createSlice({
     },
     setCurStatus: (state, action: PayloadAction<string>) => {
       state.curStatus = action.payload;
+    },
+    setWeek: (state) => {
+      if (state.switchWeek === "topWeek") state.switchWeek = "lowerWeek";
+      else state.switchWeek = "topWeek";
+    },
+    setCurWeek: (state) => {
+      state.switchWeek = state.curWeek;
     },
     setCurDayAndWeek: (state) => {
       const curDate = new Date(
@@ -51,7 +59,13 @@ export const settingsSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { setTheme, setCurDay, setCurDayAndWeek, setCurStatus } =
-  settingsSlice.actions;
+export const {
+  setTheme,
+  setCurDay,
+  setCurDayAndWeek,
+  setCurStatus,
+  setWeek,
+  setCurWeek,
+} = settingsSlice.actions;
 
 export default settingsSlice.reducer;

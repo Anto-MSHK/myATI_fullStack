@@ -16,7 +16,7 @@ interface ButtonGroupI {
 }
 
 export const ButtonSwitch: FC<ButtonGroupI> = ({ buttons, customStyle }) => {
-  var week = useAppSelector((state) => state.settings.curWeek);
+  var week = useAppSelector((state) => state.settings.switchWeek);
   var l = 0;
   if (week === "topWeek") l = 0;
   else l = 1;
@@ -26,6 +26,16 @@ export const ButtonSwitch: FC<ButtonGroupI> = ({ buttons, customStyle }) => {
   useEffect(() => {
     buttons.customOnPress(selectedIndex);
   }, []);
+
+  useEffect(() => {
+    if (week === "topWeek") {
+      setSelectedIndex(0);
+      buttons.customOnPress(0);
+    } else {
+      setSelectedIndex(1);
+      buttons.customOnPress(1);
+    }
+  }, [week]);
 
   const updateIndex = (selectedIndex: number) => {
     setSelectedIndex(selectedIndex);

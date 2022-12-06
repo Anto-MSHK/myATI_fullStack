@@ -20,6 +20,8 @@ import { useGetScheduleQuery } from "../../../state/services/schedule";
 import {
   setCurDay,
   setCurDayAndWeek,
+  setCurWeek,
+  setWeek,
 } from "../../../state/slices/settings/settingSlice";
 import { useTheme } from "@rneui/themed";
 import {
@@ -40,39 +42,46 @@ export const Home = ({ route }: HomeTabScreenProps<"Home">) => {
   const [isStart2, setIsStart2] = useState(true);
   const dispatch = useAppDispatch();
   const positionX = useSharedValue(0);
+  const opacitySwipe = useSharedValue(1);
 
   const { data, error, isLoading } = useGetScheduleQuery(
     (route.params as any).group
   );
+
+  const weekDates = useAppSelector((state) => state.settings.weekDates);
+  const [revWeekDates, setRevWeekDates] = useState<string[]>([]);
   useEffect(() => {
     dispatch(setCurDayAndWeek());
+    dispatch(setCurWeek());
   }, []);
   const { theme } = useTheme();
 
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: positionX.value }],
-  }));
-
-  const operWeek = (firstDay: string, oper: number) => {
-    const curDate = new Date(firstDay);
-    console.log(curDate);
+  const operWeek = (oper: number) => {
+    let curDate;
+    if (revWeekDates.length === 0) curDate = new Date(weekDates[0]);
+    else curDate = new Date(revWeekDates[0]);
 
     //  state.curDate = curDate.toLocaleDateString("en-US", {
     //    timeZone: "Europe/Moscow",
     //  });
 
     const weekDays: any[] = [];
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i <= 6; i++) {
+      let addCount = i + oper;
+      console.log(
+        new Date(
+          curDate.getTime() + addCount * 24 * 60 * 60 * 1000
+        ).toLocaleDateString("en-US", { timeZone: "Europe/Moscow" })
+      );
       weekDays.push(
-        new Date(curDate.setDate(curDate.getDate() + i + oper)).getDate()
+        new Date(
+          curDate.getTime() + addCount * 24 * 60 * 60 * 1000
+        ).toLocaleDateString("en-US", { timeZone: "Europe/Moscow" })
       );
     }
     console.log(weekDays);
-    setWeekDate(weekDays);
+    setRevWeekDates(weekDays);
   };
-
-  const weekDates = useAppSelector((state) => state.settings.weekDates);
-  const [weekDate, setWeekDate] = useState([...weekDates]);
   return (
     <Layoult>
       <View>
@@ -81,7 +90,7 @@ export const Home = ({ route }: HomeTabScreenProps<"Home">) => {
       {!isStart2 && (
         <Text
           style={{
-            backgroundColor: theme.colors.primary,
+            backgroundColor: theme.colors.grey5,
             textAlign: "center",
             zIndex: 10,
             elevation: 10,
@@ -106,8 +115,9 @@ export const Home = ({ route }: HomeTabScreenProps<"Home">) => {
                 return { ...prev, value: day, noChange: !prev.isChange };
               });
             }}
-            animStyle={animatedStyle}
-            weekDates={weekDate}
+            posX={positionX}
+            opacity={opacitySwipe}
+            weekDates={revWeekDates.length === 0 ? weekDates : revWeekDates}
           />
         </View>
         <View style={styles.contentContainer}>
@@ -115,14 +125,16 @@ export const Home = ({ route }: HomeTabScreenProps<"Home">) => {
             <UltraView
               data={data}
               posX={positionX}
+              opacity={opacitySwipe}
               renderItem={(item, index) => (
                 <DayCard
                   lessons={item.lessons}
                   dayOfWeek={item.dayOfWeek}
-                  dates={{
-                    today: weekDates[index],
-                    tommorow: weekDates[index + 1],
-                  }}
+                  dates={
+                    revWeekDates.length === 0
+                      ? weekDates[index]
+                      : revWeekDates[index]
+                  }
                 />
               )}
               curPage={curPage}
@@ -130,7 +142,8 @@ export const Home = ({ route }: HomeTabScreenProps<"Home">) => {
                 dispatch(setCurDay(count2 as any));
               }}
               onSwipeHorz={(operation) => {
-                operWeek(weekDate[0], operation);
+                operWeek(operation);
+                dispatch(setWeek());
               }}
               onLayout={() => {
                 setIsStart2(false);

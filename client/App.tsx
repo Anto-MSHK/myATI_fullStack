@@ -29,7 +29,7 @@ export default function App() {
       // primary: "#fff",
     },
     darkColors: {
-      background: "rgba(35, 48, 64, 0.9)",
+      background: "rgba(35, 48, 64, 1)",
       grey0: "rgba(27, 32, 38, 1)",
       primary: "rgba(224, 142, 45, 1)",
       secondary: "rgba(119, 119, 119, 0.2)",
