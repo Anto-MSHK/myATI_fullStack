@@ -68,18 +68,12 @@ export const Home = ({ route }: HomeTabScreenProps<"Home">) => {
     const weekDays: any[] = [];
     for (let i = 0; i <= 6; i++) {
       let addCount = i + oper;
-      console.log(
-        new Date(
-          curDate.getTime() + addCount * 24 * 60 * 60 * 1000
-        ).toLocaleDateString("en-US", { timeZone: "Europe/Moscow" })
-      );
       weekDays.push(
         new Date(
           curDate.getTime() + addCount * 24 * 60 * 60 * 1000
         ).toLocaleDateString("en-US", { timeZone: "Europe/Moscow" })
       );
     }
-    console.log(weekDays);
     setRevWeekDates(weekDays);
   };
   return (

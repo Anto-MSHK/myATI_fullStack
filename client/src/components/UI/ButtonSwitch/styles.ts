@@ -32,7 +32,7 @@ export const styles = () => {
       ...UIstyles().h3,
     },
     selectedButton: {
-      backgroundColor: theme.colors.secondary,
+      backgroundColor: theme.colors.primary,
     },
   });
 };

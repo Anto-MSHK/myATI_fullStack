@@ -1,16 +1,17 @@
 import { useTheme } from "@rneui/themed";
 import { StyleSheet } from "react-native";
-import { c_style } from "./../../../stylesConst";
-import { UIstyles } from "./../UIstyles";
+import { c_style } from "../../../stylesConst";
+import { UIstyles } from "../UIstyles";
 
 export const styles = () => {
   const { theme } = useTheme();
 
   const cardContainer = {
     ...UIstyles().shadow,
-    backgroundColor: theme.colors.background,
+    backgroundColor: theme.colors.grey0,
     marginVertical: 0,
     margin: 0,
+    flexDirection: "column",
   };
 
   return StyleSheet.create({
@@ -37,42 +38,6 @@ export const styles = () => {
       marginVertical: 10,
       borderColor: "black",
       borderWidth: 0,
-    },
-
-    cardWrapper: {},
-
-    //* ~~> main
-    mainContainer: {
-      flexDirection: "row",
-      alignItems: "center",
-    },
-
-    //? -> budge
-    budgeContainer: {
-      left: -15,
-      marginRight: 15,
-    },
-
-    budge: {
-      marginRight: -15,
-      borderWidth: 0,
-      borderBottomLeftRadius: 0,
-      borderTopLeftRadius: 0,
-
-      width: 65,
-      height: 25,
-
-      backgroundColor: theme.colors.secondary,
-
-      alignItems: "flex-end",
-    },
-
-    budgeText: {
-      fontFamily: c_style.bold,
-      fontSize: c_style.h3,
-      color: theme.colors.grey2,
-
-      marginRight: 5,
     },
   });
 };

@@ -25,7 +25,7 @@ const BtnCalendar =
           styles().buttonContentContainer,
           isDate
             ? {
-                borderColor: theme.colors.black,
+                borderColor: theme.colors.white,
                 borderWidth: 3,
                 width: 38,
                 height: 37,

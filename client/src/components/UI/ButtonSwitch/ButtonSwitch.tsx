@@ -5,6 +5,7 @@ import { ButtonGroup, Icon, Text } from "@rneui/base";
 import { styles } from "./styles";
 import { useStyles } from "./../../../hooks/useStyles";
 import { useAppSelector } from "../../../hooks/redux";
+import { useTheme } from "@rneui/themed";
 
 type buttonT = {
   items: { text: string; icon: string; typeIcon: string }[];
@@ -22,7 +23,7 @@ export const ButtonSwitch: FC<ButtonGroupI> = ({ buttons, customStyle }) => {
   else l = 1;
 
   const [selectedIndex, setSelectedIndex] = useState(l);
-
+  const { theme } = useTheme();
   useEffect(() => {
     buttons.customOnPress(selectedIndex);
   }, []);
@@ -54,7 +55,7 @@ export const ButtonSwitch: FC<ButtonGroupI> = ({ buttons, customStyle }) => {
               name={button.icon} //"caretup"
               type={button.typeIcon} //"antdesign"
               size={15}
-              color="white"
+              color={theme.colors.black}
               //   style={{ marginRight: 8 }}
             />
           </View>

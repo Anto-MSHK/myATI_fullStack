@@ -26,14 +26,22 @@ export default function App() {
   });
   const theme = createTheme({
     lightColors: {
-      // primary: "#fff",
+      primary: "rgba(224, 142, 45, 1)",
+      black: "rgba(0, 0, 0, 1)",
+      secondary: "rgba(0, 0, 0, 0.2)",
+      grey0: "rgba(232, 232, 232, 1)",
+      grey1: "rgba(217, 217, 217, 1)",
+      grey2: "rgba(247, 247, 247, 1)",
+      grey5: "rgba(209, 209, 209, 1)",
     },
     darkColors: {
       background: "rgba(35, 48, 64, 1)",
       grey0: "rgba(27, 32, 38, 1)",
       primary: "rgba(224, 142, 45, 1)",
-      secondary: "rgba(119, 119, 119, 0.2)",
+      secondary: "rgba(255, 255, 255, 0.2)",
       searchBg: "rgba(255, 255, 255)",
+      black: "rgba(255, 255, 255, 1)",
+      white: "rgba(255, 255, 255, 1)",
     },
   });
 

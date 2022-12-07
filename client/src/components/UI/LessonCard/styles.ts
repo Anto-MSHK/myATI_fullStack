@@ -7,7 +7,6 @@ export const styles = () => {
   const { theme } = useTheme();
 
   const cardContainer = {
-    ...UIstyles().shadow,
     backgroundColor: theme.colors.background,
     marginVertical: 0,
     margin: 0,
@@ -84,8 +83,6 @@ export const styles = () => {
 
       width: 65,
       height: 25,
-
-
 
       alignItems: "flex-end",
       justifyContent: "center",

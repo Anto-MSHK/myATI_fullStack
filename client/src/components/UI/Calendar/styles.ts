@@ -41,8 +41,9 @@ export const styles = () => {
       marginBottom: -4,
       // fontSize: 10,
       ...UIstyles().h4,
+      color: theme.colors.white,
     },
-    mainContentText: { ...UIstyles().h3_b },
+    mainContentText: { ...UIstyles().h3_b, color: theme.colors.white },
 
     infoContainer: {
       marginTop: 8,

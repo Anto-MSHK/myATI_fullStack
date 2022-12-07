@@ -196,7 +196,7 @@ export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
           <GestureHandlerRootView>
             <GestureDetector gesture={panGesture}>
               <Animated.View
-                style={[scrollStyle, { paddingHorizontal: 10 }]}
+                style={[scrollStyle, { paddingHorizontal: 10, zIndex: 1 }]}
                 onLayout={(event) => {
                   heightComponent.value = measureHeight(event);
                 }}

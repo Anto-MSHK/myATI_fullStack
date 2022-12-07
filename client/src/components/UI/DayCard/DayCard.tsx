@@ -78,12 +78,11 @@ export const DayCard: FC<DayCardI> = ({ lessons, dayOfWeek, dates }) => {
         <Text style={styleUI.h1}> {days[`${dayOfWeek}`]}</Text>
       </Text>
       <View
-        style={{
+        style={[{
           marginTop: 10,
           marginHorizontal: -5,
           borderColor: "black",
-          ...UIstyles().shadow,
-        }}
+        }]}
       >
         {lessons.map((lesson, i) => {
           let startTime = new Date();

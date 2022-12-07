@@ -137,7 +137,7 @@ export const LessonCard: FC<LessonCardI> = ({
       </View>
       {roundingСorns !== "bottom" && roundingСorns !== "all" && (
         <LinearGradient
-          colors={["rgba(255,255,255,0.7)", "transparent"]}
+          colors={[theme.colors.black, "transparent"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={style.gradientLine}
