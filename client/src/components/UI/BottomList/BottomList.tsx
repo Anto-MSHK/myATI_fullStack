@@ -1,5 +1,6 @@
 import { BottomSheet, Button, Icon, ListItem, Text } from "@rneui/base";
 import { Badge, useTheme } from "@rneui/themed";
+import { LinearGradient } from "expo-linear-gradient";
 import React, { FC, useState } from "react";
 import { LayoutChangeEvent, StyleProp, View } from "react-native";
 import Animated, {
@@ -37,14 +38,14 @@ export const BottomList: FC<BottomButtonsI> = ({
   const UIstyle = useStyles(UIstyles);
   const { theme } = useTheme();
 
-  const opacityStyle = useAnimatedStyle(() => {
-    const opacity = interpolate(opacityBackground.value, [0, 100], [0, 1]);
+  //   const opacityStyle = useAnimatedStyle(() => {
+  //     const opacity = interpolate(opacityBackground.value, [0, 100], [0, 1]);
 
-    return {
-      opacity: opacity,
-      top: -heightScreen.value,
-    };
-  });
+  //     return {
+  //       opacity: opacity,
+  //       top: -heightScreen.value,
+  //     };
+  //   });
 
   const posModalStyle = useAnimatedStyle(() => {
     return {
@@ -58,93 +59,117 @@ export const BottomList: FC<BottomButtonsI> = ({
     return event.nativeEvent.layout.height;
   };
   const styleUI = useStyles(UIstyles);
+
+  const backgroundStyle = useAnimatedStyle(() => {
+    let z = interpolate(opacityBackground.value, [0, 1], [-1, 4]);
+    return {
+      opacity: opacityBackground.value,
+      zIndex: opacityBackground.value === 0 ? -1 : 4,
+    };
+  });
   return (
-    <Animated.View
-      style={[
-        {
-          position: "absolute",
-          bottom: 0,
-          right: 0,
-          left: 0,
-          zIndex: 1,
-        },
-        posModalStyle,
-      ]}
-    >
+    <>
       <Animated.View
         style={[
           {
             position: "absolute",
-            zIndex: 0,
-            backgroundColor: "rgba(27, 32, 38, 0.7)",
+            // zIndex: 0,
+            backgroundColor: "red",
             borderRadius: 500,
-            bottom: 0,
-            right: 0,
             left: 0,
+            top: -100,
+            right: 0,
           },
-          opacityStyle,
+          backgroundStyle,
         ]}
         onTouchStart={() => {
-          if (visible) {
-            onToggle();
-          }
+          if (visible) onToggle();
         }}
-      />
+      >
+        <LinearGradient
+          colors={["rgba(27, 32, 38, 0.7)", "rgba(0, 0, 0, 0.9)"]}
+          start={{ x: 0, y: 0.03 }}
+          end={{ x: 0, y: 1 }}
+          style={{
+            width: 500,
+            height: 1000,
+            position: "absolute",
+          }}
+        ></LinearGradient>
+      </Animated.View>
       <Animated.View
         style={[
           {
-            borderRadius: 20,
-            overflow: "hidden",
-            backgroundColor: theme.colors.grey5,
-            paddingBottom: 50,
-            bottom: -50,
+            position: "absolute",
+            bottom: 0,
+            right: 0,
+            left: 0,
+
+            zIndex: 5,
+            elevation: 5,
           },
-          //  posModalStyle,
+          posModalStyle,
         ]}
-        onLayout={(event) => {
-          heightButtons.value = measureHeight(event);
-        }}
       >
-        {list.map((l, i) => (
-          <ListItem
-            key={i}
-            containerStyle={[l.containerStyle, { padding: 10 }]}
-            onPress={l.onPress}
-          >
-            {l.icon && (
-              <Icon name={l.icon} type="antdesign" color="white" size={25} />
-            )}
-            {l.title && (
-              <Text
-                style={{
-                  ...UIstyle.h2,
-                  color: l.color,
-                  marginLeft: 10,
-                }}
-              >
-                {l.title}
-              </Text>
-            )}
-            {l.children}
-          </ListItem>
-        ))}
+        <Animated.View
+          style={[
+            {
+              borderRadius: 20,
+              overflow: "hidden",
+              backgroundColor: theme.colors.grey5,
+              paddingBottom: 50,
+              bottom: -50,
+              zIndex: 5,
+            },
+            posModalStyle,
+          ]}
+          onLayout={(event) => {
+            heightButtons.value = measureHeight(event);
+          }}
+        >
+          {list.map((l, i) => (
+            <ListItem
+              key={i}
+              containerStyle={[l.containerStyle, { padding: 10 }]}
+              onPress={l.onPress}
+            >
+              {l.icon && (
+                <Icon name={l.icon} type="antdesign" color="white" size={25} />
+              )}
+              {l.title && (
+                <Text
+                  style={{
+                    ...UIstyle.h2,
+                    color: l.color,
+                    marginLeft: 10,
+                  }}
+                >
+                  {l.title}
+                </Text>
+              )}
+              {l.children}
+            </ListItem>
+          ))}
+        </Animated.View>
       </Animated.View>
-    </Animated.View>
+    </>
   );
 };
 
 interface ButtonCloseListI {
   posBtnOpen: SharedValue<number>;
+  iconName: string;
   onToggle: () => void;
   colorBtn: SharedValue<number>;
   visible: boolean;
   opacityIconOpen: SharedValue<number>;
   opacityIconClose: SharedValue<number>;
-  tags: { name?: string; value: string }[];
+  tags?: { name?: string; value: string }[];
 }
 
 export const ButtonCloseList: FC<ButtonCloseListI> = ({
   posBtnOpen,
+  iconName,
   onToggle,
   colorBtn,
   opacityIconOpen,
@@ -194,7 +219,7 @@ export const ButtonCloseList: FC<ButtonCloseListI> = ({
         {
           position: "absolute",
           bottom: 0,
-          zIndex: 2,
+          zIndex: 6,
           width: 60,
           height: 60,
           marginBottom: 10,
@@ -224,30 +249,31 @@ export const ButtonCloseList: FC<ButtonCloseListI> = ({
           <Icon name="close" type="antdesign" size={30} color={"white"} />
         </Animated.View>
         <Animated.View style={[{ position: "absolute" }, opacityOpen]}>
-          <Icon name="filter" type="antdesign" size={30} color={"white"} />
+          <Icon name={iconName} type="antdesign" size={30} color={"white"} />
         </Animated.View>
       </Animated.View>
-      {tags.map(
-        (tag, i) =>
-          tag.value !== "" && (
-            <Badge
-              value={tag.name ? `${tag.value} ${tag.name}` : tag.value}
-              containerStyle={{ marginBottom: 10, marginHorizontal: 5 }}
-              badgeStyle={{
-                width: 40,
-                height: 40,
-                borderRadius: 50,
-                borderWidth: 0,
-              }}
-              textStyle={{
-                textAlign: "center",
-                lineHeight: 12,
-                fontWeight: "700",
-              }}
-              key={i + "b"}
-            />
-          )
-      )}
+      {tags &&
+        tags.map(
+          (tag, i) =>
+            tag.value !== "" && (
+              <Badge
+                value={tag.name ? `${tag.value} ${tag.name}` : tag.value}
+                containerStyle={{ marginBottom: 10, marginHorizontal: 5 }}
+                badgeStyle={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 50,
+                  borderWidth: 0,
+                }}
+                textStyle={{
+                  textAlign: "center",
+                  lineHeight: 12,
+                  fontWeight: "700",
+                }}
+                key={i + "b"}
+              />
+            )
+        )}
     </Animated.View>
   );
 };

@@ -32,7 +32,10 @@ import {
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
+  withSpring,
 } from "react-native-reanimated";
+import { BottomList, ButtonCloseList } from "../../UI/BottomList/BottomList";
+import { deleteGroup, setGroup } from "../../../state/slices/group/groupSlice";
 
 export const Home = ({ route }: HomeTabScreenProps<"Home">) => {
   let curStatus = useAppSelector((state) => state.settings.curStatus);
@@ -49,6 +52,7 @@ export const Home = ({ route }: HomeTabScreenProps<"Home">) => {
   );
 
   const weekDates = useAppSelector((state) => state.settings.weekDates);
+  const groups = useAppSelector((state) => state.group.groups);
   const [revWeekDates, setRevWeekDates] = useState<string[]>([]);
   useEffect(() => {
     dispatch(setCurDayAndWeek());
@@ -60,7 +64,6 @@ export const Home = ({ route }: HomeTabScreenProps<"Home">) => {
     let curDate;
     if (revWeekDates.length === 0) curDate = new Date(weekDates[0]);
     else curDate = new Date(revWeekDates[0]);
-
     //  state.curDate = curDate.toLocaleDateString("en-US", {
     //    timeZone: "Europe/Moscow",
     //  });
@@ -76,18 +79,117 @@ export const Home = ({ route }: HomeTabScreenProps<"Home">) => {
     }
     setRevWeekDates(weekDays);
   };
+  const list = [
+    {
+      color: "white",
+      containerStyle: {
+        backgroundColor: theme.colors.grey5,
+      },
+      children: (
+        <Button
+          containerStyle={{ marginHorizontal: 10, borderRadius: 20, flex: 1 }}
+          color={theme.colors.grey4}
+          onPress={() => {
+            if (
+              groups.findIndex((cand) => cand.name === route.params.group) ===
+              -1
+            )
+              dispatch(setGroup({ name: (route.params as any).group }));
+            else dispatch(deleteGroup(route.params.group));
+          }}
+        >
+          {groups.findIndex((cand) => {
+            return cand.name === route.params.group;
+          }) === -1
+            ? "Добавить в список групп"
+            : "Удалить из списка групп"}
+        </Button>
+      ),
+    },
+    {
+      color: "white",
+      containerStyle: {
+        backgroundColor: theme.colors.grey5,
+      },
+      children: (
+        <Button
+          containerStyle={{
+            marginHorizontal: 10,
+            borderRadius: 20,
+            flex: 1,
+          }}
+          buttonStyle={{}}
+          color={theme.colors.primary}
+          onPress={() => {
+            dispatch(
+              setGroup({ name: (route.params as any).group, isMain: true })
+            );
+          }}
+          disabled={
+            groups.findIndex(
+              (cand) => cand.name === route.params.group && cand.isMain
+            ) === -1
+              ? false
+              : true
+          }
+        >
+          {groups.findIndex(
+            (cand) => cand.name === route.params.group && cand.isMain
+          ) === -1
+            ? "Сделать моей группой"
+            : "Это моя группа"}
+        </Button>
+      ),
+    },
+  ];
+
+  const curSize = 63;
+
+  const posModal = useSharedValue(curSize * list.length - list.length);
+  const opacityBG = useSharedValue(0);
+  const heightBG = useSharedValue(-300);
+
+  const posBtnOpen = useSharedValue(0);
+  const colorBtn = useSharedValue(0);
+
+  const opacityIconOpen = useSharedValue(100);
+  const opacityIconClose = useSharedValue(0);
+
+  const [isVisible, setIsVisible] = useState(false);
+
+  const onToggle = () => {
+    setIsVisible((prev) => !prev);
+    if (!isVisible) {
+      posBtnOpen.value = withSpring(-(curSize * list.length - list.length));
+      posModal.value = withSpring(0);
+      opacityBG.value = withSpring(1);
+      heightBG.value = withSpring(1000);
+      colorBtn.value = withSpring(1);
+      opacityIconOpen.value = withSpring(0);
+      opacityIconClose.value = withSpring(100);
+    } else {
+      posBtnOpen.value = withSpring(0);
+      posModal.value = withSpring(curSize * list.length - list.length);
+      opacityBG.value = withSpring(0);
+      heightBG.value = withSpring(-300);
+      colorBtn.value = withSpring(0);
+      opacityIconOpen.value = withSpring(100);
+      opacityIconClose.value = withSpring(0);
+    }
+  };
   return (
     <Layoult>
       <View>
         <HeaderMain title={route.params.group} />
       </View>
+
       {!isStart2 && (
         <Text
           style={{
             backgroundColor: theme.colors.grey5,
             textAlign: "center",
-            zIndex: 10,
-            elevation: 10,
+            zIndex: 2,
+            elevation: 2,
             color: theme.colors.black,
             paddingVertical: 2,
             fontSize: 13,
@@ -96,9 +198,26 @@ export const Home = ({ route }: HomeTabScreenProps<"Home">) => {
           {curStatus}
         </Text>
       )}
+      <ButtonCloseList
+        posBtnOpen={posBtnOpen}
+        iconName={"profile"}
+        onToggle={onToggle}
+        colorBtn={colorBtn}
+        visible={isVisible}
+        opacityIconOpen={opacityIconOpen}
+        opacityIconClose={opacityIconClose}
+      />
+      <BottomList
+        visible={isVisible}
+        list={list}
+        heightScreen={heightBG}
+        posModal={posModal}
+        onToggle={onToggle}
+        opacityBackground={opacityBG}
+      />
       <View>
         <View
-          style={{ zIndex: 10, elevation: 10 }}
+          style={{ zIndex: 2, elevation: 2 }}
           onLayout={() => {
             setIsStart(false);
           }}
@@ -145,6 +264,7 @@ export const Home = ({ route }: HomeTabScreenProps<"Home">) => {
               style={isStart2 ? { opacity: 0, position: "absolute" } : {}}
             />
           )}
+
           <Button
             size="lg"
             loadingProps={{ size: "large" }}

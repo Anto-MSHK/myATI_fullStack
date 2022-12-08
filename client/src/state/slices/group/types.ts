@@ -4,6 +4,15 @@ export type GroupMinT = {
   elder?: string;
 };
 
+export type GroupListT = {
+  name: string;
+  isMain?: boolean;
+};
+
+export interface GroupListStateI {
+  groups: GroupListT[];
+}
+
 export interface GroupsStateI {
   groups: GroupMinT[];
 }

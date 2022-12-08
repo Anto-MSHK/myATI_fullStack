@@ -10,24 +10,26 @@ import { UIstyles } from "../UIstyles";
 import { styles } from "./styles";
 import { useDispatch } from "react-redux";
 import { useTheme } from "@rneui/themed";
+import { useAppDispatch } from "./../../../hooks/redux";
+import { deleteGroup } from "../../../state/slices/group/groupSlice";
 
 interface GroupCardMiniI {
   name: string;
-  faculty: string;
   onClickNav: (group: string) => void;
   onLayout?: (event: LayoutChangeEvent) => void;
+  isMain?: boolean;
 }
 
 export const GroupCardMini: FC<GroupCardMiniI> = ({
   name,
-  faculty,
   onClickNav,
   onLayout,
+  isMain = false,
 }) => {
   const style = useStyles(styles);
   const styleUI = useStyles(UIstyles);
   const { theme } = useTheme();
-
+  const dispatch = useAppDispatch();
   return (
     <Card
       containerStyle={style.cardContainer_all}
@@ -44,6 +46,17 @@ export const GroupCardMini: FC<GroupCardMiniI> = ({
           <Text style={{ ...styleUI.h1_p, color: theme.colors.white }}>
             {name}
           </Text>
+          {isMain && (
+            <Text
+              style={{
+                ...styleUI.h4_b,
+                color: theme.colors.white,
+                marginLeft: 10,
+              }}
+            >
+              Моя группа
+            </Text>
+          )}
         </View>
         <Button
           onPress={() => {
@@ -52,6 +65,9 @@ export const GroupCardMini: FC<GroupCardMiniI> = ({
           radius={50}
           buttonStyle={{ width: 35, height: 35 }}
           color={theme.colors.secondary}
+          onPress={() => {
+            dispatch(deleteGroup(name));
+          }}
         >
           <Icon
             name="close"

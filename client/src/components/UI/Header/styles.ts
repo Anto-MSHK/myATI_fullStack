@@ -8,8 +8,8 @@ export const styles = () => {
 
   return StyleSheet.create({
     header: {
-      zIndex: 3,
-      elevation: 3,
+      zIndex: 10,
+      elevation: 10,
       height: 90,
     },
     textContainer: {

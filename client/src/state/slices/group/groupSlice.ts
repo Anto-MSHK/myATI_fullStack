@@ -1,18 +1,49 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { GroupsStateI } from "./types";
+import { GroupListStateI, GroupListT, GroupMinT, GroupsStateI } from "./types";
 
-const initialState: GroupsStateI = {
+const initialState: GroupListStateI = {
   groups: [],
 };
 
 export const counterSlice = createSlice({
   name: "group",
   initialState,
-  reducers: {},
+  reducers: {
+    setGroup: (state, action: PayloadAction<GroupListT>) => {
+      let indexMain = state.groups.findIndex(
+        (cand) => cand.isMain === action.payload.isMain
+      );
+      let indexCur = state.groups.findIndex(
+        (cand) => cand.name === action.payload.name
+      );
+
+      if (indexMain === -1) {
+        if (indexCur === -1) state.groups = [...state.groups, action.payload];
+        else
+          state.groups[indexCur] = {
+            name: action.payload.name,
+            isMain: action.payload.isMain,
+          };
+      } else {
+        state.groups[indexMain].isMain = undefined;
+        if (indexCur === -1) state.groups = [...state.groups, action.payload];
+        else
+          state.groups[indexCur] = {
+            name: action.payload.name,
+            isMain: action.payload.isMain,
+          };
+      }
+    },
+    deleteGroup: (state, action: PayloadAction<string>) => {
+      state.groups = state.groups.filter(
+        (cand) => cand.name !== action.payload
+      );
+    },
+  },
 });
 
 // Action creators are generated for each case reducer function
-export const {} = counterSlice.actions;
+export const { setGroup, deleteGroup } = counterSlice.actions;
 
 export default counterSlice.reducer;

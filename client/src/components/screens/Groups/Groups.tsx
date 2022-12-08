@@ -135,7 +135,7 @@ export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
     if (!isVisible) {
       posBtnOpen.value = withSpring(-(curSize * list.length - list.length));
       posModal.value = withSpring(0);
-      opacityBG.value = withSpring(100);
+      opacityBG.value = withSpring(1);
       heightBG.value = withSpring(HEIGHT_CONTENT);
       colorBtn.value = withSpring(1);
       opacityIconOpen.value = withSpring(0);
@@ -244,6 +244,7 @@ export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
       )}
       <ButtonCloseList
         posBtnOpen={posBtnOpen}
+        iconName={"filter"}
         onToggle={onToggle}
         colorBtn={colorBtn}
         visible={isVisible}
