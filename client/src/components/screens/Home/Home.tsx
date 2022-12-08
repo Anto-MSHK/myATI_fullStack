@@ -216,7 +216,9 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
     setIsVisible((prev) => !prev);
     if (!isVisible) {
       posBtnOpen.value = withSpring(-(curSize * list.length - list.length));
-      posModal.value = withSpring(0);
+      posModal.value = withSpring(0, {
+        damping: 12,
+      });
       opacityBG.value = withSpring(1);
       heightBG.value = withSpring(1000);
       colorBtn.value = withSpring(1);
@@ -224,7 +226,9 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
       opacityIconClose.value = withSpring(100);
     } else {
       posBtnOpen.value = withSpring(0);
-      posModal.value = withSpring(curSize * list.length - list.length);
+      posModal.value = withSpring(curSize * list.length - list.length, {
+        damping: 12,
+      });
       opacityBG.value = withSpring(0);
       heightBG.value = withSpring(-300);
       colorBtn.value = withSpring(0);

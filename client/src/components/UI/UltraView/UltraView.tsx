@@ -154,7 +154,7 @@ export function UltraView<dataType = any>(props: {
         props.posX.value = withSpring(0, configSpring);
         props.opacity.value = withSpring(1, configSpring);
       }
-    }, 1);
+    }, 1000);
   };
 
   const configSpring = {

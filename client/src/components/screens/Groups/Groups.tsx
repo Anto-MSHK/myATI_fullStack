@@ -47,6 +47,8 @@ export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
       color: "white",
       containerStyle: {
         backgroundColor: theme.colors.grey5,
+        marginTop: 10,
+        marginBottom: 5,
       },
       children: ["FVO", "SPO"].map((el) => (
         <Button
@@ -72,6 +74,7 @@ export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
       color: "white",
       containerStyle: {
         backgroundColor: theme.colors.grey5,
+        marginBottom: 5,
       },
       children: ["1", "2", "3", "4"].map((el) => (
         <Button
@@ -96,10 +99,12 @@ export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
       color: "white",
       containerStyle: {
         backgroundColor: theme.colors.grey5,
+        marginTop: 5,
+        marginBottom: 2,
       },
       children: (
         <Button
-          containerStyle={{ marginHorizontal: 10, borderRadius: 20 }}
+          containerStyle={{ marginHorizontal: 10, borderRadius: 20, flex: 1 }}
           color={theme.colors.grey4}
           onPress={() => {
             setFaculty("");
@@ -136,7 +141,9 @@ export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
     setIsVisible((prev) => !prev);
     if (!isVisible) {
       posBtnOpen.value = withSpring(-(curSize * list.length - list.length));
-      posModal.value = withSpring(0);
+      posModal.value = withSpring(0, {
+        damping: 12,
+      });
       opacityBG.value = withSpring(1);
       heightBG.value = withSpring(HEIGHT_CONTENT);
       colorBtn.value = withSpring(1);
@@ -144,7 +151,9 @@ export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
       opacityIconClose.value = withSpring(100);
     } else {
       posBtnOpen.value = withSpring(0);
-      posModal.value = withSpring(curSize * list.length - list.length);
+      posModal.value = withSpring(curSize * list.length - list.length, {
+        damping: 12,
+      });
       opacityBG.value = withSpring(0);
       heightBG.value = withSpring(-300);
       colorBtn.value = withSpring(0);

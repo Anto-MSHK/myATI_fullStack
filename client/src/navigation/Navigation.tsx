@@ -51,7 +51,7 @@ export const Navigation: FC = () => {
   };
   return (
     <NavigationContainer>
-      {mainGroup === "none" ? (
+      {mainGroup === "none" || mainGroup === "" ? (
         <Stack.Navigator
           screenOptions={{
             headerShown: false,
@@ -60,7 +60,7 @@ export const Navigation: FC = () => {
           <Stack.Screen name="Groups" component={Groups} options={opt} />
           <Stack.Screen name="Home" component={Home} options={opt} />
         </Stack.Navigator>
-      ) : mainGroup !== "" ? (
+      ) : (
         <Stack.Navigator
           screenOptions={{
             headerShown: false,
@@ -73,15 +73,6 @@ export const Navigation: FC = () => {
             initialParams={isStart ? { group: mainGroup } : undefined}
           />
           <Stack.Screen name="Groups" component={Groups} options={opt} />
-        </Stack.Navigator>
-      ) : (
-        <Stack.Navigator
-          screenOptions={{
-            headerShown: false,
-          }}
-        >
-          <Stack.Screen name="Groups" component={Groups} options={opt} />
-          <Stack.Screen name="Home" component={Home} options={opt} />
         </Stack.Navigator>
       )}
     </NavigationContainer>
