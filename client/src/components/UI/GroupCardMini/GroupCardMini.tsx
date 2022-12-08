@@ -12,10 +12,12 @@ import { useDispatch } from "react-redux";
 import { useTheme } from "@rneui/themed";
 import { useAppDispatch } from "./../../../hooks/redux";
 import { deleteGroup } from "../../../state/slices/group/groupSlice";
+import { StackActions, useNavigation } from "@react-navigation/native";
 
 interface GroupCardMiniI {
   name: string;
-  onClickNav: (group: string) => void;
+  withBtnClose?: boolean;
+  onClickNav: () => void;
   onLayout?: (event: LayoutChangeEvent) => void;
   isMain?: boolean;
 }
@@ -25,7 +27,9 @@ export const GroupCardMini: FC<GroupCardMiniI> = ({
   onClickNav,
   onLayout,
   isMain = false,
+  withBtnClose = false,
 }) => {
+  const navigation = useNavigation();
   const style = useStyles(styles);
   const styleUI = useStyles(UIstyles);
   const { theme } = useTheme();
@@ -40,42 +44,53 @@ export const GroupCardMini: FC<GroupCardMiniI> = ({
           flexDirection: "row",
           justifyContent: "space-between",
         }}
-        onLayout={onLayout}
       >
-        <View style={style.mainContainer}>
-          <Text style={{ ...styleUI.h1_p, color: theme.colors.white }}>
-            {name}
-          </Text>
-          {isMain && (
-            <Text
-              style={{
-                ...styleUI.h4_b,
-                color: theme.colors.white,
-                marginLeft: 10,
-              }}
-            >
-              Моя группа
-            </Text>
-          )}
-        </View>
-        <Button
-          onPress={() => {
-            onClickNav(name);
+        <View
+          style={{
+            flexDirection: "row",
           }}
-          radius={50}
-          buttonStyle={{ width: 35, height: 35 }}
-          color={theme.colors.secondary}
-          onPress={() => {
-            dispatch(deleteGroup(name));
+          onLayout={onLayout}
+          onTouchStart={() => {
+            onClickNav();
+            navigation.navigate("Home", { group: name });
+            // navigation.dispatch(resetAction);
           }}
         >
-          <Icon
-            name="close"
-            type="antdesign"
-            size={15}
-            color={theme.colors.white}
-          />
-        </Button>
+          <View style={style.mainContainer}>
+            <Text style={{ ...styleUI.h1_p, color: theme.colors.white }}>
+              {name}
+            </Text>
+            {isMain && (
+              <Text
+                style={{
+                  ...styleUI.h4_b,
+                  color: theme.colors.white,
+                  marginLeft: 10,
+                }}
+              >
+                Моя группа
+              </Text>
+            )}
+          </View>
+        </View>
+        {withBtnClose && (
+          <Button
+            radius={50}
+            buttonStyle={{ width: 35, height: 35 }}
+            color={theme.colors.secondary}
+            onPress={() => {
+              dispatch(deleteGroup(name));
+            }}
+            containerStyle={{ zIndex: 20 }}
+          >
+            <Icon
+              name="close"
+              type="antdesign"
+              size={15}
+              color={theme.colors.white}
+            />
+          </Button>
+        )}
       </View>
     </Card>
   );

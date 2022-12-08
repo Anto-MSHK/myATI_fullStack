@@ -23,7 +23,7 @@ export const ChangeTheme: FC<ChangeThemeI> = ({ style }) => {
       <Text
         style={{ ...styleUI.h3_p, color: theme.colors.black, marginTop: 20 }}
       >
-        Тема:
+        Тема (coming soon!):
       </Text>
       <Button
         containerStyle={styleC.cardContainer_all}
@@ -31,6 +31,7 @@ export const ChangeTheme: FC<ChangeThemeI> = ({ style }) => {
           backgroundColor: theme.colors.grey0,
           //  justifyContent: "space-between",
         }}
+        disabledStyle={{ backgroundColor: theme.colors.grey2 }}
         onPress={() => {
           if (icon === "light-up") {
             setMode("dark");
@@ -40,6 +41,7 @@ export const ChangeTheme: FC<ChangeThemeI> = ({ style }) => {
             setIcon("light-up");
           }
         }}
+        disabled={true}
       >
         <View
           style={{

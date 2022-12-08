@@ -117,7 +117,7 @@ export const BottomList: FC<BottomButtonsI> = ({
               borderRadius: 20,
               overflow: "hidden",
               backgroundColor: theme.colors.grey5,
-              paddingBottom: 50,
+              paddingBottom: 60,
               bottom: -50,
               zIndex: 5,
             },
@@ -130,7 +130,7 @@ export const BottomList: FC<BottomButtonsI> = ({
           {list.map((l, i) => (
             <ListItem
               key={i}
-              containerStyle={[l.containerStyle, { padding: 10 }]}
+              containerStyle={[l.containerStyle, { padding: 5 }]}
               onPress={l.onPress}
             >
               {l.icon && (

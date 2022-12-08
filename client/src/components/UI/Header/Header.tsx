@@ -17,7 +17,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Button, Icon } from "@rneui/base";
 import { GroupsList } from "../GroupsList/GroupsList";
 import { ChangeTheme } from "../ChangeTheme/ChangeTheme";
-
 interface HeaderMainI {
   title?: string;
   isNotActiveButton?: boolean;
@@ -166,7 +165,10 @@ export const HeaderMain: FC<HeaderMainI> = ({
           end={{ x: 1, y: 0 }}
           style={{ height: 2, bottom: -6, left: -25, marginRight: -28 }}
         />
-        <GroupsList style={{}} />
+        <GroupsList
+          style={{}}
+          onPressNav={() => managePanelActivity("menufold")}
+        />
         <ChangeTheme style={{}} />
         <LinearGradient
           colors={[theme.colors.background, theme.colors.grey3]}

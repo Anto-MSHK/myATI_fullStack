@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { GroupListStateI, GroupListT, GroupMinT, GroupsStateI } from "./types";
+import { saveGroups, saveSchedule } from "../../localService/group";
 
 const initialState: GroupListStateI = {
   groups: [],
@@ -34,11 +35,14 @@ export const counterSlice = createSlice({
             isMain: action.payload.isMain,
           };
       }
+
+      saveGroups(state.groups);
     },
     deleteGroup: (state, action: PayloadAction<string>) => {
       state.groups = state.groups.filter(
         (cand) => cand.name !== action.payload
       );
+      saveGroups(state.groups);
     },
   },
 });

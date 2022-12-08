@@ -30,6 +30,8 @@ import Animated, {
 } from "react-native-reanimated";
 import { BottomList, ButtonCloseList } from "../../UI/BottomList/BottomList";
 import { useGetGroupsQuery } from "../../../state/services/group";
+import { StackActions, NavigationAction } from "@react-navigation/native";
+import { Loading } from "../../UI/Loading/Loading";
 
 export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
   const { theme } = useTheme();
@@ -191,7 +193,7 @@ export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
       <View>
         <HeaderMain title="Выберите группу" />
       </View>
-      {!isLoading ? (
+      {!isLoading && data?.length > 0 ? (
         <View>
           <GestureHandlerRootView>
             <GestureDetector gesture={panGesture}>
@@ -225,7 +227,7 @@ export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
                           }}
                           name={group.name}
                           faculty={group.faculty}
-                          key={`${group.name}gr`}
+                          key={`${group.name}gr2`}
                         />
                       );
                   })}
@@ -234,13 +236,7 @@ export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
           </GestureHandlerRootView>
         </View>
       ) : (
-        <Button
-          size="lg"
-          loadingProps={{ size: "large" }}
-          loading
-          type="clear"
-          style={{ position: "absolute" }}
-        />
+        <Loading withGroups />
       )}
       <ButtonCloseList
         posBtnOpen={posBtnOpen}

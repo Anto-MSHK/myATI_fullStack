@@ -15,7 +15,7 @@ import { UltraView } from "../../UI/UltraView/UltraView";
 import { useDispatch } from "react-redux";
 import { AnyAction } from "redux";
 import { HomeTabScreenProps } from "../../../navigation/types";
-import { Button } from "@rneui/base";
+import { Button, Icon } from "@rneui/base";
 import { useGetScheduleQuery } from "../../../state/services/schedule";
 import {
   setCurDay,
@@ -36,8 +36,14 @@ import Animated, {
 } from "react-native-reanimated";
 import { BottomList, ButtonCloseList } from "../../UI/BottomList/BottomList";
 import { deleteGroup, setGroup } from "../../../state/slices/group/groupSlice";
+import { StackActions } from "@react-navigation/native";
+import { saveSchedule } from "../../../state/localService/group";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useStyles } from "../../../hooks/useStyles";
+import { UIstyles } from "../../UI/UIstyles";
+import { Loading } from "./../../UI/Loading/Loading";
 
-export const Home = ({ route }: HomeTabScreenProps<"Home">) => {
+export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
   let curStatus = useAppSelector((state) => state.settings.curStatus);
 
   const [curPage, setCurPage] = useState({ value: 0, isChange: false });
@@ -51,12 +57,23 @@ export const Home = ({ route }: HomeTabScreenProps<"Home">) => {
     (route.params as any).group
   );
 
+  const stylesUI = useStyles(UIstyles);
+  const [dataLocal, setDataLocal] = useState<any[]>([]);
+
   const weekDates = useAppSelector((state) => state.settings.weekDates);
   const groups = useAppSelector((state) => state.group.groups);
   const [revWeekDates, setRevWeekDates] = useState<string[]>([]);
   useEffect(() => {
     dispatch(setCurDayAndWeek());
     dispatch(setCurWeek());
+    const a = groups.find((cand) => cand.isMain === true);
+    AsyncStorage.getItem("@mySchedule_Key").then((value) => {
+      if (route.params.group === a?.name)
+        if (value !== null) {
+          let data: any[] = JSON.parse(value);
+          setDataLocal(data);
+        }
+    });
   }, []);
   const { theme } = useTheme();
 
@@ -86,8 +103,43 @@ export const Home = ({ route }: HomeTabScreenProps<"Home">) => {
         backgroundColor: theme.colors.grey5,
       },
       children: (
+        <View style={{ flex: 1 }}>
+          <Icon
+            name={dataLocal.length > 0 ? "archive" : "cloud"}
+            type="entypo"
+            size={20}
+            color={theme.colors.grey2}
+            containerStyle={{ marginBottom: -10, marginTop: 10 }}
+          />
+          <Text
+            style={{
+              marginHorizontal: 10,
+              borderRadius: 20,
+              flex: 1,
+              marginTop: 5,
+              textAlign: "center",
+              ...stylesUI.h3_b,
+              color: theme.colors.grey2,
+            }}
+          >
+            {dataLocal.length > 0 ? "Загружено с телефона" : "Последняя версия"}
+          </Text>
+        </View>
+      ),
+    },
+    {
+      color: "white",
+      containerStyle: {
+        backgroundColor: theme.colors.grey5,
+      },
+      children: (
         <Button
-          containerStyle={{ marginHorizontal: 10, borderRadius: 20, flex: 1 }}
+          containerStyle={{
+            marginHorizontal: 10,
+            borderRadius: 20,
+            flex: 1,
+            // marginTop: 10,
+          }}
           color={theme.colors.grey4}
           onPress={() => {
             if (
@@ -116,6 +168,8 @@ export const Home = ({ route }: HomeTabScreenProps<"Home">) => {
           containerStyle={{
             marginHorizontal: 10,
             borderRadius: 20,
+            marginBottom: 5,
+            marginTop: 10,
             flex: 1,
           }}
           buttonStyle={{}}
@@ -124,6 +178,7 @@ export const Home = ({ route }: HomeTabScreenProps<"Home">) => {
             dispatch(
               setGroup({ name: (route.params as any).group, isMain: true })
             );
+            data && saveSchedule(data);
           }}
           disabled={
             groups.findIndex(
@@ -234,9 +289,15 @@ export const Home = ({ route }: HomeTabScreenProps<"Home">) => {
           />
         </View>
         <View style={styles.contentContainer}>
-          {!isLoading && !isStart && data && (
+          {!isStart && ((data && !isLoading) || dataLocal.length > 0) && (
             <UltraView
-              data={data}
+              data={
+                dataLocal.length !== 0
+                  ? dataLocal
+                  : data && !isLoading
+                  ? data
+                  : []
+              }
               posX={positionX}
               opacity={opacitySwipe}
               renderItem={(item, index) => (
@@ -264,14 +325,7 @@ export const Home = ({ route }: HomeTabScreenProps<"Home">) => {
               style={isStart2 ? { opacity: 0, position: "absolute" } : {}}
             />
           )}
-
-          <Button
-            size="lg"
-            loadingProps={{ size: "large" }}
-            loading
-            type="clear"
-            style={{ position: "absolute" }}
-          />
+          <Loading />
         </View>
       </View>
     </Layoult>

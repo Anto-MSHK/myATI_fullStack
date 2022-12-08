@@ -16,6 +16,8 @@ import { useEffect } from "react";
 import { store } from "./src/state/state";
 import { useAppDispatch } from "./src/hooks/redux";
 import { setCurDayAndWeek } from "./src/state/slices/settings/settingSlice";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { setGroup } from "./src/state/slices/group/groupSlice";
 
 export default function App() {
   let [fontsLoaded] = useFonts({
@@ -24,6 +26,7 @@ export default function App() {
     NotoSans_700Bold,
     NotoSans_700Bold_Italic,
   });
+
   const theme = createTheme({
     lightColors: {
       primary: "rgba(224, 142, 45, 1)",
@@ -44,6 +47,7 @@ export default function App() {
       white: "rgba(255, 255, 255, 1)",
     },
   });
+
 
   if (!fontsLoaded) return <AppLoading />;
   else
