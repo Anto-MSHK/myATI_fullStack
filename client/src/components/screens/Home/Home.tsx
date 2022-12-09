@@ -53,9 +53,21 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
   const positionX = useSharedValue(0);
   const opacitySwipe = useSharedValue(1);
 
+  const [groupCur, setGroupCur] = useState("");
+  const [fastLoading, setFastLoading] = useState(false);
+  useEffect(() => {
+    setFastLoading(true);
+    setGroupCur((route.params as any).group);
+    console.log(fastLoading);
+  }, [(route.params as any).group]);
+
   const { data, error, isLoading } = useGetScheduleQuery(
     (route.params as any).group
   );
+
+  useEffect(() => {
+    setFastLoading(false);
+  }, [data]);
 
   const stylesUI = useStyles(UIstyles);
   const [dataLocal, setDataLocal] = useState<any[]>([]);
@@ -68,7 +80,7 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
     dispatch(setCurWeek());
     const a = groups.find((cand) => cand.isMain === true);
     AsyncStorage.getItem("@mySchedule_Key").then((value) => {
-      if (route.params.group === a?.name)
+      if (groupCur === a?.name)
         if (value !== null) {
           let data: any[] = JSON.parse(value);
           setDataLocal(data);
@@ -142,16 +154,13 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
           }}
           color={theme.colors.grey4}
           onPress={() => {
-            if (
-              groups.findIndex((cand) => cand.name === route.params.group) ===
-              -1
-            )
-              dispatch(setGroup({ name: (route.params as any).group }));
-            else dispatch(deleteGroup(route.params.group));
+            if (groups.findIndex((cand) => cand.name === groupCur) === -1)
+              dispatch(setGroup({ name: groupCur }));
+            else dispatch(deleteGroup(groupCur));
           }}
         >
           {groups.findIndex((cand) => {
-            return cand.name === route.params.group;
+            return cand.name === groupCur;
           }) === -1
             ? "Добавить в список групп"
             : "Удалить из списка групп"}
@@ -175,22 +184,19 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
           buttonStyle={{}}
           color={theme.colors.primary}
           onPress={() => {
-            dispatch(
-              setGroup({ name: (route.params as any).group, isMain: true })
-            );
+            dispatch(setGroup({ name: groupCur, isMain: true }));
             data && saveSchedule(data);
           }}
           disabled={
             groups.findIndex(
-              (cand) => cand.name === route.params.group && cand.isMain
+              (cand) => cand.name === groupCur && cand.isMain
             ) === -1
               ? false
               : true
           }
         >
-          {groups.findIndex(
-            (cand) => cand.name === route.params.group && cand.isMain
-          ) === -1
+          {groups.findIndex((cand) => cand.name === groupCur && cand.isMain) ===
+          -1
             ? "Сделать моей группой"
             : "Это моя группа"}
         </Button>
@@ -239,7 +245,7 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
   return (
     <Layoult>
       <View>
-        <HeaderMain title={route.params.group} />
+        <HeaderMain title={groupCur} />
       </View>
 
       {!isStart2 && (
@@ -293,42 +299,48 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
           />
         </View>
         <View style={styles.contentContainer}>
-          {!isStart && ((data && !isLoading) || dataLocal.length > 0) && (
-            <UltraView
-              data={
-                dataLocal.length !== 0
-                  ? dataLocal
-                  : data && !isLoading
-                  ? data
-                  : []
-              }
-              posX={positionX}
-              opacity={opacitySwipe}
-              renderItem={(item, index) => (
-                <DayCard
-                  lessons={item.lessons}
-                  dayOfWeek={item.dayOfWeek}
-                  dates={
-                    revWeekDates.length === 0
-                      ? weekDates[index]
-                      : revWeekDates[index]
-                  }
-                />
-              )}
-              curPage={curPage}
-              onSwipe={(count2) => {
-                dispatch(setCurDay(count2 as any));
-              }}
-              onSwipeHorz={(operation) => {
-                operWeek(operation);
-                dispatch(setWeek());
-              }}
-              onLayout={() => {
-                setIsStart2(false);
-              }}
-              style={isStart2 ? { opacity: 0, position: "absolute" } : {}}
-            />
-          )}
+          {!fastLoading &&
+            !isStart &&
+            ((data && !isLoading) || dataLocal.length > 0) && (
+              <UltraView
+                data={
+                  dataLocal.length !== 0
+                    ? dataLocal
+                    : data && !isLoading
+                    ? data
+                    : []
+                }
+                posX={positionX}
+                opacity={opacitySwipe}
+                renderItem={(item, index) => (
+                  <DayCard
+                    lessons={item.lessons}
+                    dayOfWeek={item.dayOfWeek}
+                    dates={
+                      revWeekDates.length === 0
+                        ? weekDates[index]
+                        : revWeekDates[index]
+                    }
+                  />
+                )}
+                curPage={curPage}
+                onSwipe={(count2) => {
+                  dispatch(setCurDay(count2 as any));
+                }}
+                onSwipeHorz={(operation) => {
+                  operWeek(operation);
+                  dispatch(setWeek());
+                }}
+                onLayout={() => {
+                  setIsStart2(false);
+                }}
+                style={
+                  fastLoading && isStart2
+                    ? { opacity: 0, position: "absolute" }
+                    : {}
+                }
+              />
+            )}
           <Loading />
         </View>
       </View>

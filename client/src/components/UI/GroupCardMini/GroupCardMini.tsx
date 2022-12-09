@@ -34,6 +34,20 @@ export const GroupCardMini: FC<GroupCardMiniI> = ({
   const styleUI = useStyles(UIstyles);
   const { theme } = useTheme();
   const dispatch = useAppDispatch();
+
+  const onPressNavigation = (group: string) => {
+    const page = navigation.getState().routes.find((cand) => {
+      console.log(cand?.params?.group + "===" + group);
+      return cand?.params?.group === group;
+    });
+    navigation.navigate("Home", { group: group });
+    //  console.log(page);
+    //  console.log(navigation.getState().index);
+    //  if (page === undefined) {
+    //    const resetAction = StackActions.replace("Home", { group: group });
+    //    navigation.dispatch(resetAction);
+    //  }
+  };
   return (
     <Card
       containerStyle={style.cardContainer_all}
@@ -52,8 +66,7 @@ export const GroupCardMini: FC<GroupCardMiniI> = ({
           onLayout={onLayout}
           onTouchStart={() => {
             onClickNav();
-            navigation.navigate("Home", { group: name });
-            // navigation.dispatch(resetAction);
+            onPressNavigation(name);
           }}
         >
           <View style={style.mainContainer}>

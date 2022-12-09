@@ -197,6 +197,11 @@ export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
     event.persist();
     return event.nativeEvent.layout.height;
   };
+
+  const onPressNavigation = (group: string) => {
+    const resetAction = StackActions.replace("Home", { group: group });
+    navigation.dispatch(resetAction);
+  };
   return (
     <Layoult>
       <View>
@@ -218,7 +223,7 @@ export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
                       return (
                         <GroupCard
                           onClickNav={(group: string) => {
-                            navigation.navigate("Home", { group: group });
+                            onPressNavigation(group);
                           }}
                           name={group.name}
                           faculty={group.faculty}
@@ -232,7 +237,7 @@ export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
                       return (
                         <GroupCard
                           onClickNav={(group: string) => {
-                            navigation.navigate("Home", { group: group });
+                            onPressNavigation(group);
                           }}
                           name={group.name}
                           faculty={group.faculty}
