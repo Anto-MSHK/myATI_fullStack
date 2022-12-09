@@ -35,7 +35,6 @@ import { Loading } from "../../UI/Loading/Loading";
 import { useAppSelector } from "../../../hooks/redux";
 
 export const Groups = ({ route, navigation }: HomeTabScreenProps<"Groups">) => {
-
   const { theme } = useTheme();
   const styleUI = useStyles(UIstyles);
   const curSize = 63;
@@ -52,7 +51,7 @@ export const Groups = ({ route, navigation }: HomeTabScreenProps<"Groups">) => {
         marginTop: 10,
         marginBottom: 5,
       },
-      children: ["FVO", "SPO"].map((el) => (
+      children: ["FVO", "SPO"].map((el, i) => (
         <Button
           buttonStyle={{
             height: 40,
@@ -65,6 +64,7 @@ export const Groups = ({ route, navigation }: HomeTabScreenProps<"Groups">) => {
             setFaculty(el);
             position.value = 0;
           }}
+          key={"bg1" + i}
         >
           {el}
         </Button>
@@ -78,7 +78,7 @@ export const Groups = ({ route, navigation }: HomeTabScreenProps<"Groups">) => {
         backgroundColor: theme.colors.grey5,
         marginBottom: 5,
       },
-      children: ["1", "2", "3", "4"].map((el) => (
+      children: ["1", "2", "3", "4"].map((el, i) => (
         <Button
           buttonStyle={{
             width: 40,
@@ -92,6 +92,7 @@ export const Groups = ({ route, navigation }: HomeTabScreenProps<"Groups">) => {
             setCourse(el);
             position.value = 0;
           }}
+          key={"bg2" + i}
         >
           {el}
         </Button>
@@ -113,6 +114,7 @@ export const Groups = ({ route, navigation }: HomeTabScreenProps<"Groups">) => {
             setCourse("");
             position.value = 0;
           }}
+          key={"btn-111"}
         >
           Очистить
         </Button>
@@ -201,8 +203,7 @@ export const Groups = ({ route, navigation }: HomeTabScreenProps<"Groups">) => {
   };
 
   const onPressNavigation = (group: string) => {
-    const resetAction = StackActions.replace("Home", { group: group });
-    navigation.dispatch(resetAction);
+    navigation.navigate("Home", { group: group });
   };
   return (
     <Layoult>

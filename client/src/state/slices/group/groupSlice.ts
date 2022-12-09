@@ -3,9 +3,11 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import { GroupListStateI, GroupListT, GroupMinT, GroupsStateI } from "./types";
 import { saveGroups, saveSchedule } from "../../localService/group";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { DayT } from "../schedule/types";
 
 const initialState: GroupListStateI = {
   groups: [],
+  scheduleMainGroup: [],
 };
 
 export const saveGroupsToStorage = createAsyncThunk(
@@ -27,6 +29,19 @@ export const getGroupsByStorage = createAsyncThunk(
       return arrGroups;
     } else {
       console.log("111");
+      return [];
+    }
+  }
+);
+
+export const getScheduleByStorage = createAsyncThunk(
+  "group/getScheduleByStorage",
+  async () => {
+    const value = await AsyncStorage.getItem("@mySchedule_Key");
+    if (value !== null) {
+      let data: DayT[] = JSON.parse(value);
+      return data;
+    } else {
       return [];
     }
   }
@@ -69,16 +84,23 @@ export const counterSlice = createSlice({
       );
       saveGroups(state.groups);
     },
+    deleteSchedule: (state) => {
+      state.scheduleMainGroup = [];
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(saveGroupsToStorage.fulfilled, (state, action) => {});
     builder.addCase(getGroupsByStorage.fulfilled, (state, action) => {
       state.groups = action.payload;
     });
+    builder.addCase(getScheduleByStorage.fulfilled, (state, action) => {
+      console.log("start");
+      state.scheduleMainGroup = action.payload;
+    });
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { setGroup, deleteGroup } = counterSlice.actions;
+export const { setGroup, deleteGroup, deleteSchedule } = counterSlice.actions;
 
 export default counterSlice.reducer;

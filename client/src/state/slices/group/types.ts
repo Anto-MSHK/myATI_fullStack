@@ -1,3 +1,5 @@
+import { DayT } from "../schedule/types";
+
 export type GroupMinT = {
   name: string;
   faculty: "FVO" | "SPO";
@@ -11,6 +13,7 @@ export type GroupListT = {
 
 export interface GroupListStateI {
   groups: GroupListT[];
+  scheduleMainGroup: DayT[];
 }
 
 export interface GroupsStateI {

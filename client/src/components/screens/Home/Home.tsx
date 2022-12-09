@@ -35,7 +35,12 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import { BottomList, ButtonCloseList } from "../../UI/BottomList/BottomList";
-import { deleteGroup, setGroup } from "../../../state/slices/group/groupSlice";
+import {
+  deleteGroup,
+  deleteSchedule,
+  getScheduleByStorage,
+  setGroup,
+} from "../../../state/slices/group/groupSlice";
 import { StackActions } from "@react-navigation/native";
 import { saveSchedule } from "../../../state/localService/group";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -48,8 +53,10 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
   useEffect(() => {
     const gr = groups.find((cand) => cand.isMain);
     if (gr) {
-      if (route.params.group === "")
-        navigation.navigate("Home", { group: gr.name });
+      if (route.params.group === "") {
+        navigation.popToTop();
+        navigation.replace("Home", { group: gr.name });
+      }
     } else if (route.params.group === "") {
       navigation.navigate("Groups");
     }
@@ -64,12 +71,18 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
   const positionX = useSharedValue(0);
   const opacitySwipe = useSharedValue(1);
 
-  const [groupCur, setGroupCur] = useState("");
+  const [groupCur, setGroupCur] = useState(route.params.group);
   const [fastLoading, setFastLoading] = useState(false);
   useEffect(() => {
     setFastLoading(true);
     setGroupCur((route.params as any).group);
     console.log(fastLoading);
+    const a = groups.find((cand) => cand.isMain === true);
+    if ((route.params as any).group === a?.name) {
+      dispatch(getScheduleByStorage());
+    } else {
+      dispatch(deleteSchedule());
+    }
   }, [(route.params as any).group]);
 
   const { data, error, isLoading } = useGetScheduleQuery(
@@ -81,24 +94,15 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
   }, [data]);
 
   const stylesUI = useStyles(UIstyles);
-  const [dataLocal, setDataLocal] = useState<any[]>([]);
 
   const weekDates = useAppSelector((state) => state.settings.weekDates);
+  const dataLocal = useAppSelector((state) => state.group.scheduleMainGroup);
   const [revWeekDates, setRevWeekDates] = useState<string[]>([]);
   useEffect(() => {
     dispatch(setCurDayAndWeek());
     dispatch(setCurWeek());
-    const a = groups.find((cand) => cand.isMain === true);
-    AsyncStorage.getItem("@mySchedule_Key").then((value) => {
-      if (groupCur === a?.name)
-        if (value !== null) {
-          let data: any[] = JSON.parse(value);
-          setDataLocal(data);
-        }
-    });
   }, []);
   const { theme } = useTheme();
-
   const operWeek = (oper: number) => {
     let curDate;
     if (revWeekDates.length === 0) curDate = new Date(weekDates[0]);
@@ -125,7 +129,7 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
         backgroundColor: theme.colors.grey5,
       },
       children: (
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1 }} key={"text-1"}>
           <Icon
             name={dataLocal.length > 0 ? "archive" : "cloud"}
             type="entypo"
@@ -168,6 +172,7 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
               dispatch(setGroup({ name: groupCur }));
             else dispatch(deleteGroup(groupCur));
           }}
+          key={"btn-1"}
         >
           {groups.findIndex((cand) => {
             return cand.name === groupCur;
@@ -204,6 +209,7 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
               ? false
               : true
           }
+          key={"btn-2"}
         >
           {groups.findIndex((cand) => cand.name === groupCur && cand.isMain) ===
           -1
@@ -345,8 +351,12 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
                   setIsStart2(false);
                 }}
                 style={
-                  fastLoading && isStart2
-                    ? { opacity: 0, position: "absolute" }
+                  isStart && isStart2
+                    ? {
+                        // opacity: 1,
+                        // position: "absolute",
+                        // backgroundColor: "red",
+                      }
                     : {}
                 }
               />

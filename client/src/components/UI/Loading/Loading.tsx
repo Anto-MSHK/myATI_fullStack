@@ -12,9 +12,11 @@ interface LoadingI {
 export const Loading = ({ withGroups = false }) => {
   const [isWait, setIsWait] = useState(false);
   useEffect(() => {
-    setTimeout(() => {
+    let timer = setTimeout(() => {
       setIsWait(true);
     }, 5000);
+
+    return () => clearTimeout(timer);
   }, []);
 
   const stylesUI = useStyles(UIstyles);

@@ -7,7 +7,7 @@ export const saveGroups = async (value: GroupListT[]) => {
   await AsyncStorage.setItem("@myGroups_Key", jsonValue);
 };
 
-export const saveSchedule = (value: DayT[]) => {
+export const saveSchedule = async (value: DayT[]) => {
   const jsonValue = JSON.stringify(value);
-  AsyncStorage.setItem("@mySchedule_Key", jsonValue).then();
+  await AsyncStorage.setItem("@mySchedule_Key", jsonValue).then();
 };

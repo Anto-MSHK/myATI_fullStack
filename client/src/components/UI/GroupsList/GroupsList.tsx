@@ -31,12 +31,13 @@ export const GroupsList: FC<GroupsListI> = ({ style, onPressNav }) => {
           >
             Важные группы:
           </Text>
-          {groups.map((group) => (
+          {groups.map((group, i) => (
             <GroupCardMini
               name={group.name}
               onClickNav={onPressNav}
               isMain={group.isMain}
               withBtnClose
+              key={"gc" + i}
             />
           ))}
         </>
@@ -103,13 +104,14 @@ export const GroupsListMin: FC<GroupsListI> = ({ style, onPressNav }) => {
           <Text style={{ ...stylesUI.h2_p, textAlign: "center" }}>
             Ничего, у вас есть загруженная группа:
           </Text>
-          {groups.map((group) => {
+          {groups.map((group, i) => {
             if (group.isMain)
               return (
                 <GroupCardMini
                   name={group.name}
                   onClickNav={onPressNav}
                   isMain={group.isMain}
+                  key={"gcm" + i}
                 />
               );
           })}
