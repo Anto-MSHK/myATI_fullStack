@@ -32,8 +32,10 @@ import { BottomList, ButtonCloseList } from "../../UI/BottomList/BottomList";
 import { useGetGroupsQuery } from "../../../state/services/group";
 import { StackActions, NavigationAction } from "@react-navigation/native";
 import { Loading } from "../../UI/Loading/Loading";
+import { useAppSelector } from "../../../hooks/redux";
 
-export const Groups = ({ navigation }: HomeTabScreenProps<"Groups">) => {
+export const Groups = ({ route, navigation }: HomeTabScreenProps<"Groups">) => {
+
   const { theme } = useTheme();
   const styleUI = useStyles(UIstyles);
   const curSize = 63;

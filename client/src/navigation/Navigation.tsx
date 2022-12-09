@@ -9,8 +9,8 @@ import { Home } from "./../components/screens/Home/Home";
 import { Groups } from "./../components/screens/Groups/Groups";
 import { useThemeMode } from "@rneui/themed";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useAppDispatch } from "../hooks/redux";
-import { setGroup } from "../state/slices/group/groupSlice";
+import { useAppDispatch, useAppSelector } from "../hooks/redux";
+import { getGroupsByStorage, setGroup } from "../state/slices/group/groupSlice";
 import {
   createStackNavigator,
   CardStyleInterpolators,
@@ -22,27 +22,15 @@ const Stack = createStackNavigator();
 export const Navigation: FC = () => {
   const { mode, setMode } = useThemeMode();
   const dispatch = useAppDispatch();
-  let isStart = true;
   useEffect(() => {
     setMode("dark");
   }, []);
 
   const [mainGroup, setMainGroup] = useState("");
+  const [isStart, setIsStart] = useState(false);
+
   useEffect(() => {
-    AsyncStorage.getItem("@myGroups_Key").then((value) => {
-      if (value !== null) {
-        let arrGroups: any[] = JSON.parse(value);
-        if (arrGroups.length !== 0)
-          arrGroups.map((gr) => {
-            const a = arrGroups.find((cand) => cand.isMain === true);
-            dispatch(setGroup(gr));
-            if (a.name) setMainGroup(a.name);
-            else setMainGroup("none");
-          });
-        else setMainGroup("none");
-        isStart = false;
-      }
-    });
+    dispatch(getGroupsByStorage());
   }, []);
 
   const opt: StackNavigationOptions = {
@@ -51,30 +39,19 @@ export const Navigation: FC = () => {
   };
   return (
     <NavigationContainer>
-      {mainGroup === "none" || mainGroup === "" ? (
-        <Stack.Navigator
-          screenOptions={{
-            headerShown: false,
-          }}
-        >
-          <Stack.Screen name="Groups" component={Groups} options={opt} />
-          <Stack.Screen name="Home" component={Home} options={opt} />
-        </Stack.Navigator>
-      ) : (
-        <Stack.Navigator
-          screenOptions={{
-            headerShown: false,
-          }}
-        >
-          <Stack.Screen
-            name="Home"
-            component={Home}
-            options={opt}
-            initialParams={isStart ? { group: mainGroup } : undefined}
-          />
-          <Stack.Screen name="Groups" component={Groups} options={opt} />
-        </Stack.Navigator>
-      )}
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        <Stack.Screen
+          name="Home"
+          component={Home}
+          options={opt}
+          initialParams={{ group: mainGroup }}
+        />
+        <Stack.Screen name="Groups" component={Groups} options={opt} />
+      </Stack.Navigator>
     </NavigationContainer>
   );
 };

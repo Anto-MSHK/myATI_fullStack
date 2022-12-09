@@ -2,9 +2,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { GroupListT } from "../slices/group/types";
 import { DayT } from "../slices/schedule/types";
 
-export const saveGroups = (value: GroupListT[]) => {
+export const saveGroups = async (value: GroupListT[]) => {
   const jsonValue = JSON.stringify(value);
-  AsyncStorage.setItem("@myGroups_Key", jsonValue).then();
+  await AsyncStorage.setItem("@myGroups_Key", jsonValue);
 };
 
 export const saveSchedule = (value: DayT[]) => {

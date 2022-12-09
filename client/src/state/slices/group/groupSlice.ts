@@ -1,11 +1,36 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { GroupListStateI, GroupListT, GroupMinT, GroupsStateI } from "./types";
 import { saveGroups, saveSchedule } from "../../localService/group";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const initialState: GroupListStateI = {
   groups: [],
 };
+
+export const saveGroupsToStorage = createAsyncThunk(
+  "group/saveGroupsToStorage",
+  async (groups: GroupListT[]) => {
+    await saveGroups(groups);
+  }
+);
+
+export const getGroupsByStorage = createAsyncThunk(
+  "group/getGroupsByStorage",
+  async () => {
+    const value = await AsyncStorage.getItem("@myGroups_Key");
+    console.log(value);
+    if (value !== null) {
+      let arrGroups: GroupListT[] = JSON.parse(value);
+      console.log("sds");
+      console.log(arrGroups);
+      return arrGroups;
+    } else {
+      console.log("111");
+      return [];
+    }
+  }
+);
 
 export const counterSlice = createSlice({
   name: "group",
@@ -44,6 +69,12 @@ export const counterSlice = createSlice({
       );
       saveGroups(state.groups);
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(saveGroupsToStorage.fulfilled, (state, action) => {});
+    builder.addCase(getGroupsByStorage.fulfilled, (state, action) => {
+      state.groups = action.payload;
+    });
   },
 });
 

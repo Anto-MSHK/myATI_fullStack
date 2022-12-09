@@ -44,6 +44,17 @@ import { UIstyles } from "../../UI/UIstyles";
 import { Loading } from "./../../UI/Loading/Loading";
 
 export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
+  const groups = useAppSelector((state) => state.group.groups);
+  useEffect(() => {
+    const gr = groups.find((cand) => cand.isMain);
+    if (gr) {
+      if (route.params.group === "")
+        navigation.navigate("Home", { group: gr.name });
+    } else if (route.params.group === "") {
+      navigation.navigate("Groups");
+    }
+  }, [groups]);
+
   let curStatus = useAppSelector((state) => state.settings.curStatus);
 
   const [curPage, setCurPage] = useState({ value: 0, isChange: false });
@@ -73,7 +84,6 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
   const [dataLocal, setDataLocal] = useState<any[]>([]);
 
   const weekDates = useAppSelector((state) => state.settings.weekDates);
-  const groups = useAppSelector((state) => state.group.groups);
   const [revWeekDates, setRevWeekDates] = useState<string[]>([]);
   useEffect(() => {
     dispatch(setCurDayAndWeek());

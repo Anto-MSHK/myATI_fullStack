@@ -244,8 +244,8 @@ export function UltraView<dataType = any>(props: {
     })
     .onUpdate((e) => {
       if (
-        (typeGesture.value !== "horz" && e.translationY < -5) ||
-        (typeGesture.value !== "horz" && e.translationY > 5)
+        (typeGesture.value !== "horz" && e.translationY < -1) ||
+        (typeGesture.value !== "horz" && e.translationY > 1)
       ) {
         position.value = contextX.value + e.translationY;
         typeGesture.value = "vert";
