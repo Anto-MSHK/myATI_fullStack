@@ -34,7 +34,7 @@ export function UltraView<dataType = any>(props: {
   renderItem: (item: dataType, index: number) => React.ReactNode;
   curPage: { value: number; isChange: boolean };
   onSwipe?: (curPage: number) => void;
-  onSwipeHorz: (operation: number) => void;
+  onSwipeHorz: (operation: number, count: number) => void;
   onLayout: () => void;
   posX: SharedValue<number>;
   opacity: SharedValue<number>;
@@ -149,7 +149,7 @@ export function UltraView<dataType = any>(props: {
   };
 
   const callback2 = (operation: number) => {
-    props.onSwipeHorz(operation);
+    props.onSwipeHorz(operation, count.value);
     setTimeout(() => {
       if (operation < 0) {
         props.posX.value = 0;
@@ -287,6 +287,7 @@ export function UltraView<dataType = any>(props: {
           else {
             count.value += 1;
           }
+          runOnJS(callback)(count.value);
         }
         if (pushDown || pullingDown) {
           contextAdvanced.value = 0;
@@ -294,6 +295,7 @@ export function UltraView<dataType = any>(props: {
           else {
             count.value -= 1;
           }
+          runOnJS(callback)(count.value);
         }
         if (count.value !== 5) {
           opacity[count.value + 1].value = withSpring(0, configSpring);
@@ -305,8 +307,6 @@ export function UltraView<dataType = any>(props: {
           opacity[count.value - 1].value = withSpring(0, configSpring);
           marginHorz[count.value - 1].value = withSpring(10, configSpring);
         }
-        runOnJS(callback)(count.value);
-        typeGesture.value = "";
       }
       if (contextAdvanced.value === 0) {
         position.value = withSpring(-posCards[count.value], configSpring);
@@ -320,6 +320,7 @@ export function UltraView<dataType = any>(props: {
           deceleration: 0.998,
           clamp: [-contextAdvanced.value, -posCards[count.value]],
         });
+      typeGesture.value = "";
     });
 
   const composed = Gesture.Simultaneous(vertGesture, horzGesture);

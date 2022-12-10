@@ -32,6 +32,7 @@ import {
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
+  withDecay,
   withSpring,
 } from "react-native-reanimated";
 import { BottomList, ButtonCloseList } from "../../UI/BottomList/BottomList";
@@ -62,13 +63,12 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
     }
   }, [groups]);
 
-  const [loadingAll, setLoadingAll] = useState(-1);
-  const [rerenderCount, setRerenderCount] = useState(0);
   let curStatus = useAppSelector((state) => state.settings.curStatus);
+  let today = useAppSelector((state) => state.settings.curDate);
+  let curIndexDay = useAppSelector((state) => state.settings.curDay);
 
   const [curPage, setCurPage] = useState({ value: 0, isChange: false });
   const [isStart, setIsStart] = useState(true);
-  const [isStart2, setIsStart2] = useState(true);
   const dispatch = useAppDispatch();
   const positionX = useSharedValue(0);
   const opacitySwipe = useSharedValue(1);
@@ -98,7 +98,7 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
 
   const weekDates = useAppSelector((state) => state.settings.weekDates);
   const dataLocal = useAppSelector((state) => state.group.scheduleMainGroup);
-  const [revWeekDates, setRevWeekDates] = useState<string[]>([]);
+  const [revWeekDates, setRevWeekDates] = useState<string[]>(weekDates);
   useEffect(() => {
     dispatch(setCurDayAndWeek());
     dispatch(setCurWeek());
@@ -122,6 +122,7 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
       );
     }
     setRevWeekDates(weekDays);
+    return weekDays;
   };
   const list = [
     {
@@ -233,7 +234,27 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
   const opacityIconOpen = useSharedValue(100);
   const opacityIconClose = useSharedValue(0);
 
+  const opacityTodayBtn = useSharedValue(0);
+
   const [isVisible, setIsVisible] = useState(false);
+
+  const onUnhideBtn = (curDay: number, a: string[] | undefined = undefined) => {
+    if (a && a[curDay]) {
+      console.log(a[curDay] + "=+=" + today);
+      if (a[curDay] !== today) opacityTodayBtn.value = withSpring(1);
+      else opacityTodayBtn.value = withSpring(0);
+    } else {
+      console.log(revWeekDates[curDay] + "=-=" + today);
+      if (revWeekDates[curDay] !== today) opacityTodayBtn.value = withSpring(1);
+      else opacityTodayBtn.value = withSpring(0);
+    }
+  };
+
+  const opacityTodayStyle = useAnimatedStyle(() => {
+    return {
+      opacity: opacityTodayBtn.value,
+    };
+  });
 
   const onToggle = () => {
     setIsVisible((prev) => !prev);
@@ -278,7 +299,49 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
       >
         {curStatus}
       </Text>
-
+      <Animated.View
+        style={[
+          opacityTodayStyle,
+          {
+            position: "absolute",
+            bottom: 25,
+            left: 85,
+            zIndex: 5,
+          },
+        ]}
+      >
+        <Button
+          containerStyle={{
+            borderRadius: 50,
+          }}
+          color={theme.colors.primary}
+          onPress={() => {
+            let indexDay = 0;
+            if (revWeekDates.findIndex((cand) => today === cand) !== -1)
+              indexDay = revWeekDates.findIndex((cand) => today === cand);
+            else indexDay = weekDates.findIndex((cand) => today === cand);
+            setCurPage((prev) => {
+              return {
+                ...prev,
+                value: indexDay,
+                noChange: !prev.isChange,
+              };
+            });
+            dispatch(setCurDay(indexDay as any));
+            setRevWeekDates(weekDates);
+            onUnhideBtn(indexDay, weekDates);
+            dispatch(setCurWeek());
+          }}
+        >
+          <Text style={{ paddingBottom: 2, ...stylesUI.h3 }}>сегодня</Text>
+          <Icon
+            name={"arrowleft"}
+            type={"antdesign"}
+            size={20}
+            color={theme.colors.black}
+          />
+        </Button>
+      </Animated.View>
       <ButtonCloseList
         posBtnOpen={posBtnOpen}
         iconName={"profile"}
@@ -308,6 +371,7 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
               setCurPage((prev) => {
                 return { ...prev, value: day, noChange: !prev.isChange };
               });
+              onUnhideBtn(day);
             }}
             posX={positionX}
             opacity={opacitySwipe}
@@ -340,12 +404,14 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
                   />
                 )}
                 curPage={curPage}
-                onSwipe={(count2) => {
-                  dispatch(setCurDay(count2 as any));
+                onSwipe={(count) => {
+                  dispatch(setCurDay(count as any));
+                  onUnhideBtn(count);
                 }}
-                onSwipeHorz={(operation) => {
-                  operWeek(operation);
+                onSwipeHorz={(operation, count) => {
+                  const a = operWeek(operation);
                   dispatch(setWeek());
+                  onUnhideBtn(count, a);
                 }}
                 onLayout={() => {}}
               />
