@@ -22,6 +22,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { Button } from "@rneui/base";
 import { SharedValue } from "react-native-reanimated/lib/types/lib/reanimated2/commonTypes";
+import { Loading } from "../Loading/Loading";
 
 const { height } = Dimensions.get("screen");
 
@@ -55,6 +56,9 @@ export function UltraView<dataType = any>(props: {
   var [heightCards, setHeightCards] = useState<{ size: number; day: number }[]>(
     []
   );
+
+  const [isSt, setIsSt] = useState(false);
+
   const [posCards, setPosCards] = useState<number[]>([]);
   const [marginCards, setMarginCards] = useState<number[]>([]);
   useEffect(() => {
@@ -102,7 +106,9 @@ export function UltraView<dataType = any>(props: {
     } else if (posCards.length === 6 && isStart) {
       props.curPage.value = count.value;
       position.value = withSpring(-posCards[count.value], configSpring);
+      console.log("!!!start!!!");
       setIsStart(false);
+      setIsSt(true);
       props.onLayout();
     }
   };
@@ -341,7 +347,13 @@ export function UltraView<dataType = any>(props: {
   return (
     <GestureHandlerRootView>
       <GestureDetector gesture={composed}>
-        <Animated.View style={[animatedStyle2, styles]}>
+        <Animated.View
+          style={[
+            animatedStyle2,
+            styles,
+            !isSt ? { position: "absolute" } : {},
+          ]}
+        >
           {props.data.map((day, index) => {
             return (
               <Animated.View

@@ -77,6 +77,7 @@ export const HeaderMain: FC<HeaderMainI> = ({
         }}
         centerContainerStyle={style.textContainer}
         containerStyle={style.header}
+        barStyle={mode === "dark" ? "light-content" : "dark-content"}
         leftComponent={
           !isNotActiveButton
             ? {

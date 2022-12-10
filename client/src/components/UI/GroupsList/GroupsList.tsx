@@ -101,6 +101,14 @@ export const GroupsListMin: FC<GroupsListI> = ({ style, onPressNav }) => {
     <View style={style}>
       {groups.length !== 0 && (
         <>
+          <Text
+            style={{
+              ...stylesUI.h2,
+              textAlign: "center",
+            }}
+          >
+            Проблема у вас или у нас...
+          </Text>
           <Text style={{ ...stylesUI.h2_p, textAlign: "center" }}>
             Ничего, у вас есть загруженная группа:
           </Text>

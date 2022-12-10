@@ -14,7 +14,7 @@ export const Loading = ({ withGroups = false }) => {
   useEffect(() => {
     let timer = setTimeout(() => {
       setIsWait(true);
-    }, 5000);
+    }, 3000);
 
     return () => clearTimeout(timer);
   }, []);
@@ -33,7 +33,7 @@ export const Loading = ({ withGroups = false }) => {
       />
       {isWait && (
         <>
-          <Text
+          {/* <Text
             style={{
               ...stylesUI.h2_p,
               color: theme.colors.black,
@@ -41,7 +41,7 @@ export const Loading = ({ withGroups = false }) => {
             }}
           >
             Проблема у вас или у нас...
-          </Text>
+          </Text> */}
           {withGroups && <GroupsListMin style={{}} onPressNav={() => {}} />}
         </>
       )}

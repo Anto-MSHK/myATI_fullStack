@@ -21,14 +21,10 @@ export const getGroupsByStorage = createAsyncThunk(
   "group/getGroupsByStorage",
   async () => {
     const value = await AsyncStorage.getItem("@myGroups_Key");
-    console.log(value);
     if (value !== null) {
       let arrGroups: GroupListT[] = JSON.parse(value);
-      console.log("sds");
-      console.log(arrGroups);
       return arrGroups;
     } else {
-      console.log("111");
       return [];
     }
   }
@@ -94,7 +90,6 @@ export const counterSlice = createSlice({
       state.groups = action.payload;
     });
     builder.addCase(getScheduleByStorage.fulfilled, (state, action) => {
-      console.log("start");
       state.scheduleMainGroup = action.payload;
     });
   },

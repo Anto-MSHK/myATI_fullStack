@@ -62,6 +62,8 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
     }
   }, [groups]);
 
+  const [loadingAll, setLoadingAll] = useState(-1);
+  const [rerenderCount, setRerenderCount] = useState(0);
   let curStatus = useAppSelector((state) => state.settings.curStatus);
 
   const [curPage, setCurPage] = useState({ value: 0, isChange: false });
@@ -76,7 +78,6 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
   useEffect(() => {
     setFastLoading(true);
     setGroupCur((route.params as any).group);
-    console.log(fastLoading);
     const a = groups.find((cand) => cand.isMain === true);
     if ((route.params as any).group === a?.name) {
       dispatch(getScheduleByStorage());
@@ -264,21 +265,20 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
         <HeaderMain title={groupCur} />
       </View>
 
-      {!isStart2 && (
-        <Text
-          style={{
-            backgroundColor: theme.colors.grey5,
-            textAlign: "center",
-            zIndex: 2,
-            elevation: 2,
-            color: theme.colors.black,
-            paddingVertical: 2,
-            fontSize: 13,
-          }}
-        >
-          {curStatus}
-        </Text>
-      )}
+      <Text
+        style={{
+          backgroundColor: theme.colors.grey5,
+          textAlign: "center",
+          zIndex: 2,
+          elevation: 2,
+          color: theme.colors.black,
+          paddingVertical: 2,
+          fontSize: 13,
+        }}
+      >
+        {curStatus}
+      </Text>
+
       <ButtonCloseList
         posBtnOpen={posBtnOpen}
         iconName={"profile"}
@@ -347,18 +347,7 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
                   operWeek(operation);
                   dispatch(setWeek());
                 }}
-                onLayout={() => {
-                  setIsStart2(false);
-                }}
-                style={
-                  isStart && isStart2
-                    ? {
-                        // opacity: 1,
-                        // position: "absolute",
-                        // backgroundColor: "red",
-                      }
-                    : {}
-                }
+                onLayout={() => {}}
               />
             )}
           <Loading />
