@@ -62,6 +62,7 @@ export const GroupCardMini: FC<GroupCardMiniI> = ({
         <View
           style={{
             flexDirection: "row",
+            flex: 1,
           }}
           onLayout={onLayout}
           onTouchStart={() => {

@@ -242,7 +242,7 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
     if (a && a[curDay]) {
       console.log(a);
       if (a[curDay] !== today) {
-        if (a.indexOf(today) !== -1) opacityTodayBtn.value = withSpring(1);
+        opacityTodayBtn.value = withSpring(1);
       } else opacityTodayBtn.value = withSpring(0);
     } else {
       if (revWeekDates[curDay] !== today) {

@@ -43,7 +43,7 @@ export function UltraView<dataType = any>(props: {
   const [isStart, setIsStart] = useState(true);
   const position = useSharedValue(0);
   var opacity = [0, 0, 0, 0, 0, 0].map((el) => useSharedValue(el));
-  var marginHorz = [0, 0, 0, 0, 0, 0].map((el) => useSharedValue(el));
+  //   var marginHorz = [0, 0, 0, 0, 0, 0].map((el) => useSharedValue(el));
   var sizeHeight = [0, 0, 0, 0, 0, 0].map((el) => useSharedValue(el));
 
   var contextY = useSharedValue(0);
@@ -68,11 +68,11 @@ export function UltraView<dataType = any>(props: {
       return el;
     });
 
-    marginHorz = marginHorz.map((el, index) => {
-      if (props.curPage.value === index) el.value = withSpring(0, configSpring);
-      else el.value = withSpring(15, configSpring);
-      return el;
-    });
+    //  marginHorz = marginHorz.map((el, index) => {
+    //    if (props.curPage.value === index) el.value = withSpring(0, configSpring);
+    //    else el.value = withSpring(15, configSpring);
+    //    return el;
+    //  });
     if (!isStart) {
       count.value = props.curPage.value;
       position.value = withSpring(-posCards[props.curPage.value], configSpring);
@@ -299,13 +299,13 @@ export function UltraView<dataType = any>(props: {
         }
         if (count.value !== 5) {
           opacity[count.value + 1].value = withSpring(0, configSpring);
-          marginHorz[count.value + 1].value = withSpring(10, configSpring);
+          //  marginHorz[count.value + 1].value = withSpring(10, configSpring);
         }
         opacity[count.value].value = withSpring(1, configSpring);
-        marginHorz[count.value].value = withSpring(0, configSpring);
+        //   marginHorz[count.value].value = withSpring(0, configSpring);
         if (count.value !== 0) {
           opacity[count.value - 1].value = withSpring(0, configSpring);
-          marginHorz[count.value - 1].value = withSpring(10, configSpring);
+          //  marginHorz[count.value - 1].value = withSpring(10, configSpring);
         }
       }
       if (contextAdvanced.value === 0) {
@@ -330,13 +330,13 @@ export function UltraView<dataType = any>(props: {
       if (sizeHeight[index].value !== 0)
         return {
           opacity: opacity[index].value,
-          marginHorizontal: marginHorz[index].value,
+          //  marginHorizontal: marginHorz[index].value,
           height: sizeHeight[index].value,
         };
       else
         return {
           opacity: opacity[index].value,
-          marginHorizontal: marginHorz[index].value,
+          //  marginHorizontal: marginHorz[index].value,
         };
     });
   };
