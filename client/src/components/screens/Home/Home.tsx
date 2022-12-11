@@ -240,13 +240,16 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
 
   const onUnhideBtn = (curDay: number, a: string[] | undefined = undefined) => {
     if (a && a[curDay]) {
-      console.log(a[curDay] + "=+=" + today);
-      if (a[curDay] !== today) opacityTodayBtn.value = withSpring(1);
-      else opacityTodayBtn.value = withSpring(0);
+      console.log(a);
+      if (a[curDay] !== today) {
+        if (a.indexOf(today) !== -1) opacityTodayBtn.value = withSpring(1);
+      } else opacityTodayBtn.value = withSpring(0);
     } else {
-      console.log(revWeekDates[curDay] + "=-=" + today);
-      if (revWeekDates[curDay] !== today) opacityTodayBtn.value = withSpring(1);
-      else opacityTodayBtn.value = withSpring(0);
+      if (revWeekDates[curDay] !== today) {
+        console.log(revWeekDates);
+        if (revWeekDates.indexOf(today) !== -1)
+          opacityTodayBtn.value = withSpring(1);
+      } else opacityTodayBtn.value = withSpring(0);
     }
   };
 

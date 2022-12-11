@@ -1,6 +1,10 @@
 import { View, ScrollView, FlatList } from "react-native";
 import React, { FC, useEffect, useState } from "react";
-import { LessonCard, LessonCardI } from "../../UI/LessonCard/LessonCard";
+import {
+  LessonCard,
+  LessonCardI,
+  LessonCardNull,
+} from "../../UI/LessonCard/LessonCard";
 import { c_style } from "./../../../stylesConst";
 import { Text } from "@rneui/base";
 import { UIstyles } from "./../UIstyles";
@@ -77,67 +81,85 @@ export const DayCard: FC<DayCardI> = ({ lessons, dayOfWeek, dates }) => {
         {`${curD}${curM},`}
         <Text style={styleUI.h1}> {days[`${dayOfWeek}`]}</Text>
       </Text>
-      <View
-        style={[{
-          marginTop: 10,
-          marginHorizontal: -5,
-          borderColor: "black",
-        }]}
-      >
-        {lessons.map((lesson, i) => {
-          let startTime = new Date();
-          let endTime = new Date();
-          if (lesson.time.from && lesson.time.to && curD === "сегодня") {
-            startTime.setHours(
-              +lesson.time.from.split(":")[0],
-              +lesson.time.from.split(":")[1],
-              0
-            ); // 5.30 pm
-            endTime.setHours(
-              +lesson.time.to.split(":")[0],
-              +lesson.time.to.split(":")[1],
-              0
-            );
-            if (time >= startTime && time < endTime) {
-              if (timeTo === undefined) {
-                setTimeTo({
-                  from: lesson.time.from,
-                  to: lesson.time.to,
-                  count: +lesson.count,
-                  day: curD,
-                });
-              } else
-                dispatch(
-                  setCurStatus(
-                    `Сейчас идёт ${timeTo.count} пара, с ${timeTo.from} до ${timeTo.to}.`
-                  )
-                );
+      {lessons.length !== 0 ? (
+        <View
+          style={[
+            {
+              marginTop: 10,
+              marginHorizontal: -5,
+              borderColor: "black",
+            },
+          ]}
+        >
+          {lessons.map((lesson, i) => {
+            let startTime = new Date();
+            let endTime = new Date();
+            if (lesson.time.from && lesson.time.to && curD === "сегодня") {
+              startTime.setHours(
+                +lesson.time.from.split(":")[0],
+                +lesson.time.from.split(":")[1],
+                0
+              ); // 5.30 pm
+              endTime.setHours(
+                +lesson.time.to.split(":")[0],
+                +lesson.time.to.split(":")[1],
+                0
+              );
+              if (time >= startTime && time < endTime) {
+                if (timeTo === undefined) {
+                  setTimeTo({
+                    from: lesson.time.from,
+                    to: lesson.time.to,
+                    count: +lesson.count,
+                    day: curD,
+                  });
+                } else
+                  dispatch(
+                    setCurStatus(
+                      `Сейчас идёт ${timeTo.count} пара, с ${timeTo.from} до ${timeTo.to}.`
+                    )
+                  );
+              }
             }
-          }
-          return (
-            <LessonCard
-              count={lesson.count}
-              time={lesson.time}
-              data={lesson.data}
-              roundingСorns={
-                lessons.length === 1
-                  ? "all"
-                  : i === 0
-                  ? "top"
-                  : i === lessons.length - 1
-                  ? "bottom"
-                  : "none"
-              }
-              key={i + "lesson"}
-              isActive={
-                curD === "сегодня" && +lesson.count === +timeTo?.count
-                  ? true
-                  : false
-              }
-            />
-          );
-        })}
-      </View>
+            if (!lesson.special)
+              return (
+                <LessonCard
+                  count={lesson.count}
+                  time={lesson.time}
+                  data={lesson.data}
+                  roundingСorns={
+                    lessons.length === 1
+                      ? "all"
+                      : i === 0
+                      ? "top"
+                      : i === lessons.length - 1
+                      ? "bottom"
+                      : "none"
+                  }
+                  key={i + "lesson"}
+                  isActive={
+                    curD === "сегодня" && +lesson.count === +timeTo?.count
+                      ? true
+                      : false
+                  }
+                />
+              );
+            else return <LessonCardNull title={lesson.special} />;
+          })}
+        </View>
+      ) : (
+        <View
+          style={[
+            {
+              marginTop: 10,
+              marginHorizontal: -5,
+              borderColor: "black",
+            },
+          ]}
+        >
+          <LessonCardNull />
+        </View>
+      )}
     </View>
   );
 };

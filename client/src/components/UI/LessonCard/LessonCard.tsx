@@ -15,10 +15,10 @@ export interface LessonCardI {
   roundingСorns?: "none" | "top" | "bottom" | "all";
   withSwitch?: boolean;
   isNotTeacher?: boolean;
-  count: 1 | 2 | 3 | 4 | 5;
-  time: { from: string; to: string };
+  count?: 1 | 2 | 3 | 4 | 5;
+  time?: { from: string; to: string };
   data: dataT;
-  isActive: boolean;
+  isActive?: boolean;
 }
 
 export const LessonCard: FC<LessonCardI> = ({
@@ -84,17 +84,19 @@ export const LessonCard: FC<LessonCardI> = ({
       )}
       <View>
         <View style={style.mainContainer}>
-          <Badge
-            value={count}
-            containerStyle={style.budgeContainer}
-            badgeStyle={[
-              style.budge,
-              isActive
-                ? { backgroundColor: theme.colors.primary }
-                : { backgroundColor: theme.colors.secondary },
-            ]}
-            textStyle={style.budgeText}
-          />
+          {count && (
+            <Badge
+              value={count}
+              containerStyle={style.budgeContainer}
+              badgeStyle={[
+                style.budge,
+                isActive
+                  ? { backgroundColor: theme.colors.primary }
+                  : { backgroundColor: theme.colors.secondary },
+              ]}
+              textStyle={style.budgeText}
+            />
+          )}
           <Text style={{ width: 240, lineHeight: 18, ...styleUI.h2 }}>
             {data[curData]?.subject
               ? data[curData]?.subject && data[curData]?.subject.title
@@ -103,11 +105,13 @@ export const LessonCard: FC<LessonCardI> = ({
         </View>
         {data[curData] && (
           <View style={style.secondaryContainer}>
-            <View style={{ marginRight: 15, ...style.timeContainer }}>
-              <Text style={styleUI.h3}>{time.from}</Text>
-              <View style={style.stripe} />
-              <Text style={styleUI.h3}>{time.to}</Text>
-            </View>
+            {time && (
+              <View style={{ marginRight: 15, ...style.timeContainer }}>
+                <Text style={styleUI.h3}>{time.from}</Text>
+                <View style={style.stripe} />
+                <Text style={styleUI.h3}>{time.to}</Text>
+              </View>
+            )}
             <View style={style.secondaryInfo}>
               <View>
                 {!isNotTeacher && (
@@ -143,6 +147,40 @@ export const LessonCard: FC<LessonCardI> = ({
           style={style.gradientLine}
         />
       )}
+    </Card>
+  );
+};
+
+export interface LessonCardNullI {
+  title: string;
+}
+
+export const LessonCardNull: FC<LessonCardNullI> = ({
+  title = "Выходной день",
+}) => {
+  const { theme } = useTheme();
+
+  var styleForLine: StyleProp<ViewStyle> = {};
+
+  const styleUI = useStyles(UIstyles);
+  const style = useStyles(styles);
+
+  const curRoundedStyle = style.cardContainer_all;
+
+  return (
+    <Card containerStyle={curRoundedStyle} wrapperStyle={style.cardWrapper}>
+      <View>
+        <View style={[style.mainContainer, { justifyContent: "center" }]}>
+          <Text style={{ lineHeight: 18, ...styleUI.h2 }}>
+            {title.toLowerCase()}
+          </Text>
+        </View>
+        <View style={{ ...style.secondaryContainer, justifyContent: "center" }}>
+          <View style={{ marginRight: 15, ...style.timeContainer }}>
+            <Text style={styleUI.h3}>пар нет</Text>
+          </View>
+        </View>
+      </View>
     </Card>
   );
 };

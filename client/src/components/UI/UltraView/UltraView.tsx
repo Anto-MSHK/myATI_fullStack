@@ -352,7 +352,7 @@ export function UltraView<dataType = any>(props: {
           style={[
             animatedStyle2,
             styles,
-            !isSt ? { position: "absolute" } : {},
+            !isSt ? { position: "absolute", opacity: 0 } : {},
           ]}
         >
           {props.data.map((day, index) => {

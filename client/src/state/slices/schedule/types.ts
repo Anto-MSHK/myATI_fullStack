@@ -25,6 +25,7 @@ export type LessonT = {
   count: 1 | 2 | 3 | 4 | 5;
   time: { from: string; to: string };
   data: dataT;
+  special?: string;
 };
 
 export type DayT = {
