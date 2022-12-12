@@ -19,6 +19,7 @@ interface DayCardI {
   dayOfWeek: 0 | 1 | 2 | 3 | 4 | 5;
   lessons: LessonT[];
   dates: string;
+  curLessonCount: number;
 }
 
 const mounts = {
@@ -45,7 +46,12 @@ const days = {
   5: "суббота",
 };
 
-export const DayCard: FC<DayCardI> = ({ lessons, dayOfWeek, dates }) => {
+export const DayCard: FC<DayCardI> = ({
+  lessons,
+  dayOfWeek,
+  dates,
+  curLessonCount,
+}) => {
   //   const style = useStyles(styles);
   const dispatch = useAppDispatch();
 
@@ -59,14 +65,14 @@ export const DayCard: FC<DayCardI> = ({ lessons, dayOfWeek, dates }) => {
 
   const style = curD === "сегодня" ? { ...styleUI.h1_p } : { ...styleUI.h1 };
 
-  let [timeTo, setTimeTo] = useState<
-    { from: string; to: string; count: number; day: string } | undefined
-  >(undefined);
-
-  const time = new Date();
+  let status: string[] = [];
   //   .toLocaleTimeString("en-US", {
   //     timeZone: "Europe/Moscow",
   //   });
+  //   useEffect(() => {
+  //     console.log("!!!");
+  //     dispatch(setCurStatus(status));
+  //   }, [status]);
 
   return (
     <View>
@@ -92,35 +98,6 @@ export const DayCard: FC<DayCardI> = ({ lessons, dayOfWeek, dates }) => {
           ]}
         >
           {lessons.map((lesson, i) => {
-            let startTime = new Date();
-            let endTime = new Date();
-            if (lesson.time.from && lesson.time.to && curD === "сегодня") {
-              startTime.setHours(
-                +lesson.time.from.split(":")[0],
-                +lesson.time.from.split(":")[1],
-                0
-              ); // 5.30 pm
-              endTime.setHours(
-                +lesson.time.to.split(":")[0],
-                +lesson.time.to.split(":")[1],
-                0
-              );
-              if (time >= startTime && time < endTime) {
-                if (timeTo === undefined) {
-                  setTimeTo({
-                    from: lesson.time.from,
-                    to: lesson.time.to,
-                    count: +lesson.count,
-                    day: curD,
-                  });
-                } else
-                  dispatch(
-                    setCurStatus(
-                      `Сейчас идёт ${timeTo.count} пара, с ${timeTo.from} до ${timeTo.to}.`
-                    )
-                  );
-              }
-            }
             if (!lesson.special)
               return (
                 <LessonCard
@@ -138,7 +115,9 @@ export const DayCard: FC<DayCardI> = ({ lessons, dayOfWeek, dates }) => {
                   }
                   key={i + "lesson"}
                   isActive={
-                    curD === "сегодня" && +lesson.count === +timeTo?.count
+                    curD === "сегодня" &&
+                    curLessonCount > -1 &&
+                    +lesson.count === curLessonCount
                       ? true
                       : false
                   }

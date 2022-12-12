@@ -5,5 +5,5 @@ export interface AppSettingsStateI {
   switchWeek: "topWeek" | "lowerWeek";
   curDate: string;
   weekDates: string[];
-  curStatus: string;
+  curStatus: string[];
 }

@@ -41,7 +41,6 @@ export const Groups = ({ route, navigation }: HomeTabScreenProps<"Groups">) => {
 
   const [faculty, setFaculty] = useState("");
   const [course, setCourse] = useState("");
-  
 
   const list = [
     {

@@ -20,6 +20,7 @@ import { useGetScheduleQuery } from "../../../state/services/schedule";
 import {
   setCurDay,
   setCurDayAndWeek,
+  setCurStatus,
   setCurWeek,
   setWeek,
 } from "../../../state/slices/settings/settingSlice";
@@ -48,6 +49,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useStyles } from "../../../hooks/useStyles";
 import { UIstyles } from "../../UI/UIstyles";
 import { Loading } from "./../../UI/Loading/Loading";
+import { StatusLine } from "../../UI/StatusLine/StatusLine";
 
 export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
   const groups = useAppSelector((state) => state.group.groups);
@@ -65,7 +67,6 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
 
   let curStatus = useAppSelector((state) => state.settings.curStatus);
   let today = useAppSelector((state) => state.settings.curDate);
-  let curIndexDay = useAppSelector((state) => state.settings.curDay);
 
   const [curPage, setCurPage] = useState({ value: 0, isChange: false });
   const [isStart, setIsStart] = useState(true);
@@ -90,8 +91,74 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
     (route.params as any).group
   );
 
+  let [countCurLesson, setCountCurLesson] = useState(-1);
+
   useEffect(() => {
     setFastLoading(false);
+    const longBreaks = {
+      0: { from: "9:15", to: "9:20" },
+      1: { from: "11:00", to: "11:05" },
+      2: { from: "13:15", to: "13:20" },
+      3: { from: "15:00", to: "15:05" },
+      4: { from: "16:45", to: "16:50" },
+    };
+    const time = new Date();
+    let status: string[] = [];
+    let curDay = data?.find(
+      (cand) => +cand.dayOfWeek === weekDates.indexOf(today)
+    );
+    curDay?.lessons.map((lesson) => {
+      if (lesson.time.from && lesson.time.to) {
+        let startTime = new Date();
+        let endTime = new Date();
+        startTime.setHours(
+          +lesson.time.from.split(":")[0],
+          +lesson.time.from.split(":")[1],
+          0
+        ); // 5.30 pm
+        endTime.setHours(
+          +lesson.time.to.split(":")[0],
+          +lesson.time.to.split(":")[1],
+          0
+        );
+        if (time >= startTime && time < endTime) {
+          setCountCurLesson(+lesson.count);
+          console.log(countCurLesson);
+          status = [
+            `Сейчас идёт ${lesson.count} пара, с ${lesson.time.from} до ${lesson.time.to}`,
+          ];
+
+          let startBreakTime = new Date();
+          let endBreakTime = new Date();
+          startBreakTime.setHours(
+            +longBreaks[(+lesson.count as any) - 1].from.split(":")[0],
+            +longBreaks[(+lesson.count as any) - 1].from.split(":")[1],
+            0
+          ); // 5.30 pm
+          endBreakTime.setHours(
+            +longBreaks[(+lesson.count as any) - 1].to.split(":")[0],
+            +longBreaks[(+lesson.count as any) - 1].to.split(":")[1],
+            0
+          );
+          if (time < startBreakTime) {
+            status = [
+              ...status,
+              `Малая перемена в ${longBreaks[(+lesson.count as any) - 1].from}`,
+            ];
+          }
+          if (time > startBreakTime && time < endBreakTime) {
+            status = [
+              ...status,
+              `Малая перемена закончится в ${
+                longBreaks[(+lesson.count as any) - 1].to
+              }`,
+            ];
+          }
+        }
+      }
+
+      dispatch(setCurStatus(status));
+    });
   }, [data]);
 
   const stylesUI = useStyles(UIstyles);
@@ -238,18 +305,22 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
 
   const [isVisible, setIsVisible] = useState(false);
 
-  const onUnhideBtn = (curDay: number, a: string[] | undefined = undefined) => {
-    if (a && a[curDay]) {
-      console.log(a);
-      if (a[curDay] !== today) {
-        opacityTodayBtn.value = withSpring(1);
-      } else opacityTodayBtn.value = withSpring(0);
-    } else {
-      if (revWeekDates[curDay] !== today) {
-        console.log(revWeekDates);
-        if (revWeekDates.indexOf(today) !== -1)
+  const onUnhideBtn = (
+    curDay: number,
+    curWeek: string[] | undefined = undefined
+  ) => {
+    if (weekDates.indexOf(today) !== -1) {
+      if (curWeek && curWeek[curDay]) {
+        if (curWeek[curDay] !== today) {
           opacityTodayBtn.value = withSpring(1);
-      } else opacityTodayBtn.value = withSpring(0);
+        } else opacityTodayBtn.value = withSpring(0);
+      } else {
+        if (revWeekDates[curDay] !== today) {
+          opacityTodayBtn.value = withSpring(1);
+        } else opacityTodayBtn.value = withSpring(0);
+      }
+    } else {
+      opacityTodayBtn.value = withSpring(0);
     }
   };
 
@@ -289,19 +360,7 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
         <HeaderMain title={groupCur} />
       </View>
 
-      <Text
-        style={{
-          backgroundColor: theme.colors.grey5,
-          textAlign: "center",
-          zIndex: 2,
-          elevation: 2,
-          color: theme.colors.black,
-          paddingVertical: 2,
-          fontSize: 13,
-        }}
-      >
-        {curStatus}
-      </Text>
+      <StatusLine />
       <Animated.View
         style={[
           opacityTodayStyle,
@@ -403,6 +462,11 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
                       revWeekDates.length === 0
                         ? weekDates[index]
                         : revWeekDates[index]
+                    }
+                    curLessonCount={
+                      +item.dayOfWeek === weekDates.indexOf(today)
+                        ? countCurLesson
+                        : -1
                     }
                   />
                 )}

@@ -114,18 +114,21 @@ export const LessonCard: FC<LessonCardI> = ({
             )}
             <View style={style.secondaryInfo}>
               <View>
-                {!isNotTeacher && (
-                  <Text style={styleUI.h3_b}>
-                    {data[curData]?.teacher &&
-                    data[curData]?.teacher.degree &&
-                    data[curData]?.teacher.degree !== "undefined"
-                      ? data[curData]?.teacher.degree + " "
-                      : ""}
-                    {data[curData]?.teacher
-                      ? data[curData]?.teacher.name + " "
-                      : ""}
-                  </Text>
-                )}
+                {!isNotTeacher &&
+                  data[curData]?.teacher &&
+                  data[curData]?.teacher.name &&
+                  data[curData]?.teacher.name !== "undefined" && (
+                    <Text style={styleUI.h3_b}>
+                      {data[curData]?.teacher &&
+                      data[curData]?.teacher.degree &&
+                      data[curData]?.teacher.degree !== "undefined"
+                        ? data[curData]?.teacher.degree + " "
+                        : ""}
+                      {data[curData]?.teacher
+                        ? data[curData]?.teacher.name + " "
+                        : ""}
+                    </Text>
+                  )}
                 {data[curData]?.cabinet && (
                   <Text style={styleUI.h3_b}>
                     каб: {data[curData]?.cabinet}

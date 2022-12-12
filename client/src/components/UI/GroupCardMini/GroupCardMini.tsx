@@ -37,7 +37,6 @@ export const GroupCardMini: FC<GroupCardMiniI> = ({
 
   const onPressNavigation = (group: string) => {
     const page = navigation.getState().routes.find((cand) => {
-      console.log(cand?.params?.group + "===" + group);
       return cand?.params?.group === group;
     });
     navigation.navigate("Home", { group: group });

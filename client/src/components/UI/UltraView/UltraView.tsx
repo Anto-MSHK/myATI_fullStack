@@ -47,6 +47,7 @@ export function UltraView<dataType = any>(props: {
   var sizeHeight = [0, 0, 0, 0, 0, 0].map((el) => useSharedValue(el));
 
   var contextY = useSharedValue(0);
+  var movementY = useSharedValue(0);
   var contextAdvanced = useSharedValue(0);
   var contextOpacity = useSharedValue(0);
 
@@ -106,7 +107,6 @@ export function UltraView<dataType = any>(props: {
     } else if (posCards.length === 6 && isStart) {
       props.curPage.value = count.value;
       position.value = withSpring(-posCards[count.value], configSpring);
-      console.log("!!!start!!!");
       setIsStart(false);
       setIsSt(true);
       props.onLayout();
@@ -160,7 +160,7 @@ export function UltraView<dataType = any>(props: {
         props.posX.value = withSpring(0, configSpring);
         props.opacity.value = withSpring(1, configSpring);
       }
-    }, 1000);
+    }, 500);
   };
 
   const configSpring = {
@@ -249,6 +249,7 @@ export function UltraView<dataType = any>(props: {
       contextY.value = position.value;
     })
     .onUpdate((e) => {
+      movementY.value = e.translationY;
       if (
         (typeGesture.value !== "horz" && e.translationY < -1) ||
         (typeGesture.value !== "horz" && e.translationY > 1)
@@ -261,6 +262,7 @@ export function UltraView<dataType = any>(props: {
       }
     })
     .onEnd((e) => {
+      movementY.value = withSpring(0, { mass: 0.1 });
       if (typeGesture.value === "vert") {
         var minVelocity = 1000;
         var minPulling = 200;
@@ -377,6 +379,7 @@ export function UltraView<dataType = any>(props: {
                       measureHeight(event, dayOfWeek);
                     }
                   }}
+                  movementY={movementY}
                 >
                   {props.renderItem(day, index)}
                 </SwipePage>

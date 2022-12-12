@@ -9,7 +9,7 @@ const initialState: AppSettingsStateI = {
   switchWeek: "topWeek",
   curDate: "",
   weekDates: [],
-  curStatus: "Сейчас пар нет.",
+  curStatus: [],
 };
 
 export const settingsSlice = createSlice({
@@ -22,7 +22,7 @@ export const settingsSlice = createSlice({
     setCurDay: (state, action: PayloadAction<0 | 1 | 2 | 3 | 4 | 5>) => {
       state.curDay = action.payload;
     },
-    setCurStatus: (state, action: PayloadAction<string>) => {
+    setCurStatus: (state, action: PayloadAction<string[]>) => {
       state.curStatus = action.payload;
     },
     setWeek: (state) => {
