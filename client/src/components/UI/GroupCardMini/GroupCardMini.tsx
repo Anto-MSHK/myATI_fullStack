@@ -1,6 +1,6 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { FC } from "react";
-import { LayoutChangeEvent, View } from "react-native";
+import { LayoutChangeEvent, TouchableOpacity, View } from "react-native";
 import { Text } from "react-native";
 import { Badge, Button, Icon } from "@rneui/base";
 import { ButtonSwitch } from "../ButtonSwitch/ButtonSwitch";
@@ -58,13 +58,13 @@ export const GroupCardMini: FC<GroupCardMiniI> = ({
           justifyContent: "space-between",
         }}
       >
-        <View
+        <TouchableOpacity
           style={{
             flexDirection: "row",
             flex: 1,
           }}
           onLayout={onLayout}
-          onTouchStart={() => {
+          onPress={() => {
             onClickNav();
             onPressNavigation(name);
           }}
@@ -85,7 +85,7 @@ export const GroupCardMini: FC<GroupCardMiniI> = ({
               </Text>
             )}
           </View>
-        </View>
+        </TouchableOpacity>
         {withBtnClose && (
           <Button
             radius={50}

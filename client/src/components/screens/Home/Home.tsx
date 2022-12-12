@@ -31,6 +31,7 @@ import {
   GestureHandlerRootView,
 } from "react-native-gesture-handler";
 import Animated, {
+  interpolate,
   useAnimatedStyle,
   useSharedValue,
   withDecay,
@@ -65,10 +66,13 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
     }
   }, [groups]);
 
-  let curStatus = useAppSelector((state) => state.settings.curStatus);
+  let todayIndex = useAppSelector((state) => state.settings.curDay);
   let today = useAppSelector((state) => state.settings.curDate);
 
-  const [curPage, setCurPage] = useState({ value: 0, isChange: false });
+  const [curPage, setCurPage] = useState({
+    value: todayIndex,
+    isChange: false,
+  });
   const [isStart, setIsStart] = useState(true);
   const dispatch = useAppDispatch();
   const positionX = useSharedValue(0);
@@ -95,6 +99,7 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
 
   useEffect(() => {
     setFastLoading(false);
+    setCurPage({ ...curPage, value: todayIndex });
     const longBreaks = {
       0: { from: "9:15", to: "9:20" },
       1: { from: "11:00", to: "11:05" },
@@ -107,7 +112,7 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
     let curDay = data?.find(
       (cand) => +cand.dayOfWeek === weekDates.indexOf(today)
     );
-    curDay?.lessons.map((lesson) => {
+    curDay?.lessons.map((lesson, i, arr) => {
       if (lesson.time.from && lesson.time.to) {
         let startTime = new Date();
         let endTime = new Date();
@@ -123,7 +128,6 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
         );
         if (time >= startTime && time < endTime) {
           setCountCurLesson(+lesson.count);
-          console.log(countCurLesson);
           status = [
             `Сейчас идёт ${lesson.count} пара, с ${lesson.time.from} до ${lesson.time.to}`,
           ];
@@ -134,7 +138,7 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
             +longBreaks[(+lesson.count as any) - 1].from.split(":")[0],
             +longBreaks[(+lesson.count as any) - 1].from.split(":")[1],
             0
-          ); // 5.30 pm
+          );
           endBreakTime.setHours(
             +longBreaks[(+lesson.count as any) - 1].to.split(":")[0],
             +longBreaks[(+lesson.count as any) - 1].to.split(":")[1],
@@ -154,9 +158,26 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
               }`,
             ];
           }
+        } else if (time > endTime && arr[i + 1]) {
+          let startNextLessonTime = new Date();
+          startNextLessonTime.setHours(
+            +arr[i + 1].time.from.split(":")[0],
+            +arr[i + 1].time.from.split(":")[1],
+            0
+          );
+          if (time < startNextLessonTime) {
+            status = [
+              `Следующая пара (${+arr[i + 1].count}) начнётся в ${
+                arr[i + 1].time.from
+              }`,
+            ];
+          }
+        } else if (time < startTime && !arr[i - 1]) {
+          status = [
+            `Учебный день начнётся с ${lesson.count} пары в ${lesson.time.from}`,
+          ];
         }
       }
-
       dispatch(setCurStatus(status));
     });
   }, [data]);
@@ -325,8 +346,10 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
   };
 
   const opacityTodayStyle = useAnimatedStyle(() => {
+    let z = interpolate(opacityTodayBtn.value, [0, 1], [-1, 4]);
     return {
       opacity: opacityTodayBtn.value,
+      zIndex: z,
     };
   });
 
@@ -360,21 +383,30 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
         <HeaderMain title={groupCur} />
       </View>
 
-      <StatusLine />
+      <StatusLine
+        visible={
+          !fastLoading &&
+          !isStart &&
+          ((data && !isLoading) || dataLocal.length > 0)
+        }
+      />
       <Animated.View
         style={[
           opacityTodayStyle,
           {
             position: "absolute",
-            bottom: 25,
+            bottom: 23,
             left: 85,
-            zIndex: 5,
+            // zIndex: 5,
           },
         ]}
       >
         <Button
           containerStyle={{
             borderRadius: 50,
+          }}
+          buttonStyle={{
+            height: 45,
           }}
           color={theme.colors.primary}
           onPress={() => {
@@ -480,7 +512,8 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
                   dispatch(setWeek());
                   onUnhideBtn(count, a);
                 }}
-                onLayout={() => {}}
+                onLayout={() => {
+                }}
               />
             )}
           <Loading />

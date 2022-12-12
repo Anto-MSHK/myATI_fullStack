@@ -1,5 +1,5 @@
 import { View, Text } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
+import React, { FC, useEffect, useRef, useState } from "react";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -8,7 +8,10 @@ import Animated, {
 import { useTheme } from "@rneui/themed";
 import { useAppSelector } from "../../../hooks/redux";
 
-export const StatusLine = () => {
+interface StatusLineI {
+  visible?: boolean;
+}
+export const StatusLine: FC<StatusLineI> = ({ visible = true }) => {
   const { theme } = useTheme();
   let curStatus = useAppSelector((state) => state.settings.curStatus);
   const [count, setCount] = useState(0);
@@ -54,7 +57,11 @@ export const StatusLine = () => {
             fontSize: 13,
           }}
         >
-          {curStatus.length !== 0 ? curStatus[count] : "Сегодня пар уже нет"}
+          {visible
+            ? curStatus.length !== 0
+              ? curStatus[count]
+              : "Сегодня активных пар нет"
+            : ""}
         </Text>
       </Animated.View>
     </View>

@@ -140,7 +140,7 @@ export const Groups = ({ route, navigation }: HomeTabScreenProps<"Groups">) => {
   const [isVisible, setIsVisible] = useState(false);
   const contextY = useSharedValue(0);
   const heightComponent = useSharedValue(0);
-
+  const restyleToggle = useSharedValue(false);
   const onToggle = () => {
     setIsVisible((prev) => !prev);
     if (!isVisible) {
@@ -153,7 +153,9 @@ export const Groups = ({ route, navigation }: HomeTabScreenProps<"Groups">) => {
       colorBtn.value = withSpring(1);
       opacityIconOpen.value = withSpring(0);
       opacityIconClose.value = withSpring(100);
+      restyleToggle.value = true;
     } else {
+      restyleToggle.value = false;
       posBtnOpen.value = withSpring(0);
       posModal.value = withSpring(curSize * list.length - list.length, {
         damping: 12,
@@ -171,18 +173,25 @@ export const Groups = ({ route, navigation }: HomeTabScreenProps<"Groups">) => {
       contextY.value = position.value;
     })
     .onUpdate((e) => {
-      const heightAllCards = -heightComponent.value + HEIGHT_CONTENT - 20;
+      const heightAllCards = -heightComponent.value + HEIGHT_CONTENT - 100;
       if (
-        (position.value <= 0 || e.translationY < 0) &&
-        (position.value >= heightAllCards || e.translationY > 0)
+        (position.value < 0 || e.translationY < 0) &&
+        (position.value > heightAllCards || e.translationY > 0)
       )
         position.value = contextY.value + e.translationY;
     })
     .onEnd((e) => {
-      const heightAllCards = -heightComponent.value + HEIGHT_CONTENT - 20;
+      const heightAllCards = -heightComponent.value + HEIGHT_CONTENT - 100;
       if (e.translationY > 0) {
         posBtnOpen.value = withSpring(0);
-      } else posBtnOpen.value = withSpring(90);
+      } else {
+        if (heightAllCards < -HEIGHT_CONTENT) {
+          if (position.value <= heightAllCards + 100)
+            posBtnOpen.value = withSpring(0);
+          else posBtnOpen.value = withSpring(90);
+        }
+      }
+
       position.value = withDecay({
         velocity: e.velocityY,
         clamp: [heightAllCards, 0],
@@ -190,6 +199,11 @@ export const Groups = ({ route, navigation }: HomeTabScreenProps<"Groups">) => {
     });
 
   const scrollStyle = useAnimatedStyle(() => {
+    if (
+      position.value <= -heightComponent.value + HEIGHT_CONTENT &&
+      restyleToggle.value !== true
+    )
+      posBtnOpen.value = withSpring(0);
     return {
       transform: [{ translateY: position.value }],
     };
@@ -255,16 +269,18 @@ export const Groups = ({ route, navigation }: HomeTabScreenProps<"Groups">) => {
       ) : (
         <Loading withGroups />
       )}
-      <ButtonCloseList
-        posBtnOpen={posBtnOpen}
-        iconName={"filter"}
-        onToggle={onToggle}
-        colorBtn={colorBtn}
-        visible={isVisible}
-        opacityIconOpen={opacityIconOpen}
-        opacityIconClose={opacityIconClose}
-        tags={[{ value: faculty }, { value: course, name: "курс" }]}
-      />
+      {!isLoading && (
+        <ButtonCloseList
+          posBtnOpen={posBtnOpen}
+          iconName={"filter"}
+          onToggle={onToggle}
+          colorBtn={colorBtn}
+          visible={isVisible}
+          opacityIconOpen={opacityIconOpen}
+          opacityIconClose={opacityIconClose}
+          tags={[{ value: faculty }, { value: course, name: "курс" }]}
+        />
+      )}
       <BottomList
         visible={isVisible}
         list={list}

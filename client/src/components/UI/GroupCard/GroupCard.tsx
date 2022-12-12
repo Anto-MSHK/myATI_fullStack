@@ -51,9 +51,14 @@ export const GroupCard: FC<GroupCardI> = ({
           }}
           radius={50}
           buttonStyle={{ width: 40, height: 40 }}
-          color={theme.colors.grey1}
+          color={theme.colors.primary}
         >
-          <Icon name="arrowsalt" type="antdesign" size={20} />
+          <Icon
+            name="arrowsalt"
+            type="antdesign"
+            size={20}
+            color={theme.colors.black}
+          />
         </Button>
       </View>
     </Card>
