@@ -76,7 +76,7 @@ export const HeaderMain: FC<HeaderMainI> = ({
           style: { ...styleUI.h1_p, color: theme.colors.black },
         }}
         centerContainerStyle={style.textContainer}
-        containerStyle={style.header}
+        containerStyle={{ ...style.header, borderBottomWidth: 0 }}
         barStyle={mode === "dark" ? "light-content" : "dark-content"}
         leftComponent={
           !isNotActiveButton

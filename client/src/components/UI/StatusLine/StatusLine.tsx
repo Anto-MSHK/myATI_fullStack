@@ -43,7 +43,7 @@ export const StatusLine: FC<StatusLineI> = ({ visible = true }) => {
   return (
     <View
       style={{
-        backgroundColor: theme.colors.grey5,
+        backgroundColor: theme.colors.grey0,
         zIndex: 2,
         elevation: 2,
       }}

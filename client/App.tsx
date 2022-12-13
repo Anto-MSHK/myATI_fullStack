@@ -29,7 +29,7 @@ export default function App() {
 
   const theme = createTheme({
     lightColors: {
-      primary: "rgba(224, 142, 45, 1)",
+      primary: "rgba(0, 132, 255, 1)",
       black: "rgba(0, 0, 0, 1)",
       secondary: "rgba(0, 0, 0, 0.2)",
       grey0: "rgba(232, 232, 232, 1)",
@@ -40,14 +40,13 @@ export default function App() {
     darkColors: {
       background: "rgba(35, 48, 64, 1)",
       grey0: "rgba(27, 32, 38, 1)",
-      primary: "rgba(224, 142, 45, 1)",
+      primary: "rgba(0, 132, 255, 1)",
       secondary: "rgba(255, 255, 255, 0.2)",
       searchBg: "rgba(255, 255, 255)",
       black: "rgba(255, 255, 255, 1)",
       white: "rgba(255, 255, 255, 1)",
     },
   });
-
 
   if (!fontsLoaded) return <AppLoading />;
   else
