@@ -162,10 +162,14 @@ class Manager {
     var date = await this.checkStateFile().then(res => {
       if (res.fileDownloadDate) return new Date(res.fileDownloadDate)
     })
-    var dateEnd = undefined
+    var dateReload = new Date()
+    var dateReloadEnd = new Date()
 
-    date && (dateEnd = addHours(date, 0.5))
-    if (!errConnection && dateEnd && new Date() > dateEnd) {
+    dateReload.setHours(3, 0, 0)
+    dateReloadEnd.setHours(6, 0, 0)
+
+    //  date && (dateEnd = addHours(date, 0.5))
+    if (!errConnection && dateReload && new Date() > dateReload && new Date() < dateReloadEnd) {
       await getFiles()
       return true
     } else if (!errConnection && !date) {
