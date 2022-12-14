@@ -1,13 +1,19 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { GroupListStateI, GroupListT, GroupMinT, GroupsStateI } from "./types";
+import {
+  DayT,
+  GroupListStateI,
+  GroupListT,
+  GroupMinT,
+  GroupsStateI,
+} from "./types";
 import { saveGroups, saveSchedule } from "../../localService/group";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { DayT } from "../schedule/types";
 
 const initialState: GroupListStateI = {
   groups: [],
   scheduleMainGroup: [],
+  timeReload: "",
 };
 
 export const saveGroupsToStorage = createAsyncThunk(
@@ -34,11 +40,16 @@ export const getScheduleByStorage = createAsyncThunk(
   "group/getScheduleByStorage",
   async () => {
     const value = await AsyncStorage.getItem("@mySchedule_Key");
+    const valueTime = await AsyncStorage.getItem("@timeSchedule_Key");
     if (value !== null) {
       let data: DayT[] = JSON.parse(value);
-      return data;
+      if (valueTime !== null) {
+        let time: string = JSON.parse(valueTime);
+        return { data, time };
+      }
+      return { data };
     } else {
-      return [];
+      return {};
     }
   }
 );
@@ -90,7 +101,8 @@ export const counterSlice = createSlice({
       state.groups = action.payload;
     });
     builder.addCase(getScheduleByStorage.fulfilled, (state, action) => {
-      state.scheduleMainGroup = action.payload;
+      if (action.payload.data) state.scheduleMainGroup = action.payload.data;
+      if (action.payload.time) state.timeReload = action.payload.time;
     });
   },
 });

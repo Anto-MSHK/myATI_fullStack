@@ -25,6 +25,7 @@ export const GroupCard: FC<GroupCardI> = ({
   onLayout,
 }) => {
   const style = useStyles(styles);
+  const stylesUI = useStyles(UIstyles);
   const { theme } = useTheme();
 
   return (
@@ -50,13 +51,22 @@ export const GroupCard: FC<GroupCardI> = ({
             onClickNav(name);
           }}
           radius={50}
-          buttonStyle={{ width: 40, height: 40 }}
+          buttonStyle={{ height: 40 }}
           color={theme.colors.primary}
         >
+          <Text
+            style={{
+              ...stylesUI.h4_b,
+              color: theme.colors.black,
+              marginRight: 5,
+            }}
+          >
+            Открыть
+          </Text>
           <Icon
             name="arrowsalt"
             type="antdesign"
-            size={20}
+            size={15}
             color={theme.colors.black}
           />
         </Button>

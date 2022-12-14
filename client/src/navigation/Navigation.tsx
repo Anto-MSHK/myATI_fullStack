@@ -16,6 +16,7 @@ import {
   CardStyleInterpolators,
   StackNavigationOptions,
 } from "@react-navigation/stack";
+import { getWeek } from "../state/slices/settings/settingSlice";
 
 const Stack = createStackNavigator();
 
@@ -31,6 +32,7 @@ export const Navigation: FC = () => {
 
   useEffect(() => {
     dispatch(getGroupsByStorage());
+    dispatch(getWeek());
   }, []);
 
   const opt: StackNavigationOptions = {

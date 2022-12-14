@@ -80,20 +80,43 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
 
   const [groupCur, setGroupCur] = useState(route.params.group);
   const [fastLoading, setFastLoading] = useState(false);
+
+  const weekDates = useAppSelector((state) => state.settings.weekDates);
+  const dataLocal = useAppSelector((state) => state.group.scheduleMainGroup);
+  const datalocalTime = useAppSelector((state) => state.group.timeReload);
+  const { data, error, isLoading } = useGetScheduleQuery(
+    (route.params as any).group
+  );
+
+  const [dowlStatus, setDowlStatus] = useState("");
   useEffect(() => {
     setFastLoading(true);
     setGroupCur((route.params as any).group);
     const a = groups.find((cand) => cand.isMain === true);
     if ((route.params as any).group === a?.name) {
-      dispatch(getScheduleByStorage());
+      dispatch(getScheduleByStorage()).then(() => {
+        setDowlStatus(datalocalTime);
+        if (datalocalTime && !error) {
+          let time = new Date();
+          time.setDate(+datalocalTime.split(".")[0]);
+          time.setMonth(+datalocalTime.split(".")[1]);
+          let reloadTime = new Date(time.setDate(time.getDate() + 2));
+          console.log(reloadTime);
+          console.log(error);
+          console.log(new Date() > reloadTime);
+          if (new Date() > reloadTime && data) {
+            dispatch(deleteSchedule());
+            saveSchedule(data).then(() => {
+              dispatch(getScheduleByStorage()).then(() => {});
+              setDowlStatus(`${new Date().getDate()}.${new Date().getMonth()}`);
+            });
+          }
+        }
+      });
     } else {
       dispatch(deleteSchedule());
     }
-  }, [(route.params as any).group]);
-
-  const { data, error, isLoading } = useGetScheduleQuery(
-    (route.params as any).group
-  );
+  }, [(route.params as any).group, data]);
 
   let [countCurLesson, setCountCurLesson] = useState(-1);
 
@@ -110,7 +133,7 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
     const time = new Date();
     let status: string[] = [];
     let curDay;
-    if (dataLocal)
+    if (dataLocal.length > 0)
       curDay = dataLocal?.find(
         (cand) => +cand.dayOfWeek === weekDates.indexOf(today)
       );
@@ -126,7 +149,7 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
           +lesson.time.from.split(":")[0],
           +lesson.time.from.split(":")[1],
           0
-        ); // 5.30 pm
+        );
         endTime.setHours(
           +lesson.time.to.split(":")[0],
           +lesson.time.to.split(":")[1],
@@ -186,12 +209,10 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
       }
       dispatch(setCurStatus(status));
     });
-  }, [data]);
+  }, [data, dataLocal]);
 
   const stylesUI = useStyles(UIstyles);
 
-  const weekDates = useAppSelector((state) => state.settings.weekDates);
-  const dataLocal = useAppSelector((state) => state.group.scheduleMainGroup);
   const [revWeekDates, setRevWeekDates] = useState<string[]>(weekDates);
   useEffect(() => {
     dispatch(setCurDayAndWeek());
@@ -244,7 +265,9 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
               color: theme.colors.grey2,
             }}
           >
-            {dataLocal.length > 0 ? "Загружено с телефона" : "Последняя версия"}
+            {dataLocal.length > 0
+              ? `Загружено с телефона (${dowlStatus})`
+              : "Последняя версия"}
           </Text>
         </View>
       ),

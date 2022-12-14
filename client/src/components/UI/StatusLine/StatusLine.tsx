@@ -63,7 +63,7 @@ export const StatusLine: FC<StatusLineI> = ({ visible = true }) => {
             ? curStatus.length !== 0
               ? curStatus[count]
               : "Сегодня активных пар нет"
-            : ""}
+            : "•••"}
         </Text>
       </Animated.View>
     </View>

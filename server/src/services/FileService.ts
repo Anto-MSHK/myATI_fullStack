@@ -77,7 +77,7 @@ class FileService {
           const parse = antonio.load(fs.readFileSync(path.resolve(`src/html.html`)))
           parse('font').each((index, value) => {
             let week = parse(value).text()
-            console.log(week)
+            if (week.toLowerCase().indexOf('нижняя')) console.log(week)
           })
           parse('a').each((index, value) => {
             var linkFile = parse(value).attr('href')

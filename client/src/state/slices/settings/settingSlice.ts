@@ -1,6 +1,7 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { AppSettingsStateI } from "./types";
+import { dataApi } from "../../../api/data";
 
 const initialState: AppSettingsStateI = {
   theme: "dark",
@@ -11,6 +12,13 @@ const initialState: AppSettingsStateI = {
   weekDates: [],
   curStatus: [],
 };
+
+export const getWeek = createAsyncThunk(
+  "group/saveGroupsToStorage",
+  async () => {
+    return await dataApi.getWeek();
+  }
+);
 
 export const settingsSlice = createSlice({
   name: "settings",
@@ -55,6 +63,12 @@ export const settingsSlice = createSlice({
       });
       state.weekDates = weekDays;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(getWeek.fulfilled, (state, action) => {
+      state.curWeek = action.payload;
+      state.switchWeek = action.payload;
+    });
   },
 });
 

@@ -173,7 +173,7 @@ export const Groups = ({ route, navigation }: HomeTabScreenProps<"Groups">) => {
       contextY.value = position.value;
     })
     .onUpdate((e) => {
-      const heightAllCards = -heightComponent.value + HEIGHT_CONTENT - 100;
+      const heightAllCards = -heightComponent.value + HEIGHT_CONTENT - 150;
       if (
         (position.value < 0 || e.translationY < 0) &&
         (position.value > heightAllCards || e.translationY > 0)
@@ -181,7 +181,7 @@ export const Groups = ({ route, navigation }: HomeTabScreenProps<"Groups">) => {
         position.value = contextY.value + e.translationY;
     })
     .onEnd((e) => {
-      const heightAllCards = -heightComponent.value + HEIGHT_CONTENT - 100;
+      const heightAllCards = -heightComponent.value + HEIGHT_CONTENT - 150;
       if (e.translationY > 0) {
         posBtnOpen.value = withSpring(0);
       } else {
@@ -224,7 +224,7 @@ export const Groups = ({ route, navigation }: HomeTabScreenProps<"Groups">) => {
       <View>
         <HeaderMain title="Выберите группу" />
       </View>
-      {!isLoading && data?.length > 0 ? (
+      {!isLoading && data && data?.length > 0 ? (
         <View>
           <GestureHandlerRootView>
             <GestureDetector gesture={panGesture}>

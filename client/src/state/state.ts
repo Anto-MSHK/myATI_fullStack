@@ -3,7 +3,6 @@ import { groupAPI } from "./services/group";
 import { scheduleAPI } from "./services/schedule";
 import groupSlice from "./slices/group/groupSlice";
 import settingsSlice from "./slices/settings/settingSlice";
-import scheduleSlice from "./slices/schedule/scheduleSlice";
 
 import {
   FLUSH,
@@ -19,7 +18,6 @@ export const store = configureStore({
     [groupAPI.reducerPath]: groupAPI.reducer,
     [scheduleAPI.reducerPath]: scheduleAPI.reducer,
     group: groupSlice,
-    schedule: scheduleSlice,
     settings: settingsSlice,
   },
   middleware: (getDefaultMiddleware) =>
