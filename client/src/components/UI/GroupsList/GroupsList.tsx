@@ -62,8 +62,8 @@ export const GroupsList: FC<GroupsListI> = ({ style, onPressNav }) => {
         onPress={() => {
           onPressNav();
 
-          const resetAction = StackActions.replace("Groups");
-          navigation.dispatch(resetAction);
+          //  const resetAction = StackActions.replace("Groups");
+          navigation.navigate("Groups");
         }}
       >
         <View

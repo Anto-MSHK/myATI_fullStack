@@ -14,19 +14,21 @@ export const styles = () => {
       borderBottomEndRadius: 25,
       backgroundColor: theme.colors.grey0,
       borderWidth: 0,
-      ...UIstyles().shadow,
     },
     buttonsContainer: {
       marginTop: 10,
       borderWidth: 0,
       backgroundColor: "rgba(0, 0, 0, 0)",
+      justifyContent: "space-between",
       height: 36,
     },
     buttonContainer: {
       backgroundColor: theme.colors.secondary,
       borderRadius: 50,
       overflow: "hidden",
-      marginHorizontal: 9,
+      width: 39,
+      flex: 0,
+      // marginHorizontal: 9,
       borderColor: "rgba(0, 0, 0, 0)",
     },
     selectedButton: {

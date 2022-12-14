@@ -43,7 +43,7 @@ export const StatusLine: FC<StatusLineI> = ({ visible = true }) => {
   return (
     <View
       style={{
-        backgroundColor: theme.colors.grey0,
+        backgroundColor: theme.colors.primary,
         zIndex: 2,
         elevation: 2,
       }}
@@ -51,10 +51,12 @@ export const StatusLine: FC<StatusLineI> = ({ visible = true }) => {
       <Animated.View style={[opacityStyle]}>
         <Text
           style={{
+            marginTop: 2,
+            marginBottom: 2,
             textAlign: "center",
             color: theme.colors.black,
             paddingVertical: 2,
-            fontSize: 13,
+            fontSize: 14,
           }}
         >
           {visible

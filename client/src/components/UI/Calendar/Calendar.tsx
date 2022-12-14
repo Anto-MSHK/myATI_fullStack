@@ -26,7 +26,7 @@ const BtnCalendar =
           isDate
             ? {
                 borderColor: theme.colors.white,
-                borderWidth: 3,
+                borderWidth: 2,
                 width: 38,
                 height: 37,
                 borderRadius: 50,

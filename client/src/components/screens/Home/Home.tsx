@@ -109,9 +109,15 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
     };
     const time = new Date();
     let status: string[] = [];
-    let curDay = data?.find(
-      (cand) => +cand.dayOfWeek === weekDates.indexOf(today)
-    );
+    let curDay;
+    if (dataLocal)
+      curDay = dataLocal?.find(
+        (cand) => +cand.dayOfWeek === weekDates.indexOf(today)
+      );
+    else
+      curDay = data?.find(
+        (cand) => +cand.dayOfWeek === weekDates.indexOf(today)
+      );
     curDay?.lessons.map((lesson, i, arr) => {
       if (lesson.time.from && lesson.time.to) {
         let startTime = new Date();
@@ -512,8 +518,7 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
                   dispatch(setWeek());
                   onUnhideBtn(count, a);
                 }}
-                onLayout={() => {
-                }}
+                onLayout={() => {}}
               />
             )}
           <Loading />
