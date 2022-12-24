@@ -104,8 +104,7 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
           console.log(reloadTime);
           console.log(error);
           console.log(new Date() > reloadTime);
-          if (new Date() > reloadTime && data) {
-            dispatch(deleteSchedule());
+          if (new Date() > reloadTime && data) {2
             saveSchedule(data).then(() => {
               dispatch(getScheduleByStorage()).then(() => {});
               setDowlStatus(`${new Date().getDate()}.${new Date().getMonth()}`);
@@ -116,7 +115,7 @@ export const Home = ({ route, navigation }: HomeTabScreenProps<"Home">) => {
     } else {
       dispatch(deleteSchedule());
     }
-  }, [(route.params as any).group, data]);
+  }, [(route.params as any).group, data, datalocalTime]);
 
   let [countCurLesson, setCountCurLesson] = useState(-1);
 

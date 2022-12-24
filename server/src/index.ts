@@ -87,7 +87,7 @@ class Manager {
         console.clear()
         ManagerLogs.INFO('Server', managerMSG.RELOAD)
         tick()
-      }, 10000000)
+      }, 10000)
 
       app.listen(PORT, () => {
         ManagerLogs.INFO('Server', managerMSG.ON_PORT)
